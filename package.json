@@ -8,9 +8,13 @@
   "repository": "github:Precisa-Saude/datasus-parquet",
   "scripts": {
     "archive-sia-pa": "tsx scripts/archive-sia-pa.ts",
+    "build": "echo 'nothing to build — scripts repo'",
+    "build-manifest": "tsx scripts/build-manifest.ts",
     "detect-new": "tsx scripts/detect-new.ts",
     "emit-provenance": "tsx scripts/emit-provenance.ts",
-    "build-manifest": "tsx scripts/build-manifest.ts",
+    "lint": "eslint scripts/ --max-warnings 0",
+    "test": "echo 'no tests yet'",
+    "test:coverage": "echo 'no tests yet'",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

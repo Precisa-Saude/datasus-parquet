@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "name": "datasus-parquet",
+  "owner": "Precisa-Saude",
+  "visibility": "oss",
+  "hasSite": false,
+  "hasPackages": false,
+  "publishesToNpm": false,
+  "commitScopes": ["data", "schema", "scripts", "ci", "deps", "docs", "lint", "config"],
+  "contactEmails": {
+    "security": "security@precisa-saude.com.br",
+    "conduct": "conduct@precisa-saude.com.br"
+  },
+  "nodeVersion": "22",
+  "pnpmVersion": "9.15.9"
+}

@@ -1,0 +1,4 @@
+# datasus-parquet é scripts-only (não monorepo). Este arquivo existe
+# porque o template @precisa-saude/cli espera, mas está vazio
+# deliberadamente — tooling roda no root.
+packages: []
