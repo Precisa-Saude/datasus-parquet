@@ -5,9 +5,11 @@ name: refresh
 # assets + state commitado de volta. Cada dataset ativo roda em
 # paralelo via matrix.
 
+# TODO: reabilitar quando secrets AWS_ROLE_ARN / S3_BUCKET /
+# CLOUDFRONT_DISTRIBUTION_ID estiverem configurados. Por enquanto só
+# workflow_dispatch manual pra evitar falhas no scheduler e runs
+# spurious em push (que o startup-check do GitHub marca como failed).
 on:
-  schedule:
-    - cron: '0 6 * * 1' # toda segunda 06:00 UTC
   workflow_dispatch:
     inputs:
       datasets:
