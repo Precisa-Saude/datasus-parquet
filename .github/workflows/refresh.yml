@@ -91,10 +91,12 @@ jobs:
             --cache-control 'public, max-age=3600'
 
       - name: Invalidate CloudFront
-        if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+        env:
+          DIST_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+        if: ${{ env.DIST_ID != '' }}
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --distribution-id "$DIST_ID" \
             --paths '/manifest.json' '/*/provenance/*'
 
       - name: Atualizar state (merge pending → dataset state)
