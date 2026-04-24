@@ -24,6 +24,8 @@ import { fileURLToPath } from 'node:url';
 
 import { Client } from 'basic-ftp';
 
+import { parseSiaPaFileName, SIA_PA_REGEX } from './lib/sia-pa-parser.js';
+
 const FTP_HOST = 'ftp.datasus.gov.br';
 
 interface DatasetConfig {
@@ -37,24 +39,11 @@ interface DatasetConfig {
   parseName: (name: string) => null | { month: number; uf: string; variant: string; year: number };
 }
 
-const SIA_PA_REGEX = /^PA([A-Z]{2})(\d{2})(\d{2})([a-z]?)\.dbc$/i;
-
 const DATASETS: Record<string, DatasetConfig> = {
   'sia-pa': {
     dir: '/dissemin/publicos/SIASUS/200801_/Dados',
     fileRegex: SIA_PA_REGEX,
-    parseName: (name) => {
-      const m = SIA_PA_REGEX.exec(name);
-      if (!m) return null;
-      const month = Number(m[3]);
-      if (month < 1 || month > 12) return null;
-      return {
-        month,
-        uf: m[1]!.toUpperCase(),
-        variant: (m[4] ?? '').toLowerCase(),
-        year: 2000 + Number(m[2]),
-      };
-    },
+    parseName: parseSiaPaFileName,
   },
 };
 
