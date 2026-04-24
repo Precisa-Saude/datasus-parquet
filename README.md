@@ -12,19 +12,21 @@ sob CC-BY 4.0.
 
 ## Datasets publicados
 
-| Dataset                               | Status       | Cobertura     | Schema                                           |
-| ------------------------------------- | ------------ | ------------- | ------------------------------------------------ |
-| **SIA-PA** (Produção Ambulatorial)    | ✅ ativo     | 2008–presente | [`docs/schema/sia-pa.md`](docs/schema/sia-pa.md) |
-| **SIH-RD** (Internações Hospitalares) | 🟡 planejado | —             | —                                                |
-| **SIM** (Mortalidade)                 | 🟡 planejado | —             | —                                                |
-| **SINASC** (Nascidos Vivos)           | 🟡 planejado | —             | —                                                |
-| **SINAN** (Agravos Notificáveis)      | 🟡 planejado | —             | —                                                |
-| **CNES** (Cadastro Nacional)          | 🟡 planejado | —             | —                                                |
+| Dataset                               | Status       | Cobertura     | Schema                                             |
+| ------------------------------------- | ------------ | ------------- | -------------------------------------------------- |
+| **SIA-PA** (Produção Ambulatorial)    | ✅ ativo     | 2008–presente | [`docs/schema/sia-pa.md`](docs/schema/sia-pa.md)   |
+| **SIH-RD** (Internações Hospitalares) | 🟡 planejado | —             | [`docs/schema/sih-rd.md`](docs/schema/sih-rd.md)   |
+| **SIM** (Mortalidade)                 | 🟡 planejado | —             | [`docs/schema/sim.md`](docs/schema/sim.md)         |
+| **SINASC** (Nascidos Vivos)           | 🟡 planejado | —             | [`docs/schema/sinasc.md`](docs/schema/sinasc.md)   |
+| **SINAN** (Agravos Notificáveis)      | 🟡 planejado | —             | [`docs/schema/sinan.md`](docs/schema/sinan.md)     |
+| **CNES-ST** (Estabelecimentos)        | 🟡 planejado | —             | [`docs/schema/cnes-st.md`](docs/schema/cnes-st.md) |
 
-Datasets marcados como planejados têm a infraestrutura pronta mas faltam
-scripts de archival específicos. Contribuições de pesquisadores que
+Datasets marcados como planejados têm schema documentado e decoder
+pronto (`@precisa-saude/datasus-dbc`); falta apenas o script
+`scripts/archive-<dataset>.ts`. Contribuições de pesquisadores que
 trabalham com esses subdatasets são bem-vindas — veja
-[`docs/contributing.md`](docs/contributing.md).
+[`docs/contributing.md`](docs/contributing.md) e use
+`scripts/archive-sia-pa.ts` como template.
 
 ## Como consumir
 

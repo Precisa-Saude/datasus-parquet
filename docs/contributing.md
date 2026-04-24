@@ -37,9 +37,12 @@ Cada dataset ocupa um "slot" em três lugares:
 4. **`scripts/emit-provenance.ts`** — adicione uma entrada no mapa
    `DATASET_CONFIG` com o `ftpBase` e `sourceFileFor`.
 5. **`docs/schema/<dataset>.md`** — descrição das colunas, charset,
-   referências, caveats.
-6. **`docs/datasets.md`** — adicionar linha na tabela ("Ativos" ou
-   "Planejados").
+   referências, caveats. **Para SIH-RD, SIM, SINASC, SINAN e CNES-ST
+   a spec já existe** em `docs/schema/`; refine e complete com base
+   no DBF real (especialmente os `Campos específicos por agravo` do
+   SINAN).
+6. **`docs/datasets.md`** — mover a entrada de "Planejados" para
+   "Ativos" quando o script for publicado.
 7. **`.github/workflows/refresh.yml`** — se precisar de passos
    específicos (raro; o workflow genérico cobre o padrão "uma
    partição por UF×competência").
@@ -76,8 +79,11 @@ Um PR que adiciona um dataset novo deve incluir:
 - [ ] Entrada em `DATASETS` de `detect-new.ts`
 - [ ] Entrada em `DATASET_CONFIG` de `emit-provenance.ts`
 - [ ] `state/<dataset>.json` inicial vazio
-- [ ] `docs/schema/<dataset>.md` completo
-- [ ] Atualização de `docs/datasets.md`
+- [ ] `docs/schema/<dataset>.md` completo (refinado da spec existente
+      com base no DBF real — tipos, campos opcionais específicos de
+      vintage, caveats de encoding)
+- [ ] Atualização de `docs/datasets.md` (mover de "Planejados" pra
+      "Ativos")
 - [ ] Teste manual: `pnpm archive-<dataset> -- --ufs AC --years 2023`
       emite um Parquet válido que o DuckDB consegue abrir.
 - [ ] `pnpm typecheck` limpo
