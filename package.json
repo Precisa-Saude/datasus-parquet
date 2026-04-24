@@ -8,13 +8,13 @@
   "repository": "github:Precisa-Saude/datasus-parquet",
   "scripts": {
     "archive-sia-pa": "tsx scripts/archive-sia-pa.ts",
-    "build": "echo 'nothing to build — scripts repo'",
     "build-manifest": "tsx scripts/build-manifest.ts",
     "detect-new": "tsx scripts/detect-new.ts",
     "emit-provenance": "tsx scripts/emit-provenance.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "eslint scripts/ --max-warnings 0",
-    "test": "echo 'no tests yet'",
-    "test:coverage": "echo 'no tests yet'",
+    "prepare": "husky",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -24,9 +24,30 @@
     "duckdb": "^1.4.4"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@precisa-saude/agent-instructions": "^1.0.0",
+    "@precisa-saude/commitlint-config": "^1.0.0",
+    "@precisa-saude/eslint-config": "^1.0.0",
+    "@precisa-saude/prettier-config": "^1.0.0",
+    "@precisa-saude/tsconfig": "^1.0.0",
+    "@precisa-saude/worktree-cli": "^1.0.0",
     "@types/node": "^22.10.0",
+    "eslint": "^10.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.4.2",
+    "prettier-plugin-packagejson": "^3.0.2",
     "tsx": "^4.21.0",
     "typescript": "~5.7.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --fix --max-warnings 0 --no-warn-ignored"
+    ],
+    "*.{js,jsx,json,md,css,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "engines": {
     "node": ">=22"
