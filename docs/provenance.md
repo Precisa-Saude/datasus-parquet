@@ -63,7 +63,7 @@ oficial agora. Se não bate, pode ser:
   emitir uma nova partição.
 - O arquivo no cache local foi corrompido. Re-baixe com
   `rm -rf ~/.cache/datasus-brasil/.../PAAC2401.dbc && pnpm archive-sia-pa
-  -- --ufs AC --years 2024`.
+-- --ufs AC --years 2024`.
 
 ### Passo 2 — validar o Parquet emitido
 

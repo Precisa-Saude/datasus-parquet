@@ -1,8 +1,4 @@
-name: CI/CD
-
-# Orchestrator enxuto — datasus-parquet é repo scripts-only (não publica
-# npm, não tem site), então só rodamos checks em PRs e pushes.
-# Release do dataset (não de código) vive em refresh.yml.
+name: CI
 
 on:
   push:
@@ -11,24 +7,46 @@ on:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pull-requests: write
-  models: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  checks:
-    uses: ./.github/workflows/_checks.yml
-    secrets: inherit
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
 
-  review:
-    needs: checks
-    if: github.event_name == 'pull_request'
-    uses: ./.github/workflows/review.yml
-    with:
-      pr_number: ${{ github.event.pull_request.number }}
-    secrets: inherit
+  typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+
+  format:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check

@@ -35,7 +35,7 @@ lives in `package.json` under `"worktree"`. For quick reference:
 
 | Field         | Value                                      |
 | ------------- | ------------------------------------------ |
-| Port registry | `/tmp/datasus-parquet-worktree-ports.json`   |
+| Port registry | `/tmp/datasus-parquet-worktree-ports.json` |
 | Services      | (filled in when the repo adds dev servers) |
 
 Launch a dev server in a feature worktree:

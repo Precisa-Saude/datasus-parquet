@@ -6,7 +6,7 @@
  * tooling externo que queira auto-descobrir a cobertura.
  */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -35,7 +35,8 @@ function parseArgs(argv: string[]): Cli {
     const idx = argv.indexOf(flag);
     if (idx === -1) return fallback;
     const value = argv[idx + 1];
-    if (value === undefined || value.startsWith('--')) throw new Error(`Valor ausente para ${flag}`);
+    if (value === undefined || value.startsWith('--'))
+      throw new Error(`Valor ausente para ${flag}`);
     return value;
   };
   const repoRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -67,7 +68,12 @@ function discoverPartitions(root: string): Partition[] {
         if (!mm) continue;
         const file = join(monthsRoot, mesDir, 'part.parquet');
         if (!existsSync(file)) continue;
-        out.push({ ano: Number(am[1]), bytes: statSync(file).size, mes: Number(mm[1]), uf: um[1]! });
+        out.push({
+          ano: Number(am[1]),
+          bytes: statSync(file).size,
+          mes: Number(mm[1]),
+          uf: um[1]!,
+        });
       }
     }
   }

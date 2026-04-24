@@ -14,7 +14,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -191,7 +191,13 @@ async function main(): Promise<void> {
             mtime: statSync(cachedSource).mtime.toISOString(),
             sha256: sha256OfFile(cachedSource),
           }
-        : { bytes: 0, file: sourceFile, ftpPath: `${cfg.ftpBase}/${sourceFile}`, mtime: '', sha256: '' };
+        : {
+            bytes: 0,
+            file: sourceFile,
+            ftpPath: `${cfg.ftpBase}/${sourceFile}`,
+            mtime: '',
+            sha256: '',
+          };
 
       const body = {
         dataset: datasetId,
