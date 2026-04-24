@@ -39,8 +39,66 @@ import {
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { sia, type SiaProducaoAmbulatorialRecord } from '@precisa-saude/datasus-sdk';
+import { readDbcRecords } from '@precisa-saude/datasus-dbc';
+import { download, sia, type SiaProducaoAmbulatorialRecord } from '@precisa-saude/datasus-sdk';
 import duckdb from 'duckdb';
+
+const SIA_PA_DIR = '/dissemin/publicos/SIASUS/200801_/Dados';
+const VARIANT_SUFFIXES = ['a', 'b', 'c', 'd', 'e'];
+
+function isNotFoundError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /550|not found|does not exist/i.test(msg);
+}
+
+/**
+ * Stream de records de (UF, ano, mês) com suporte a split files.
+ *
+ * Alguns meses de UFs grandes (SP desde 2013, MG/RJ desde 2021) não
+ * têm o arquivo canônico `PA{UF}{YY}{MM}.dbc` porque o DBF bruto
+ * excedia o limite de 2 GB do formato — DATASUS publica em vez disso
+ * `PA{UF}{YY}{MM}a.dbc`, `b.dbc`, etc. Os records são disjuntos entre
+ * variantes e devem ser concatenados logicamente no consumo.
+ *
+ * Estratégia: tenta canônico primeiro; se der 550, probe sufixos
+ * `a-e` e yields records de todas as variantes encontradas. Erros
+ * não-550 propagam (abort seguro).
+ */
+async function* streamMonthWithVariants(
+  uf: string,
+  year: number,
+  month: number,
+): AsyncIterable<SiaProducaoAmbulatorialRecord> {
+  try {
+    for await (const record of sia.streamProducaoAmbulatorial({ month, uf, year })) {
+      yield record;
+    }
+    return;
+  } catch (err) {
+    if (!isNotFoundError(err)) throw err;
+  }
+
+  const yy = String(year % 100).padStart(2, '0');
+  const mm = String(month).padStart(2, '0');
+  let found = 0;
+  for (const suffix of VARIANT_SUFFIXES) {
+    const variantPath = `${SIA_PA_DIR}/PA${uf}${yy}${mm}${suffix}.dbc`;
+    let bytes: Uint8Array;
+    try {
+      bytes = await download({ path: variantPath });
+    } catch (err) {
+      if (isNotFoundError(err)) break;
+      throw err;
+    }
+    for await (const record of readDbcRecords(bytes)) {
+      yield record as SiaProducaoAmbulatorialRecord;
+    }
+    found += 1;
+  }
+  if (found === 0) {
+    throw new Error(`550 nenhum DBC encontrado para ${uf} ${year}-${mm} (canônico + a-e)`);
+  }
+}
 
 interface Cli {
   outDir: string;
@@ -141,8 +199,7 @@ async function writeMonthPartition(
   let rows = 0;
   const fd = openSync(ndjsonFile, 'w');
   try {
-    for await (const raw of sia.streamProducaoAmbulatorial({ month, uf, year })) {
-      const record = raw as SiaProducaoAmbulatorialRecord;
+    for await (const record of streamMonthWithVariants(uf, year, month)) {
       writeSync(fd, `${JSON.stringify(record)}\n`);
       rows += 1;
     }
