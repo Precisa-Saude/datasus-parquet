@@ -39,7 +39,7 @@ import {
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { sia, type SiaProducaoAmbulatorialRecord } from '@precisa-saude/datasus';
+import { sia, type SiaProducaoAmbulatorialRecord } from '@precisa-saude/datasus-sdk';
 import duckdb from 'duckdb';
 
 interface Cli {
