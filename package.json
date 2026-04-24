@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "description": "Public archive of DATASUS microdata in Parquet (1:1 DBC→Parquet, provenance-first).",
-  "type": "module",
-  "license": "Apache-2.0",
   "repository": "github:Precisa-Saude/datasus-parquet",
+  "license": "Apache-2.0",
+  "type": "module",
   "scripts": {
     "archive-sia-pa": "tsx scripts/archive-sia-pa.ts",
     "build-manifest": "tsx scripts/build-manifest.ts",
@@ -15,7 +15,18 @@
     "format:check": "prettier --check .",
     "lint": "eslint scripts/ --max-warnings 0",
     "prepare": "husky",
+    "test": "echo 'no tests yet — scripts-only repo'",
+    "test:coverage": "echo 'no tests yet — scripts-only repo'",
     "typecheck": "tsc --noEmit"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --fix --max-warnings 0 --no-warn-ignored"
+    ],
+    "*.{js,jsx,json,md,css,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@precisa-saude/datasus": "^1.1.0",
@@ -39,15 +50,6 @@
     "prettier-plugin-packagejson": "^3.0.2",
     "tsx": "^4.21.0",
     "typescript": "~5.7.3"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "prettier --write",
-      "eslint --fix --max-warnings 0 --no-warn-ignored"
-    ],
-    "*.{js,jsx,json,md,css,yml,yaml}": [
-      "prettier --write"
-    ]
   },
   "engines": {
     "node": ">=22"

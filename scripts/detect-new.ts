@@ -115,7 +115,9 @@ function saveState(path: string, state: State): void {
   writeFileSync(path, `${JSON.stringify(state, null, 2)}\n`);
 }
 
-async function listRemote(dir: string): Promise<Array<{ mtime: Date; name: string; size: number }>> {
+async function listRemote(
+  dir: string,
+): Promise<Array<{ mtime: Date; name: string; size: number }>> {
   const client = new Client();
   client.ftp.verbose = false;
   try {

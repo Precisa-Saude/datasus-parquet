@@ -60,13 +60,13 @@ Cada dataset ocupa um "slot" em três lugares:
 
 ## Padrão de nomes nos scripts
 
-| Convenção             | Exemplo                                    |
-| --------------------- | ------------------------------------------ |
-| Script                | `scripts/archive-<dataset>.ts`             |
-| State                 | `state/<dataset>.json`                     |
-| Build output          | `build/<dataset>/ano=YYYY/…`               |
-| Provenance output     | `build/<dataset>/provenance/ano=YYYY/…`    |
-| Package script        | `archive-<dataset>` em `package.json`      |
+| Convenção         | Exemplo                                 |
+| ----------------- | --------------------------------------- |
+| Script            | `scripts/archive-<dataset>.ts`          |
+| State             | `state/<dataset>.json`                  |
+| Build output      | `build/<dataset>/ano=YYYY/…`            |
+| Provenance output | `build/<dataset>/provenance/ano=YYYY/…` |
+| Package script    | `archive-<dataset>` em `package.json`   |
 
 ## Checklist de PR
 
@@ -78,9 +78,8 @@ Um PR que adiciona um dataset novo deve incluir:
 - [ ] `state/<dataset>.json` inicial vazio
 - [ ] `docs/schema/<dataset>.md` completo
 - [ ] Atualização de `docs/datasets.md`
-- [ ] Teste manual: `pnpm archive-<dataset> -- --ufs AC --years 2023` deve
-      emitir Parquet válido (`duckdb -c "DESCRIBE SELECT * FROM
-      read_parquet('build/<dataset>/ano=2023/uf=AC/mes=01/part.parquet')"`)
+- [ ] Teste manual: `pnpm archive-<dataset> -- --ufs AC --years 2023`
+      emite um Parquet válido que o DuckDB consegue abrir.
 - [ ] `pnpm typecheck` limpo
 
 ## Testes
@@ -90,7 +89,7 @@ recente. Depois confira:
 
 ```bash
 duckdb -c "SELECT COUNT(*) FROM read_parquet('build/<dataset>/ano=*/uf=*/mes=*/part.parquet', union_by_name=true);"
-duckdb -c "DESCRIBE SELECT * FROM read_parquet('build/<dataset>/ano=2024/uf=AC/mes=01/part.parquet');"
+duckdb -c "DESCRIBE SELECT * FROM read_parquet('build/<dataset>/ano=2023/uf=AC/mes=01/part.parquet')` emite Parquet válido.
 ```
 
 Compare linha-a-linha com uma query TabNet oficial (quando disponível)
