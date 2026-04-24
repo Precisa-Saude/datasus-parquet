@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+title: "datasus-parquet"
+message: >-
+  Se você utilizar este arquivo em pesquisa, publicação ou software,
+  cite conforme abaixo. Cada release do dataset recebe um DOI
+  individual via Zenodo — substitua o campo `doi` pelo DOI da versão
+  específica utilizada.
+type: dataset
+authors:
+  - name: Precisa Saúde
+    website: https://precisa-saude.com
+repository-code: https://github.com/Precisa-Saude/datasus-parquet
+url: https://github.com/Precisa-Saude/datasus-parquet
+license: CC-BY-4.0
+keywords:
+  - datasus
+  - sus
+  - sia-sus
+  - brazil
+  - microdados
+  - open-data
+  - epidemiology
+  - parquet
+  - public-health
+abstract: >-
+  Arquivo público de microdados do DATASUS em formato Parquet, com
+  conversão 1:1 a partir dos DBC/DBF originais do FTP oficial.
+  Provenance com SHA256 permite validação byte-a-byte contra a fonte.
+  Atualmente cobre SIA-PA (Produção Ambulatorial, 2008+);
+  contribuições para outros subdatasets são bem-vindas.
+references:
+  - type: data
+    title: SIA-SUS — Produção Ambulatorial (fonte original)
+    authors:
+      - name: "Ministério da Saúde / DATASUS"
+    url: ftp://ftp.datasus.gov.br/dissemin/publicos/SIASUS/200801_/Dados/
+    notes: >-
+      Fonte oficial, distribuída sob regime de dados abertos
+      (Lei 12.527/2011 e Decreto 8.777/2016).

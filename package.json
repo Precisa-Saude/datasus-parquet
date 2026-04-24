@@ -1,0 +1,30 @@
+{
+  "name": "datasus-parquet",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Public archive of DATASUS microdata in Parquet (1:1 DBC→Parquet, provenance-first).",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": "github:Precisa-Saude/datasus-parquet",
+  "scripts": {
+    "archive-sia-pa": "tsx scripts/archive-sia-pa.ts",
+    "detect-new": "tsx scripts/detect-new.ts",
+    "emit-provenance": "tsx scripts/emit-provenance.ts",
+    "build-manifest": "tsx scripts/build-manifest.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@precisa-saude/datasus": "^1.1.0",
+    "@precisa-saude/datasus-dbc": "^1.1.0",
+    "basic-ftp": "^5.3.0",
+    "duckdb": "^1.4.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.21.0",
+    "typescript": "~5.7.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
