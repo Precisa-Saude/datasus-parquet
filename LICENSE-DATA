@@ -1,0 +1,24 @@
+Os dados publicados neste repositório (arquivos Parquet em sia-pa/,
+sih-rd/, cnes-st/, etc., bem como os JSONs de provenance) são
+licenciados sob Creative Commons Attribution 4.0 International
+(CC-BY 4.0).
+
+https://creativecommons.org/licenses/by/4.0/
+
+Você tem permissão para:
+- Compartilhar — copiar e redistribuir em qualquer meio ou formato
+- Adaptar — remixar, transformar e criar a partir do material para
+  qualquer finalidade, inclusive comercial
+
+Sob as seguintes condições:
+- Atribuição — você deve dar o crédito apropriado (conforme citação
+  em CITATION.cff), prover um link para a licença e indicar se
+  mudanças foram feitas.
+
+O código-fonte (scripts, workflows, docs) segue licença Apache-2.0
+(ver LICENSE).
+
+Os dados brutos do DATASUS (DBC no FTP oficial
+ftp.datasus.gov.br/dissemin/publicos/) são de domínio público sob
+o regime da Lei 12.527/2011 e Decreto 8.777/2016. Nossa compilação
+e compressão em Parquet é uma obra derivada, licenciada sob CC-BY 4.0.
