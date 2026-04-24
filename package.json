@@ -15,8 +15,8 @@
     "format:check": "prettier --check .",
     "lint": "eslint scripts/ --max-warnings 0",
     "prepare": "husky",
-    "test": "echo 'no tests yet — scripts-only repo'",
-    "test:coverage": "echo 'no tests yet — scripts-only repo'",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },
   "lint-staged": {
@@ -43,13 +43,15 @@
     "@precisa-saude/tsconfig": "^1.0.0",
     "@precisa-saude/worktree-cli": "^1.0.0",
     "@types/node": "^22.10.0",
+    "@vitest/coverage-v8": "^4.1.5",
     "eslint": "^10.1.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "prettier": "^3.4.2",
     "prettier-plugin-packagejson": "^3.0.2",
     "tsx": "^4.21.0",
-    "typescript": "~5.7.3"
+    "typescript": "~5.7.3",
+    "vitest": "^4.1.5"
   },
   "packageManager": "pnpm@9.15.9",
   "engines": {
