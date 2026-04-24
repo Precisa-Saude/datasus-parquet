@@ -1,21 +1,39 @@
 name: refresh
 
-# Workflow de refresh manual: sonda FTP, arquiva delta em Parquet,
-# publica release. Só roda via workflow_dispatch — o cron automático
-# será reativado quando os secrets AWS (AWS_ROLE_ARN, S3_BUCKET,
-# CLOUDFRONT_DISTRIBUTION_ID) estiverem configurados no repo.
+# Sonda FTP DATASUS, arquiva delta em Parquet, emite provenance,
+# sincroniza com S3, invalida CloudFront, publica GitHub Release
+# (que dispara o webhook Zenodo → DOI).
+#
+# Cadência: segunda-feira 06:00 UTC. DATASUS publica SIA-PA com 45-90
+# dias de lag após fim da competência; sonda semanal cobre bem.
+#
+# Secrets necessários (configurados uma vez no repo):
+#   AWS_ROLE_ARN                — IAM role com acesso ao bucket + distribution
+#   S3_BUCKET                   — nome do bucket S3 (sa-east-1)
+#   CLOUDFRONT_DISTRIBUTION_ID  — opcional, para invalidation
 
 on:
+  schedule:
+    - cron: '0 6 * * 1'
   workflow_dispatch:
+    inputs:
+      dryRun:
+        description: 'Dry run — detect only, skip archive/upload'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
   id-token: write
 
 jobs:
-  refresh:
+  detect:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 10
+    outputs:
+      hasNew: ${{ steps.detect.outputs.hasNew }}
+      pendingCount: ${{ steps.detect.outputs.pendingCount }}
+      latestCompetencia: ${{ steps.detect.outputs.latestCompetencia }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -24,5 +42,91 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm detect-new
-      - run: echo 'TODO — wire archive / upload / release steps after secrets are set up'
+      - id: detect
+        run: pnpm detect-new
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pending
+          path: state/pending.json
+          retention-days: 7
+
+  archive:
+    needs: detect
+    if: needs.detect.outputs.hasNew == 'true' && inputs.dryRun != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: pending
+          path: state/
+
+      - name: Archive SIA-PA delta (DBC → Parquet raw)
+        run: pnpm archive-sia-pa
+
+      - name: Emit provenance (SHA256 + schema + metadata)
+        run: pnpm emit-provenance
+
+      - name: Build manifest
+        run: pnpm build-manifest
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: sa-east-1
+
+      - name: Upload para S3
+        run: |
+          aws s3 sync build/ "s3://${{ secrets.S3_BUCKET }}/" \
+            --exclude '_archive-run.json' \
+            --exclude '**/*.ndjson' \
+            --cache-control 'public, max-age=3600'
+
+      - name: Invalidate CloudFront
+        if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths '/manifest.json' '/*/provenance/*'
+
+      - name: Atualizar state (merge pending → dataset state)
+        run: pnpm detect-new -- --mark-processed
+
+      - name: Commit state atualizado
+        run: |
+          git config user.name 'datasus-parquet-bot'
+          git config user.email 'noreply@precisa-saude.com.br'
+          git add state/
+          if git diff --cached --quiet; then
+            echo 'state inalterado — skip commit'
+            exit 0
+          fi
+          git commit -m "chore(state): refresh ${{ needs.detect.outputs.latestCompetencia }}"
+          git push
+
+      - name: Criar GitHub Release (dispara webhook Zenodo → DOI)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: dataset-${{ needs.detect.outputs.latestCompetencia }}
+          name: Dataset ${{ needs.detect.outputs.latestCompetencia }}
+          body: |
+            Refresh automático: **${{ needs.detect.outputs.pendingCount }}** novas competências
+            (mais recente: **${{ needs.detect.outputs.latestCompetencia }}**).
+
+            Assets incluem `manifest.json`, Parquet por mês e provenance por partição.
+            Para validar byte-a-byte contra o FTP oficial, veja `docs/provenance.md`.
+
+            DOI Zenodo emitido automaticamente via webhook — veja
+            https://zenodo.org/search?q=Precisa-Saude/datasus-parquet.
+          files: |
+            build/manifest.json
+            build/**/provenance/**/*.json
+          generate_release_notes: true
