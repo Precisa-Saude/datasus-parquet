@@ -5,7 +5,7 @@
 transformação semântica — todas as colunas preservadas, schema por
 partição, provenance com SHA256 dos arquivos-fonte.
 
-Mantido pela [Precisa Saúde](https://precisa-saude.com) como recurso
+Mantido pela [Precisa Saúde](https://precisa-saude.com.br) como recurso
 para pesquisa epidemiológica. Dados sob regime de dados abertos
 (Lei 12.527/2011, Decreto 8.777/2016); nossa compilação e derivações
 sob CC-BY 4.0.
@@ -142,5 +142,9 @@ Ver [`CITATION.cff`](CITATION.cff) + DOI emitido por release do Zenodo.
 - DATASUS FTP: `ftp.datasus.gov.br/dissemin/publicos/`
 - TabNet (visualização oficial): http://tabnet.datasus.gov.br
 - Dicionários oficiais: veja `docs/schema/<dataset>.md` de cada dataset
-- [`@precisa-saude/datasus-dbc`](https://github.com/Precisa-Saude/datasus-brasil) —
+- [`@precisa-saude/datasus-dbc`](https://github.com/Precisa-Saude/datasus-dbc) —
   decoder DBC em TypeScript usado pelo pipeline
+- [`@precisa-saude/datasus-sdk`](https://github.com/Precisa-Saude/datasus-sdk) —
+  SDK de alto nível (schemas tipados, FTP, terminologia)
+- [`datasus-viz`](https://github.com/Precisa-Saude/datasus-viz) —
+  site/CLI de visualização consumindo este arquivo

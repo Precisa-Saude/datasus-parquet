@@ -117,7 +117,7 @@ jobs:
       - name: Commit state atualizado
         run: |
           git config user.name 'datasus-parquet-bot'
-          git config user.email 'noreply@precisa-saude.com'
+          git config user.email 'noreply@precisa-saude.com.br'
           git add state/
           if git diff --cached --quiet; then
             echo 'state inalterado — skip commit'
