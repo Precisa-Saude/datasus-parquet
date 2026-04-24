@@ -29,20 +29,31 @@ const FTP_HOST = 'ftp.datasus.gov.br';
 interface DatasetConfig {
   dir: string;
   fileRegex: RegExp;
-  /** Extrai (uf, year, month) do nome do arquivo. */
-  parseName: (name: string) => null | { month: number; uf: string; year: number };
+  /**
+   * Extrai (uf, year, month, variant) do nome. `variant` é `''` para
+   * o canônico ou `'a'`, `'b'`, ... para arquivos split (UFs grandes
+   * como SP, MG, RJ quando o DBC excede o limite do formato).
+   */
+  parseName: (name: string) => null | { month: number; uf: string; variant: string; year: number };
 }
+
+const SIA_PA_REGEX = /^PA([A-Z]{2})(\d{2})(\d{2})([a-z]?)\.dbc$/i;
 
 const DATASETS: Record<string, DatasetConfig> = {
   'sia-pa': {
     dir: '/dissemin/publicos/SIASUS/200801_/Dados',
-    fileRegex: /^PA([A-Z]{2})(\d{2})(\d{2})\.dbc$/i,
+    fileRegex: SIA_PA_REGEX,
     parseName: (name) => {
-      const m = /^PA([A-Z]{2})(\d{2})(\d{2})\.dbc$/i.exec(name);
+      const m = SIA_PA_REGEX.exec(name);
       if (!m) return null;
       const month = Number(m[3]);
       if (month < 1 || month > 12) return null;
-      return { month, uf: m[1]!.toUpperCase(), year: 2000 + Number(m[2]) };
+      return {
+        month,
+        uf: m[1]!.toUpperCase(),
+        variant: (m[4] ?? '').toLowerCase(),
+        year: 2000 + Number(m[2]),
+      };
     },
   },
 };
@@ -65,13 +76,27 @@ interface State {
   schemaVersion: number;
 }
 
-interface PendingEntry {
-  dataset: string;
+interface Variant {
   ftpMtime: string;
   ftpPath: string;
   ftpSize: number;
+  suffix: string;
+}
+
+interface PendingEntry {
+  dataset: string;
+  /** mtime mais recente entre as variantes (drives delta detection). */
+  ftpMtime: string;
+  /** Soma dos tamanhos de todas as variantes. */
+  ftpSize: number;
   month: number;
   uf: string;
+  /**
+   * Variantes disponíveis no FTP para esse (UF, ano, mês). Lista com
+   * um elemento para arquivos canônicos; múltiplos para split files
+   * (SP, MG, RJ quando DBC excede limite).
+   */
+  variants: Variant[];
   year: number;
 }
 
@@ -137,26 +162,60 @@ function computeDelta(
   remote: Array<{ mtime: Date; name: string; size: number }>,
   state: State,
 ): PendingEntry[] {
-  const out: PendingEntry[] = [];
+  // Agrupa variantes por (uf, year, month) antes de comparar com state.
+  const groups = new Map<
+    string,
+    { month: number; uf: string; variants: Array<Variant & { mtime: Date }>; year: number }
+  >();
   for (const entry of remote) {
     if (!cfg.fileRegex.test(entry.name)) continue;
     const parsed = cfg.parseName(entry.name);
     if (!parsed) continue;
-    const competencia = `${parsed.year}-${String(parsed.month).padStart(2, '0')}`;
-    const known = state.processed[parsed.uf]?.[competencia];
-    const changed =
-      !known ||
-      known.sourceSize !== entry.size ||
-      new Date(known.sourceMtime).getTime() !== entry.mtime.getTime();
-    if (!changed) continue;
-    out.push({
-      dataset: datasetId,
+    const key = `${parsed.uf}|${parsed.year}|${parsed.month}`;
+    const bucket = groups.get(key) ?? {
+      month: parsed.month,
+      uf: parsed.uf,
+      variants: [],
+      year: parsed.year,
+    };
+    bucket.variants.push({
       ftpMtime: entry.mtime.toISOString(),
       ftpPath: `${cfg.dir}/${entry.name}`,
       ftpSize: entry.size,
-      month: parsed.month,
-      uf: parsed.uf,
-      year: parsed.year,
+      mtime: entry.mtime,
+      suffix: parsed.variant,
+    });
+    groups.set(key, bucket);
+  }
+
+  const out: PendingEntry[] = [];
+  for (const group of groups.values()) {
+    group.variants.sort((a, b) => a.suffix.localeCompare(b.suffix));
+    const aggregateSize = group.variants.reduce((sum, v) => sum + v.ftpSize, 0);
+    const latestMtime = group.variants.reduce(
+      (latest, v) => (v.mtime.getTime() > latest.getTime() ? v.mtime : latest),
+      new Date(0),
+    );
+    const competencia = `${group.year}-${String(group.month).padStart(2, '0')}`;
+    const known = state.processed[group.uf]?.[competencia];
+    const changed =
+      !known ||
+      known.sourceSize !== aggregateSize ||
+      new Date(known.sourceMtime).getTime() !== latestMtime.getTime();
+    if (!changed) continue;
+    out.push({
+      dataset: datasetId,
+      ftpMtime: latestMtime.toISOString(),
+      ftpSize: aggregateSize,
+      month: group.month,
+      uf: group.uf,
+      variants: group.variants.map(({ ftpMtime, ftpPath, ftpSize, suffix }) => ({
+        ftpMtime,
+        ftpPath,
+        ftpSize,
+        suffix,
+      })),
+      year: group.year,
     });
   }
   return out.sort((a, b) => {
