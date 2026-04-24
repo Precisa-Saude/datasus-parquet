@@ -1,37 +1,21 @@
 name: refresh
 
-# Cron semanal: sonda FTP, detecta novas competências, arquiva em
-# Parquet, gera provenance, faz upload pro S3 e publica release com
-# assets + state commitado de volta. Cada dataset ativo roda em
-# paralelo via matrix.
+# Workflow de refresh manual: sonda FTP, arquiva delta em Parquet,
+# publica release. Só roda via workflow_dispatch — o cron automático
+# será reativado quando os secrets AWS (AWS_ROLE_ARN, S3_BUCKET,
+# CLOUDFRONT_DISTRIBUTION_ID) estiverem configurados no repo.
 
-# TODO: reabilitar quando secrets AWS_ROLE_ARN / S3_BUCKET /
-# CLOUDFRONT_DISTRIBUTION_ID estiverem configurados. Por enquanto só
-# workflow_dispatch manual pra evitar falhas no scheduler e runs
-# spurious em push (que o startup-check do GitHub marca como failed).
 on:
   workflow_dispatch:
-    inputs:
-      datasets:
-        description: 'Datasets a refrescar (comma-separated ou ALL)'
-        required: false
-        default: 'ALL'
-      dryRun:
-        description: 'Dry run (só detect, sem archive/upload/release)'
-        required: false
-        default: 'false'
 
 permissions:
   contents: write
   id-token: write
 
 jobs:
-  detect:
+  refresh:
     runs-on: ubuntu-latest
-    outputs:
-      hasNew: ${{ steps.detect.outputs.hasNew }}
-      pendingCount: ${{ steps.detect.outputs.pendingCount }}
-      latestCompetencia: ${{ steps.detect.outputs.latestCompetencia }}
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -40,90 +24,5 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - id: detect
-        run: pnpm detect-new
-      - uses: actions/upload-artifact@v4
-        with:
-          name: pending
-          path: state/pending.json
-
-  archive:
-    needs: detect
-    if: needs.detect.outputs.hasNew == 'true' && inputs.dryRun != 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 180
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - uses: actions/download-artifact@v4
-        with:
-          name: pending
-          path: state/
-
-      # Hoje só temos SIA-PA. Adicionar datasets novos = adicionar
-      # mais um step `pnpm archive-<dataset> -- --from-pending` ou
-      # converter isto num matrix step por dataset ativo.
-      - name: Archive SIA-PA delta
-        run: pnpm archive-sia-pa -- --ufs ALL --years $(jq -r '[.pending[] | select(.dataset=="sia-pa") | .year] | unique | join(",")' state/pending.json)
-
-      - name: Emit provenance
-        run: pnpm emit-provenance
-
-      - name: Build manifest
-        run: pnpm build-manifest
-
-      - name: Configurar credenciais AWS (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: sa-east-1
-
-      - name: Upload para S3
-        run: |
-          aws s3 sync build/ s3://${{ secrets.S3_BUCKET }}/ \
-            --exclude '_archive-run.json' \
-            --cache-control 'public, max-age=3600'
-
-      - name: Invalidate CloudFront
-        if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
-            --paths '/manifest.json' '/*/provenance/*'
-
-      - name: Atualiza state commitado
-        run: pnpm detect-new -- --mark-processed
-
-      - name: Criar GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: dataset-${{ needs.detect.outputs.latestCompetencia }}
-          name: Dataset ${{ needs.detect.outputs.latestCompetencia }}
-          body: |
-            Refresh automático: **${{ needs.detect.outputs.pendingCount }}** novas competências
-            (mais recente: **${{ needs.detect.outputs.latestCompetencia }}**).
-
-            Assets incluem `manifest.json`, Parquet por mês e
-            provenance por partição. Para validar byte-a-byte contra
-            o FTP oficial, veja `docs/provenance.md`.
-          files: |
-            build/manifest.json
-            build/**/provenance/**/*.json
-          generate_release_notes: true
-
-      - name: Commit state atualizado
-        run: |
-          git config user.name 'datasus-parquet-bot'
-          git config user.email 'noreply@precisa-saude.com.br'
-          git add state/
-          if git diff --cached --quiet; then
-            echo 'state inalterado — skip commit'
-            exit 0
-          fi
-          git commit -m "chore(state): refresh ${{ needs.detect.outputs.latestCompetencia }}"
-          git push
+      - run: pnpm detect-new
+      - run: echo 'TODO — wire archive / upload / release steps after secrets are set up'
