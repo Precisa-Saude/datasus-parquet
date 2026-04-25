@@ -1,14 +1,14 @@
 # datasus-parquet
 
-**Arquivo público de microdados do DATASUS em formato Parquet.** Conversão
-1:1 a partir dos DBC/DBF originais do `ftp.datasus.gov.br`, com zero
-transformação semântica — todas as colunas preservadas, schema por
-partição, provenance com SHA256 dos arquivos-fonte.
+[![CI](https://github.com/Precisa-Saude/datasus-parquet/actions/workflows/ci.yml/badge.svg)](https://github.com/Precisa-Saude/datasus-parquet/actions/workflows/ci.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Data License: CC-BY-4.0](https://img.shields.io/badge/Data_License-CC--BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
-Mantido pela [Precisa Saúde](https://precisa-saude.com.br) como recurso
-para pesquisa epidemiológica. Dados sob regime de dados abertos
-(Lei 12.527/2011, Decreto 8.777/2016); nossa compilação e derivações
-sob CC-BY 4.0.
+**Arquivo público de microdados do DATASUS em formato Parquet.** Conversão 1:1 a partir dos DBC/DBF originais do `ftp.datasus.gov.br`, com zero transformação semântica — todas as colunas preservadas, schema por partição, provenance com SHA256 dos arquivos-fonte.
+
+Mantido pela [Precisa Saúde](https://precisa-saude.com.br) como recurso para pesquisa epidemiológica. Dados sob regime de dados abertos (Lei 12.527/2011, Decreto 8.777/2016); nossa compilação e derivações sob CC-BY 4.0.
+
+---
 
 ## Datasets publicados
 
@@ -27,6 +27,8 @@ pronto (`@precisa-saude/datasus-dbc`); falta apenas o script
 trabalham com esses subdatasets são bem-vindas — veja
 [`docs/contributing.md`](docs/contributing.md) e use
 `scripts/archive-sia-pa.ts` como template.
+
+---
 
 ## Como consumir
 
@@ -67,6 +69,8 @@ ds <- open_dataset(
 )
 ```
 
+---
+
 ## Layout dos dados
 
 ```
@@ -83,6 +87,8 @@ Partição por **mês** preserva o schema do DBF-fonte daquela competência.
 `union_by_name=true` no DuckDB ou `unified_schema=True` no Arrow lidam
 com evolução cross-year transparentemente.
 
+---
+
 ## Validação byte-a-byte
 
 Cada partição tem um `part.provenance.json` com SHA256 do DBC-fonte
@@ -97,6 +103,8 @@ original do FTP DATASUS. Para validar:
    emitido byte-a-byte com o publicado
 
 Detalhes em [`docs/provenance.md`](docs/provenance.md).
+
+---
 
 ## Automação
 
@@ -113,6 +121,8 @@ ftp.datasus.gov.br → detect-new → archive-<dataset> → provenance → S3 �
 
 Workflow em [`.github/workflows/refresh.yml`](.github/workflows/refresh.yml).
 
+---
+
 ## Como adicionar um novo dataset
 
 Veja [`docs/contributing.md`](docs/contributing.md). Em resumo:
@@ -127,6 +137,8 @@ Veja [`docs/contributing.md`](docs/contributing.md). Em resumo:
 5. Abra PR. Maintainers revisam, mergeiam, e a partir do próximo cron
    semanal o dataset entra no ciclo.
 
+---
+
 ## Licença
 
 - **Código** (scripts, workflows, docs): Apache-2.0
@@ -135,9 +147,13 @@ Veja [`docs/contributing.md`](docs/contributing.md). Em resumo:
   — compilação/derivação nossa; dados brutos seguem regime de dados
   abertos (Lei 12.527, Decreto 8.777)
 
+---
+
 ## Citação
 
 Ver [`CITATION.cff`](CITATION.cff) + DOI emitido por release do Zenodo.
+
+---
 
 ## Referências
 
