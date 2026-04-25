@@ -1,0 +1,134 @@
+name: backfill
+
+# Backfill manual de SIA-PA contra (UF × ano) escolhidos. Roda no
+# runner self-hosted (rafael-desktop, label `archive`) — heavy I/O
+# de FTP + decode DBC + S3 sync sai dos minutes do GitHub.
+#
+# Diferente do `refresh.yml` (cron semanal, delta detection,
+# GH-hosted), este workflow:
+#   - é manual (workflow_dispatch)
+#   - roda no desktop 24/7 com restart-on-stall via watchdog
+#   - permite escopar ufs/years pra trabalhar em chunks
+#   - opcionalmente commita state/sia-pa.json após upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      ufs:
+        description: 'UFs (vírgula-separadas) ou ALL'
+        required: true
+        default: 'ALL'
+      years:
+        description: 'Anos (e.g. "2026", "2022,2023", "2022-2025")'
+        required: true
+        default: '2026'
+      throttleMs:
+        description: 'Delay entre downloads do FTP (ms)'
+        required: false
+        default: '100'
+      yearPauseMs:
+        description: 'Pausa entre anos (ms)'
+        required: false
+        default: '0'
+      markProcessed:
+        description: 'Atualizar state/sia-pa.json após upload'
+        required: false
+        type: boolean
+        default: true
+      invalidateCloudFront:
+        description: 'Invalidar CloudFront após upload'
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write # pra commit do state/sia-pa.json
+  id-token: write # caso queira migrar pra OIDC AWS no futuro
+
+jobs:
+  backfill:
+    runs-on: [self-hosted, linux, archive]
+    timeout-minutes: 1440 # 24h teto — runs longos de SP/MG/RJ podem precisar
+    env:
+      AWS_REGION: sa-east-1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verificar tools (mise gerencia node/pnpm)
+        run: |
+          eval "$($HOME/.local/bin/mise activate bash)"
+          node -v
+          pnpm -v
+          aws --version
+
+      - name: Install deps
+        run: |
+          eval "$($HOME/.local/bin/mise activate bash)"
+          pnpm install --frozen-lockfile
+
+      - name: Archive (watchdog wrap pra resiliência em DBC corrompido)
+        run: |
+          eval "$($HOME/.local/bin/mise activate bash)"
+          bash scripts/archive-watchdog.sh \
+            --ufs "${{ inputs.ufs }}" \
+            --years "${{ inputs.years }}" \
+            --throttle-ms "${{ inputs.throttleMs }}" \
+            --year-pause-ms "${{ inputs.yearPauseMs }}"
+          # Watchdog roda em loop até archive terminar limpo OU 2 retries falharem.
+          # Quando archive sai 0, watchdog também sai 0.
+
+      - name: Resumo do que foi gerado
+        run: |
+          PARQUET_COUNT=$(find build/sia-pa -name 'part.parquet' 2>/dev/null | wc -l | tr -d ' ')
+          SKIPPED_COUNT=$(find build/sia-pa -name 'part.parquet.skipped' 2>/dev/null | wc -l | tr -d ' ')
+          BAD_COUNT=$(find build/sia-pa -name '*.bad' 2>/dev/null | wc -l | tr -d ' ')
+          echo "## Backfill — \`${{ inputs.ufs }}\` × \`${{ inputs.years }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ${PARQUET_COUNT} parquets locais em build/sia-pa/" >> $GITHUB_STEP_SUMMARY
+          echo "- ${SKIPPED_COUNT} partições marcadas .skipped" >> $GITHUB_STEP_SUMMARY
+          echo "- ${BAD_COUNT} DBCs movidos pra .bad" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "$SKIPPED_COUNT" -gt 0 ] || [ "$BAD_COUNT" -gt 0 ]; then
+            echo "⚠️ Veja /tmp/archive-skipped.log no runner para detalhes." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Emit provenance (SHA256 + schema + metadata)
+        run: |
+          eval "$($HOME/.local/bin/mise activate bash)"
+          pnpm emit-provenance
+
+      - name: Upload para S3
+        run: |
+          aws s3 sync build/ "s3://${{ secrets.S3_BUCKET }}/" \
+            --exclude '_archive-run.json' \
+            --exclude '**/*.ndjson' \
+            --cache-control 'public, max-age=3600'
+
+      - name: Atualizar state (merge pending → dataset state)
+        if: ${{ inputs.markProcessed }}
+        run: |
+          eval "$($HOME/.local/bin/mise activate bash)"
+          pnpm detect-new -- --mark-processed
+
+      - name: Commit state/sia-pa.json
+        if: ${{ inputs.markProcessed }}
+        run: |
+          if git diff --quiet -- state/sia-pa.json; then
+            echo "state/sia-pa.json sem mudança — nada pra commitar"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add state/sia-pa.json
+          git commit -m "state(sia-pa): backfill ${{ inputs.ufs }} × ${{ inputs.years }} (run ${{ github.run_id }})"
+          git push origin HEAD:main
+
+      - name: Invalidar CloudFront
+        if: ${{ inputs.invalidateCloudFront && env.DIST_ID != '' }}
+        env:
+          DIST_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "$DIST_ID" \
+            --paths '/manifest.json' '/manifest/*' '/*/provenance/*' '/sia-pa/*'
