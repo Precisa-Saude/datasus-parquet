@@ -188,8 +188,14 @@ async function writeMonthPartition(
     `ano=${year}/uf=${uf}/mes=${String(month).padStart(2, '0')}`,
   );
   const parquetFile = resolve(partitionDir, 'part.parquet');
+  const skippedMarker = resolve(partitionDir, 'part.parquet.skipped');
 
   if (existsSync(parquetFile) && statSync(parquetFile).size > 0) {
+    return { rows: 0, skipped: true };
+  }
+  // Watchdog (`scripts/archive-watchdog.sh`) cria esse marker quando
+  // um DBC corrompe N vezes seguidas — pula pra não loopar pra sempre.
+  if (existsSync(skippedMarker)) {
     return { rows: 0, skipped: true };
   }
 
