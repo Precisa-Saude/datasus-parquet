@@ -111,7 +111,7 @@ jobs:
             echo 'state inalterado — skip commit'
             exit 0
           fi
-          git commit -m "chore(state): refresh ${{ needs.detect.outputs.latestCompetencia }}"
+          git commit -m "chore(data): refresh state ${{ needs.detect.outputs.latestCompetencia }}"
           git push
 
       - name: Criar GitHub Release (dispara webhook Zenodo → DOI)
