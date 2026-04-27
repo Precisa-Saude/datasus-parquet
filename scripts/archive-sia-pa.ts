@@ -201,21 +201,50 @@ async function writeMonthPartition(
 
   mkdirSync(partitionDir, { recursive: true });
   const ndjsonFile = resolve(partitionDir, 'part.ndjson');
+  const failedMarker = resolve(partitionDir, 'part.parquet.failed');
 
+  // Retry inline em erro transiente (FTP timeout, network blip, parser hiccup
+  // mid-stream em split files). Evita deixar partição num estado vazio
+  // silencioso. `.failed` marker registra a falha pra inspeção sem bloquear
+  // re-runs (idempotência só pula `part.parquet` ou `.skipped`).
+  const MAX_INLINE_RETRIES = 3;
+  let lastError: unknown;
   let rows = 0;
-  const fd = openSync(ndjsonFile, 'w');
-  try {
-    for await (const record of streamMonthWithVariants(uf, year, month)) {
-      writeSync(fd, `${JSON.stringify(record)}\n`);
-      rows += 1;
+  for (let attempt = 1; attempt <= MAX_INLINE_RETRIES; attempt += 1) {
+    rows = 0;
+    const fd = openSync(ndjsonFile, 'w');
+    try {
+      for await (const record of streamMonthWithVariants(uf, year, month)) {
+        writeSync(fd, `${JSON.stringify(record)}\n`);
+        rows += 1;
+      }
+      closeSync(fd);
+      lastError = undefined;
+      break;
+    } catch (err) {
+      closeSync(fd);
+      rmSync(ndjsonFile, { force: true });
+      lastError = err;
+      if (attempt < MAX_INLINE_RETRIES) {
+        const backoffMs = 2000 * attempt;
+        process.stderr.write(
+          `  ⚠ ${uf} ${year}-${month} tentativa ${attempt}/${MAX_INLINE_RETRIES} falhou: ` +
+            `${(err as Error).message} — retry em ${backoffMs}ms\n`,
+        );
+        await sleep(backoffMs);
+      }
     }
-  } catch (err) {
-    closeSync(fd);
-    rmSync(ndjsonFile, { force: true });
-    process.stderr.write(`FALHA ${uf} ${year}-${month}: ${(err as Error).message}\n`);
+  }
+
+  if (lastError !== undefined) {
+    const msg = (lastError as Error).message;
+    writeFileSync(failedMarker, `${new Date().toISOString()} ${uf} ${year}-${month}\n${msg}\n`);
+    process.stderr.write(
+      `  ✗ FALHA ${uf} ${year}-${month} após ${MAX_INLINE_RETRIES} tentativas: ${msg} ` +
+        `(marker: ${failedMarker})\n`,
+    );
     return { rows: 0 };
   }
-  closeSync(fd);
 
   if (rows === 0) {
     rmSync(ndjsonFile);
