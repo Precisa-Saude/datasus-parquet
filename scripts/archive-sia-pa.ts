@@ -169,11 +169,12 @@ function parseArgs(argv: string[]): Cli {
   const months =
     monthsArg === 'ALL'
       ? Array.from({ length: 12 }, (_, i) => i + 1)
-      : monthsArg.split(',').map((s) => {
-          const n = Number(s.trim());
+      : monthsArg.split(',').map((raw) => {
+          const trimmed = raw.trim();
+          const n = Number(trimmed);
           if (!Number.isInteger(n) || n < 1 || n > 12) {
             throw new Error(
-              `--months inválido: '${monthsArg}' (cada item deve estar entre 1 e 12)`,
+              `--months inválido: item '${trimmed}' (em '${monthsArg}') deve ser inteiro entre 1 e 12`,
             );
           }
           return n;
