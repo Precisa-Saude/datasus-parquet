@@ -16,6 +16,7 @@
  * Uso:
  *   pnpm archive-sia-pa -- --ufs AC --years 2024
  *   pnpm archive-sia-pa -- --ufs ALL --years 2008-2025
+ *   pnpm archive-sia-pa -- --ufs SP --years 2021 --months 03,04,05  # cleanup precise
  *
  * Observações:
  *   - Lê via `@precisa-saude/datasus` que gerencia cache FTP local
@@ -101,6 +102,7 @@ async function* streamMonthWithVariants(
 }
 
 interface Cli {
+  months: number[];
   outDir: string;
   throttleMs: number;
   ufs: string[];
@@ -159,11 +161,30 @@ function parseArgs(argv: string[]): Cli {
     for (let y = a; y <= end; y += 1) years.push(y);
   }
   years.sort((x, y) => (x ?? 0) - (y ?? 0));
+  // --months: lista CSV de números 1-12 (ex.: "01,03,07" ou "1,2,12").
+  // Default ALL = todos os 12 meses, espelhando comportamento histórico.
+  // Útil pra cleanup pass: re-tentar tuplas específicas sem re-decodar
+  // 12 meses inteiros por (UF, ano).
+  const monthsArg = get('--months', 'ALL').toUpperCase();
+  const months =
+    monthsArg === 'ALL'
+      ? Array.from({ length: 12 }, (_, i) => i + 1)
+      : monthsArg.split(',').map((raw) => {
+          const trimmed = raw.trim();
+          const n = Number(trimmed);
+          if (!Number.isInteger(n) || n < 1 || n > 12) {
+            throw new Error(
+              `--months inválido: item '${trimmed}' (em '${monthsArg}') deve ser inteiro entre 1 e 12`,
+            );
+          }
+          return n;
+        });
+  months.sort((x, y) => x - y);
   const repoRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
   const outDir = resolve(repoRoot, get('--out', 'build/sia-pa'));
   const throttleMs = Number(get('--throttle-ms', '500'));
   const yearPauseMs = Number(get('--year-pause-ms', '2000'));
-  return { outDir, throttleMs, ufs, yearPauseMs, years };
+  return { months, outDir, throttleMs, ufs, yearPauseMs, years };
 }
 
 function sleep(ms: number): Promise<void> {
@@ -288,7 +309,7 @@ async function main(): Promise<void> {
     const year = cli.years[yIdx]!;
     for (const uf of cli.ufs) {
       process.stderr.write(`[${year}] ${uf}\n`);
-      for (let month = 1; month <= 12; month += 1) {
+      for (const month of cli.months) {
         const r = await writeMonthPartition(cli, uf, year, month);
         totalRows += r.rows;
         if (r.skipped) skipped += 1;
