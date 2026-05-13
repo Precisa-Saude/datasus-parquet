@@ -1,7 +1,13 @@
 # Consumindo os dados
 
-Os arquivos Parquet são públicos no S3 (sa-east-1) com CORS permissivo.
-Consumidores podem ler diretamente por HTTP sem credenciais.
+Os arquivos Parquet são servidos publicamente via CloudFront
+(`dfdu08vi8wsus.cloudfront.net`) com CORS permissivo. Consumidores
+leem diretamente por HTTPS sem credenciais.
+
+> Acesso anônimo ao bucket S3 (`s3://datasus-parquet/...`,
+> `aws s3 ... --no-sign-request`) está **deprecado** e será desligado
+> em breve — o bucket passa a aceitar requests apenas via CloudFront,
+> com rate-limit por IP. Use as URLs HTTPS abaixo.
 
 ## DuckDB (recomendado)
 
@@ -14,7 +20,7 @@ só os row-groups que o filtro precisa.
 duckdb
 
 D SELECT PA_CMP, COUNT(*) as n
-  FROM read_parquet('https://datasus-parquet.s3.sa-east-1.amazonaws.com/sia-pa/ano=2024/uf=SP/mes=01/part.parquet')
+  FROM read_parquet('https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=2024/uf=SP/mes=01/part.parquet')
   GROUP BY PA_CMP;
 ```
 
@@ -23,7 +29,7 @@ D SELECT PA_CMP, COUNT(*) as n
 ```sql
 SELECT PA_CMP, PA_UFMUN, COUNT(*) AS n
 FROM read_parquet(
-  'https://datasus-parquet.s3.sa-east-1.amazonaws.com/sia-pa/ano=*/uf=AC/mes=*/part.parquet',
+  'https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=*/uf=AC/mes=*/part.parquet',
   union_by_name = true
 )
 WHERE PA_CMP LIKE '2024%'
@@ -40,7 +46,7 @@ unifica por nome de coluna (colunas ausentes ficam NULL).
 -- O filtro `PA_CMP = '202401'` é pushed down pros row-group stats
 -- do Parquet; só o row-group relevante é baixado.
 SELECT PA_CODUNI, COUNT(*)
-FROM read_parquet('https://datasus-parquet.s3.sa-east-1.amazonaws.com/sia-pa/ano=2024/uf=SP/mes=01/part.parquet')
+FROM read_parquet('https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=2024/uf=SP/mes=01/part.parquet')
 WHERE PA_CMP = '202401'
 GROUP BY PA_CODUNI;
 ```
