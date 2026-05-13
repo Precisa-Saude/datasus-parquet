@@ -70,7 +70,7 @@ oficial agora. Se não bate, pode ser:
 ```bash
 # 1. Baixe o Parquet:
 curl -o part.parquet \
-  'https://datasus-parquet.s3.sa-east-1.amazonaws.com/sia-pa/ano=2024/uf=AC/mes=01/part.parquet'
+  'https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=2024/uf=AC/mes=01/part.parquet'
 
 # 2. Verifique o SHA256:
 shasum -a 256 part.parquet

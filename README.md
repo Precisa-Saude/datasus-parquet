@@ -37,12 +37,12 @@ trabalham com esses subdatasets são bem-vindas — veja
 ```sql
 -- Todos os exames de jan/2024 em SP:
 SELECT *
-FROM read_parquet('https://datasus-parquet.s3.sa-east-1.amazonaws.com/sia-pa/ano=2024/uf=SP/mes=01/part.parquet');
+FROM read_parquet('https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=2024/uf=SP/mes=01/part.parquet');
 
 -- Série histórica de uma UF (schema evolution automática):
 SELECT PA_CMP, COUNT(*)
 FROM read_parquet(
-  'https://datasus-parquet.s3.sa-east-1.amazonaws.com/sia-pa/ano=*/uf=AC/mes=*/part.parquet',
+  'https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=*/uf=AC/mes=*/part.parquet',
   union_by_name = true
 )
 GROUP BY PA_CMP
