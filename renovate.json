@@ -1,6 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", ":dependencyDashboard", ":semanticCommits"],
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    "helpers:pinGitHubActionDigests"
+  ],
   "schedule": ["before 6am on saturday"],
   "timezone": "America/Sao_Paulo",
   "labels": ["dependencies"],
@@ -16,6 +21,11 @@
       "groupName": "precisa-saude packages",
       "automerge": true,
       "automergeType": "pr"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions",
+      "pinDigests": true
     }
   ],
   "vulnerabilityAlerts": {
