@@ -75,19 +75,35 @@ jobs:
       - name: Emit provenance (SHA256 + schema + metadata)
         run: pnpm emit-provenance
 
-      - name: Build manifest
-        run: pnpm build-manifest
-
       - uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: sa-east-1
 
-      - name: Upload para S3
+      # Sobe primeiro os arquivos do delta (sem manifest.json — esse é
+      # reconstruído logo abaixo a partir do estado real do bucket).
+      - name: Upload delta para S3
         run: |
           aws s3 sync build/ "s3://${{ secrets.S3_BUCKET }}/" \
             --exclude '_archive-run.json' \
             --exclude '**/*.ndjson' \
+            --exclude 'manifest.json' \
+            --cache-control 'public, max-age=3600'
+
+      # build-manifest reconstrói o manifest a partir do bucket — varrer
+      # `build/` só veria o delta e regrediria o catálogo histórico.
+      - name: Lista partições no bucket
+        run: |
+          aws s3 ls "s3://${{ secrets.S3_BUCKET }}/" --recursive > /tmp/s3-listing.txt
+          wc -l /tmp/s3-listing.txt
+
+      - name: Build manifest (a partir do bucket)
+        run: pnpm build-manifest -- --s3-listing /tmp/s3-listing.txt
+
+      - name: Upload manifest.json
+        run: |
+          aws s3 cp build/manifest.json "s3://${{ secrets.S3_BUCKET }}/manifest.json" \
+            --content-type 'application/json' \
             --cache-control 'public, max-age=3600'
 
       - name: Invalidate CloudFront
