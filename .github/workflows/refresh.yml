@@ -100,6 +100,21 @@ jobs:
       - name: Build manifest (a partir do bucket)
         run: pnpm build-manifest -- --s3-listing /tmp/s3-listing.txt
 
+      # Guard contra regressão: se o novo manifest cobrir menos partições
+      # do que o publicado, aborta sem subir. Bug histórico (run
+      # 26020087919) publicou manifest com 12 partições sobrescrevendo o
+      # de 5843 — versioning + esse guard impedem que se repita.
+      - name: Verifica que o manifest novo não regride o publicado
+        run: |
+          REMOTE=$(aws s3 cp "s3://${{ secrets.S3_BUCKET }}/manifest.json" - 2>/dev/null || echo '{}')
+          REMOTE_PARTS=$(echo "$REMOTE" | jq '[.datasets[].partitions] | add // 0')
+          LOCAL_PARTS=$(jq '[.datasets[].partitions] | add // 0' build/manifest.json)
+          echo "remote=$REMOTE_PARTS local=$LOCAL_PARTS"
+          if [ "$LOCAL_PARTS" -lt "$REMOTE_PARTS" ]; then
+            echo "::error::manifest novo ($LOCAL_PARTS partições) regride o publicado ($REMOTE_PARTS) — abortando upload"
+            exit 1
+          fi
+
       - name: Upload manifest.json
         run: |
           aws s3 cp build/manifest.json "s3://${{ secrets.S3_BUCKET }}/manifest.json" \
