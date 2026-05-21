@@ -53,6 +53,33 @@ function isNotFoundError(err: unknown): boolean {
 }
 
 /**
+ * Erros de transporte FTP (ECONNRESET, ETIMEDOUT, etc.) são rotineiros
+ * em `ftp.datasus.gov.br` — o servidor reseta a data connection com
+ * frequência, especialmente em arquivos grandes (UFs SP/MG/RJ). NÃO são
+ * indicação de DBC corrompido: o mesmo arquivo decodifica perfeitamente
+ * num retry. Verificado em 2026-05-21 nas 43 partições do issue #20:
+ * zero corrupções reais, 16 ECONNRESETs transitórios.
+ *
+ * Sem essa distinção, o pipeline marca falsos positivos como `.failed`
+ * / `.skipped` e perde partições reais. Erros de decode (DBF inválido,
+ * registro truncado mid-stream, header errado) continuam falhando rápido
+ * — só o transporte ganha retries generosos.
+ */
+function isTransportError(err: unknown): boolean {
+  const code = (err as NodeJS.ErrnoException | undefined)?.code;
+  if (
+    code !== undefined &&
+    ['ECONNRESET', 'ETIMEDOUT', 'ECONNABORTED', 'ENETRESET', 'EPIPE', 'EAI_AGAIN'].includes(code)
+  ) {
+    return true;
+  }
+  const msg = err instanceof Error ? err.message : String(err);
+  return /ECONNRESET|ETIMEDOUT|ECONNABORTED|ENETRESET|EPIPE|EAI_AGAIN|data socket|control socket|\b421\b/i.test(
+    msg,
+  );
+}
+
+/**
  * Stream de records de (UF, ano, mês) com suporte a split files.
  *
  * Alguns meses de UFs grandes (SP desde 2013, MG/RJ desde 2021) não
@@ -224,14 +251,21 @@ async function writeMonthPartition(
   const ndjsonFile = resolve(partitionDir, 'part.ndjson');
   const failedMarker = resolve(partitionDir, 'part.parquet.failed');
 
-  // Retry inline em erro transiente (FTP timeout, network blip, parser hiccup
-  // mid-stream em split files). Evita deixar partição num estado vazio
-  // silencioso. `.failed` marker registra a falha pra inspeção sem bloquear
-  // re-runs (idempotência só pula `part.parquet` ou `.skipped`).
-  const MAX_INLINE_RETRIES = 3;
+  // Retry inline com classificação transport-vs-decode (ver isTransportError).
+  // Transporte (ECONNRESET, ETIMEDOUT, etc.) ganha retries generosos com
+  // backoff exponencial — o FTP DATASUS reseta data sockets rotineiramente
+  // em arquivos grandes e o mesmo arquivo decodifica fine no próximo tente.
+  // Decode (DBF inválido, registro truncado, header errado) falha rápido:
+  // não adianta re-baixar o mesmo arquivo se o conteúdo está mesmo quebrado.
+  // `.failed` marker registra a falha pra inspeção sem bloquear re-runs
+  // (idempotência só pula `part.parquet` ou `.skipped`).
+  const MAX_TRANSPORT_RETRIES = 10;
+  const MAX_DECODE_RETRIES = 3;
   let lastError: unknown;
   let rows = 0;
-  for (let attempt = 1; attempt <= MAX_INLINE_RETRIES; attempt += 1) {
+  let transportAttempts = 0;
+  let decodeAttempts = 0;
+  while (transportAttempts < MAX_TRANSPORT_RETRIES && decodeAttempts < MAX_DECODE_RETRIES) {
     rows = 0;
     const fd = openSync(ndjsonFile, 'w');
     try {
@@ -246,10 +280,23 @@ async function writeMonthPartition(
       closeSync(fd);
       rmSync(ndjsonFile, { force: true });
       lastError = err;
-      if (attempt < MAX_INLINE_RETRIES) {
-        const backoffMs = 2000 * attempt;
+      const transport = isTransportError(err);
+      if (transport) {
+        transportAttempts += 1;
+        if (transportAttempts >= MAX_TRANSPORT_RETRIES) break;
+        // Exponencial com teto: 2s, 4s, 8s, 16s, 32s, 60s, 60s, ...
+        const backoffMs = Math.min(2000 * 2 ** (transportAttempts - 1), 60_000);
         process.stderr.write(
-          `  ⚠ ${uf} ${year}-${month} tentativa ${attempt}/${MAX_INLINE_RETRIES} falhou: ` +
+          `  ⚠ ${uf} ${year}-${month} transporte ${transportAttempts}/${MAX_TRANSPORT_RETRIES}: ` +
+            `${(err as Error).message} — retry em ${backoffMs}ms\n`,
+        );
+        await sleep(backoffMs);
+      } else {
+        decodeAttempts += 1;
+        if (decodeAttempts >= MAX_DECODE_RETRIES) break;
+        const backoffMs = 2000 * decodeAttempts;
+        process.stderr.write(
+          `  ⚠ ${uf} ${year}-${month} decode ${decodeAttempts}/${MAX_DECODE_RETRIES}: ` +
             `${(err as Error).message} — retry em ${backoffMs}ms\n`,
         );
         await sleep(backoffMs);
@@ -259,9 +306,14 @@ async function writeMonthPartition(
 
   if (lastError !== undefined) {
     const msg = (lastError as Error).message;
-    writeFileSync(failedMarker, `${new Date().toISOString()} ${uf} ${year}-${month}\n${msg}\n`);
+    const kind = isTransportError(lastError) ? 'transporte' : 'decode';
+    const totalAttempts = transportAttempts + decodeAttempts;
+    writeFileSync(
+      failedMarker,
+      `${new Date().toISOString()} ${uf} ${year}-${month}\n${kind}\n${msg}\n`,
+    );
     process.stderr.write(
-      `  ✗ FALHA ${uf} ${year}-${month} após ${MAX_INLINE_RETRIES} tentativas: ${msg} ` +
+      `  ✗ FALHA ${uf} ${year}-${month} após ${totalAttempts} tentativas (${kind}): ${msg} ` +
         `(marker: ${failedMarker})\n`,
     );
     return { rows: 0 };

@@ -23,7 +23,12 @@ BUILD_DIR=$REPO_DIR/build/sia-pa
 ARCHIVE_LOG="${WATCHDOG_ARCHIVE_LOG:-/tmp/archive-run-watchdog.log}"
 WATCHDOG_LOG="${WATCHDOG_META_LOG:-/tmp/archive-watchdog.log}"
 SKIPPED_LOG="${WATCHDOG_SKIPPED_LOG:-/tmp/archive-skipped.log}"
-STALL_THRESHOLD_MIN=5
+# 15min, não 5min: arquivos grandes (SP/MG/RJ ~200MB, ~3min só pra download)
+# + retries de transporte do archive-sia-pa (até ~5min de backoff cumulativo
+# em ECONNRESET burst) podem legitimamente manter ndjson em 0 bytes por
+# vários minutos sem que haja stall real. Antes esse threshold criava
+# falsos positivos que viravam `.skipped` (ver issue #20).
+STALL_THRESHOLD_MIN=15
 MAX_RETRIES=2
 
 # Args do archive-sia-pa: tudo passado via "$@" é repassado pro pnpm
