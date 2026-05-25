@@ -152,6 +152,7 @@ jobs:
             exit 0
           fi
           git commit -m "chore(data): refresh state ${{ needs.detect.outputs.latestCompetencia }}"
+          git pull --rebase origin main
           git push
 
       - name: Criar GitHub Release (dispara webhook Zenodo → DOI)
