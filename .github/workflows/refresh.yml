@@ -164,12 +164,11 @@ jobs:
             Refresh automático: **${{ needs.detect.outputs.pendingCount }}** novas competências
             (mais recente: **${{ needs.detect.outputs.latestCompetencia }}**).
 
-            Assets incluem `manifest.json`, Parquet por mês e provenance por partição.
+            Assets incluem `manifest.json`. Parquet e provenance por partição estão no CDN.
             Para validar byte-a-byte contra o FTP oficial, veja `docs/provenance.md`.
 
             DOI Zenodo emitido automaticamente via webhook — veja
             https://zenodo.org/search?q=Precisa-Saude/datasus-parquet.
           files: |
             build/manifest.json
-            build/**/provenance/**/*.json
           generate_release_notes: true
