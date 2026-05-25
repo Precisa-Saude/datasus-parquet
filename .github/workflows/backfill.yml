@@ -57,7 +57,16 @@ jobs:
       AWS_REGION: sa-east-1
 
     steps:
+      - name: Generate release-bot token
+        id: app-token
+        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2.0.6
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Verificar tools (mise gerencia node/pnpm)
         run: |
@@ -123,8 +132,8 @@ jobs:
             echo "state/sia-pa.json sem mudança — nada pra commitar"
             exit 0
           fi
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git config user.name 'precisa-saude-release-bot[bot]'
+          git config user.email '${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
           git add state/sia-pa.json
           git commit -m "chore(data): backfill sia-pa ${{ inputs.ufs }} × ${{ inputs.years }} (run ${{ github.run_id }})"
           git push origin HEAD:main
