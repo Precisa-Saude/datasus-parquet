@@ -12,5 +12,10 @@
     "conduct": "conduct@precisa-saude.com.br"
   },
   "nodeVersion": "22",
-  "pnpmVersion": "9.15.9"
+  "pnpmVersion": "9.15.9",
+  "ignoreTemplates": [
+    ".commitlintrc.cjs",
+    ".github/workflows/_checks.yml",
+    ".github/workflows/ci.yml"
+  ]
 }
