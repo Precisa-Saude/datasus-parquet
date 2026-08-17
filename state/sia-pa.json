@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastRun": "2026-07-13T09:42:17.066Z",
+  "lastRun": "2026-08-17T07:09:35.484Z",
   "processed": {
     "AC": {
       "2008-01": {
@@ -845,47 +845,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 5084756
+        "sourceSize": 4618831
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 4665524
+        "sourceSize": 4647678
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 4820392
+        "sourceSize": 4436745
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 4757947
+        "sourceSize": 4757923
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 4682220
+        "sourceSize": 4406960
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 4742655
+        "sourceSize": 5016184
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 4221585
+        "sourceSize": 4308817
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 4099331
+        "sourceSize": 4562319
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 4923447
+        "sourceSize": 4695643
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 4896053
+        "sourceSize": 4943773
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 4021653
+        "sourceSize": 4882205
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 4879161
       }
     },
     "AL": {
@@ -1731,47 +1735,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 34205527
+        "sourceSize": 31574884
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 33274657
+        "sourceSize": 32541495
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 31475498
+        "sourceSize": 28506818
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 31483270
+        "sourceSize": 31484632
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 29983299
+        "sourceSize": 27317852
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 27263283
+        "sourceSize": 28071803
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 25732785
+        "sourceSize": 25549658
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 26249508
+        "sourceSize": 30142968
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 31918093
+        "sourceSize": 29983800
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 27373638
+        "sourceSize": 29886092
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 15020645
+        "sourceSize": 26418660
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 26932006
       }
     },
     "AM": {
@@ -2617,47 +2625,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 40876610
+        "sourceSize": 36114291
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 37986716
+        "sourceSize": 38137852
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 36371753
+        "sourceSize": 31363761
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 33974712
+        "sourceSize": 34602804
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 36917976
+        "sourceSize": 31617105
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 34514379
+        "sourceSize": 35341254
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 29896327
+        "sourceSize": 30081013
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 29416688
+        "sourceSize": 35661953
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 41199298
+        "sourceSize": 34217051
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 31138407
+        "sourceSize": 32749122
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 19819011
+        "sourceSize": 27874436
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 27286999
       }
     },
     "AP": {
@@ -3503,47 +3515,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 2906741
+        "sourceSize": 2514740
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 2886270
+        "sourceSize": 2875765
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 2818940
+        "sourceSize": 2509430
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 3258569
+        "sourceSize": 3222332
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 3741726
+        "sourceSize": 3450807
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 3077548
+        "sourceSize": 3204800
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 2947070
+        "sourceSize": 2978102
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 2786140
+        "sourceSize": 3228380
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 3716205
+        "sourceSize": 3356613
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 3064642
+        "sourceSize": 3142662
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 2247967
+        "sourceSize": 2934545
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 2696625
       }
     },
     "BA": {
@@ -4389,47 +4405,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 111212731
+        "sourceSize": 100574282
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 115407684
+        "sourceSize": 113584778
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 117538887
+        "sourceSize": 105781133
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 112368046
+        "sourceSize": 113044895
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 114946712
+        "sourceSize": 104598008
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 102312806
+        "sourceSize": 108203302
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 91242199
+        "sourceSize": 91725296
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 91680519
+        "sourceSize": 104934398
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 121502667
+        "sourceSize": 110704169
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 99622360
+        "sourceSize": 103967125
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 70348776
+        "sourceSize": 100263761
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 67444129
       }
     },
     "CE": {
@@ -5275,47 +5295,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 84689409
+        "sourceSize": 73260142
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 86771835
+        "sourceSize": 86259782
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 93028150
+        "sourceSize": 80161518
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 80832400
+        "sourceSize": 80768926
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 87807351
+        "sourceSize": 78150712
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 81958010
+        "sourceSize": 84175262
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 72274705
+        "sourceSize": 73243865
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 73494327
+        "sourceSize": 83671496
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 100778129
+        "sourceSize": 88256210
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 78227615
+        "sourceSize": 83827722
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 52334046
+        "sourceSize": 89024320
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 83569720
       }
     },
     "DF": {
@@ -6161,47 +6185,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 16969195
+        "sourceSize": 16313218
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 16846012
+        "sourceSize": 16786664
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 17361253
+        "sourceSize": 16553391
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 17583884
+        "sourceSize": 17716796
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 15997180
+        "sourceSize": 15563779
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 15271688
+        "sourceSize": 15523884
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 13963705
+        "sourceSize": 13989862
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 14807417
+        "sourceSize": 15707574
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 17803051
+        "sourceSize": 17432135
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 15622387
+        "sourceSize": 15663496
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 11831506
+        "sourceSize": 16048181
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 14959397
       }
     },
     "ES": {
@@ -7047,47 +7075,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 43338428
+        "sourceSize": 39947881
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 44329913
+        "sourceSize": 44639015
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 42851251
+        "sourceSize": 38587813
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 43784522
+        "sourceSize": 43850075
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 40580406
+        "sourceSize": 37430822
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 37356904
+        "sourceSize": 40480747
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 32579965
+        "sourceSize": 32787929
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 33585196
+        "sourceSize": 38665084
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 44059819
+        "sourceSize": 41917452
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 35009571
+        "sourceSize": 38392101
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 23725138
+        "sourceSize": 36062889
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 35536606
       }
     },
     "GO": {
@@ -7933,47 +7965,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 60228349
+        "sourceSize": 54306168
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 65744374
+        "sourceSize": 65234318
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 69521657
+        "sourceSize": 62375669
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 63000936
+        "sourceSize": 62596900
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 62912170
+        "sourceSize": 56935742
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 61276448
+        "sourceSize": 62894969
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 58736538
+        "sourceSize": 59140735
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 59322467
+        "sourceSize": 68250116
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 78123291
+        "sourceSize": 69325208
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 68932146
+        "sourceSize": 68569977
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 38608466
+        "sourceSize": 70479104
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 60316254
       }
     },
     "MA": {
@@ -8819,47 +8855,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 45183046
+        "sourceSize": 40488017
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 43669083
+        "sourceSize": 44034297
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 45920134
+        "sourceSize": 41723530
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 43758134
+        "sourceSize": 43074233
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 43452073
+        "sourceSize": 39176204
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 34681051
+        "sourceSize": 37205421
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 38773152
+        "sourceSize": 39097081
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 36784137
+        "sourceSize": 41939712
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 48282173
+        "sourceSize": 44476684
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 39855812
+        "sourceSize": 43296433
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 26506650
+        "sourceSize": 41172744
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 34521624
       }
     },
     "MG": {
@@ -9705,47 +9745,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 393539159
+        "sourceSize": 338880952
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 384794123
+        "sourceSize": 387313308
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 401219646
+        "sourceSize": 346326987
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 357291939
+        "sourceSize": 356296437
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 375158728
+        "sourceSize": 327034869
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 347626264
+        "sourceSize": 350638507
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 306277163
+        "sourceSize": 310071389
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 295285289
+        "sourceSize": 342138332
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 426021132
+        "sourceSize": 372590585
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 347348944
+        "sourceSize": 352260742
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 214166477
+        "sourceSize": 352600681
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 314148120
       }
     },
     "MS": {
@@ -10591,47 +10635,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 28982361
+        "sourceSize": 27302790
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 30037568
+        "sourceSize": 30003510
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 33207497
+        "sourceSize": 30599145
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 35798845
+        "sourceSize": 35751511
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 36096268
+        "sourceSize": 33636239
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 35411562
+        "sourceSize": 35979598
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 34232632
+        "sourceSize": 34531742
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 33641305
+        "sourceSize": 36911957
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 45688971
+        "sourceSize": 41238539
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 41034199
+        "sourceSize": 41798808
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 24266395
+        "sourceSize": 41429959
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 40053019
       }
     },
     "MT": {
@@ -11477,47 +11525,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 72167303
+        "sourceSize": 64396729
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 71631450
+        "sourceSize": 72654237
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 80036855
+        "sourceSize": 70056571
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 70702813
+        "sourceSize": 70035101
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 68357802
+        "sourceSize": 60370701
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 65308081
+        "sourceSize": 68293405
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 59667050
+        "sourceSize": 61028827
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 58848784
+        "sourceSize": 68842772
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 84071135
+        "sourceSize": 74462064
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 58049335
+        "sourceSize": 69427384
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 24018345
+        "sourceSize": 59512609
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 35212005
       }
     },
     "PA": {
@@ -12363,47 +12415,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 65386830
+        "sourceSize": 56462745
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 64104291
+        "sourceSize": 63988180
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 66416543
+        "sourceSize": 57165356
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 57481005
+        "sourceSize": 57914242
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 67749721
+        "sourceSize": 57879770
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 58797512
+        "sourceSize": 59807161
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 53162792
+        "sourceSize": 54417689
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 54588085
+        "sourceSize": 62761664
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 54960272
+        "sourceSize": 66227549
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 42274855
+        "sourceSize": 62565546
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 21455939
+        "sourceSize": 59214800
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 32266217
       }
     },
     "PB": {
@@ -13249,47 +13305,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 56575167
+        "sourceSize": 49934957
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 55233213
+        "sourceSize": 55283067
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 58628077
+        "sourceSize": 50371322
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 56004514
+        "sourceSize": 56205452
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 62723039
+        "sourceSize": 55104423
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 55832489
+        "sourceSize": 56375238
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 51719956
+        "sourceSize": 51801505
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 54764843
+        "sourceSize": 63044739
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 80057460
+        "sourceSize": 70581133
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 74994697
+        "sourceSize": 77235496
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 38006455
+        "sourceSize": 74538064
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 63403545
       }
     },
     "PE": {
@@ -14135,47 +14195,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 76558357
+        "sourceSize": 69650954
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 77255973
+        "sourceSize": 77810947
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 80648648
+        "sourceSize": 72379614
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 79463323
+        "sourceSize": 79839203
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 76694736
+        "sourceSize": 70074706
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 74732533
+        "sourceSize": 76604487
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 64488964
+        "sourceSize": 65266768
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 62549028
+        "sourceSize": 70966464
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 85021584
+        "sourceSize": 78492452
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 72223476
+        "sourceSize": 75645626
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 46304937
+        "sourceSize": 72635646
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 70533381
       }
     },
     "PI": {
@@ -15021,47 +15085,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 11741409
+        "sourceSize": 10401750
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 12582503
+        "sourceSize": 12659298
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 12366004
+        "sourceSize": 11155344
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 12599077
+        "sourceSize": 12593224
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 12254239
+        "sourceSize": 11473641
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 11499195
+        "sourceSize": 11918778
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 10867643
+        "sourceSize": 10777715
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 11594016
+        "sourceSize": 12766407
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 15265063
+        "sourceSize": 14084983
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 13422962
+        "sourceSize": 13629902
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 10871058
+        "sourceSize": 14336114
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 13025674
       }
     },
     "PR": {
@@ -15907,47 +15975,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 159022523
+        "sourceSize": 142733283
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 154629517
+        "sourceSize": 156582886
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 165592775
+        "sourceSize": 152463028
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 159987234
+        "sourceSize": 160901379
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 156793919
+        "sourceSize": 145649578
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 140172186
+        "sourceSize": 147410662
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 126950586
+        "sourceSize": 127066787
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 133828094
+        "sourceSize": 155228127
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 175453778
+        "sourceSize": 162090428
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 152100445
+        "sourceSize": 156331768
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 102001063
+        "sourceSize": 156687382
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 141968985
       }
     },
     "RJ": {
@@ -16793,47 +16865,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 351941150
+        "sourceSize": 311258007
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 334246573
+        "sourceSize": 335165853
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 352736648
+        "sourceSize": 317158109
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 318595501
+        "sourceSize": 315223381
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 320416851
+        "sourceSize": 293562114
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 313336023
+        "sourceSize": 317078591
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 238308428
+        "sourceSize": 238901370
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 241460745
+        "sourceSize": 273588991
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 360206400
+        "sourceSize": 323236772
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 307565246
+        "sourceSize": 311592331
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 152039143
+        "sourceSize": 263642106
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 260660047
       }
     },
     "RN": {
@@ -17679,47 +17755,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 28087425
+        "sourceSize": 23924186
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 33179781
+        "sourceSize": 33618860
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 30736918
+        "sourceSize": 26779047
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 28462260
+        "sourceSize": 28558409
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 31158877
+        "sourceSize": 27707159
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 32087139
+        "sourceSize": 32834772
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 22994602
+        "sourceSize": 23630865
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 23717585
+        "sourceSize": 27591328
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 32652009
+        "sourceSize": 30534751
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 23376077
+        "sourceSize": 28694726
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 12905151
+        "sourceSize": 28512974
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 21627866
       }
     },
     "RO": {
@@ -18565,47 +18645,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 21796813
+        "sourceSize": 19273469
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 21586768
+        "sourceSize": 21569754
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 21760122
+        "sourceSize": 19100976
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 22215234
+        "sourceSize": 22044981
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 21827862
+        "sourceSize": 19184941
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 19115618
+        "sourceSize": 19825255
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 18814341
+        "sourceSize": 18765716
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 18380441
+        "sourceSize": 21948978
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 27520597
+        "sourceSize": 23788243
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 20901653
+        "sourceSize": 22461618
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 9940234
+        "sourceSize": 20888668
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 13953503
       }
     },
     "RR": {
@@ -19451,47 +19535,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 874407
+        "sourceSize": 738464
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 895459
+        "sourceSize": 903347
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 878386
+        "sourceSize": 758299
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 819807
+        "sourceSize": 812529
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 990170
+        "sourceSize": 836567
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 852882
+        "sourceSize": 893105
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 687910
+        "sourceSize": 697645
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 768128
+        "sourceSize": 906550
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 1151453
+        "sourceSize": 928805
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 910539
+        "sourceSize": 905074
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 835325
+        "sourceSize": 867195
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 842254
       }
     },
     "RS": {
@@ -20337,47 +20425,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 182334149
+        "sourceSize": 153559334
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 189113113
+        "sourceSize": 191187173
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 201211202
+        "sourceSize": 169817332
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 177703770
+        "sourceSize": 175210216
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 191872199
+        "sourceSize": 164943935
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 186898067
+        "sourceSize": 196175544
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 159752670
+        "sourceSize": 160414389
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 148671155
+        "sourceSize": 181251114
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 197847184
+        "sourceSize": 166791397
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 170555958
+        "sourceSize": 173603467
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 109574789
+        "sourceSize": 169601185
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 153881472
       }
     },
     "SC": {
@@ -21223,47 +21315,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 145862744
+        "sourceSize": 128915129
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 141719622
+        "sourceSize": 140903901
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 153638770
+        "sourceSize": 135377827
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 144450393
+        "sourceSize": 145225984
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 147517647
+        "sourceSize": 130891962
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 127724352
+        "sourceSize": 130142235
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 109943639
+        "sourceSize": 110670756
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 122399504
+        "sourceSize": 141052972
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 172417642
+        "sourceSize": 154391796
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 150137540
+        "sourceSize": 152084870
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 90229777
+        "sourceSize": 146125419
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 125143762
       }
     },
     "SE": {
@@ -22109,47 +22205,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 31183956
+        "sourceSize": 25830478
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 40992310
+        "sourceSize": 40991256
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 39728164
+        "sourceSize": 31987548
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 33543819
+        "sourceSize": 33223187
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 35831965
+        "sourceSize": 29659088
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 34944466
+        "sourceSize": 35259765
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 29130537
+        "sourceSize": 29860792
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 28906597
+        "sourceSize": 34492379
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 43658782
+        "sourceSize": 34850114
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 34896672
+        "sourceSize": 35477538
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 19838084
+        "sourceSize": 33832715
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 29148260
       }
     },
     "SP": {
@@ -22995,47 +23095,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 517025077
+        "sourceSize": 473751237
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 544710459
+        "sourceSize": 541384747
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 587777942
+        "sourceSize": 536122473
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 554224119
+        "sourceSize": 552930518
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 545338662
+        "sourceSize": 499620100
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 514409892
+        "sourceSize": 536077846
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 472535135
+        "sourceSize": 475478438
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 478431838
+        "sourceSize": 543267317
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 639420639
+        "sourceSize": 577050651
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 543655506
+        "sourceSize": 549934077
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 384594237
+        "sourceSize": 562711008
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 536056737
       }
     },
     "TO": {
@@ -23881,47 +23985,51 @@
       },
       "2025-07": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 10897118
+        "sourceSize": 9674433
       },
       "2025-08": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 14098519
+        "sourceSize": 14171943
       },
       "2025-09": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 13476517
+        "sourceSize": 11874969
       },
       "2025-10": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 12493220
+        "sourceSize": 12307690
       },
       "2025-11": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 13069795
+        "sourceSize": 11478809
       },
       "2025-12": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 13157502
+        "sourceSize": 13973868
       },
       "2026-01": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 12035616
+        "sourceSize": 12076849
       },
       "2026-02": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 11818206
+        "sourceSize": 14668874
       },
       "2026-03": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 15032626
+        "sourceSize": 14100313
       },
       "2026-04": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 12364872
+        "sourceSize": 13471827
       },
       "2026-05": {
         "sourceMtime": "1970-01-01T00:00:00.000Z",
-        "sourceSize": 9514931
+        "sourceSize": 13991306
+      },
+      "2026-06": {
+        "sourceMtime": "1970-01-01T00:00:00.000Z",
+        "sourceSize": 12109547
       }
     }
   }
