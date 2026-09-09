@@ -24,6 +24,7 @@ import { fileURLToPath } from 'node:url';
 
 import { Client } from 'basic-ftp';
 
+import { partitionArtifactPaths } from './lib/refresh-targets.js';
 import { parseSiaPaFileName, SIA_PA_REGEX } from './lib/sia-pa-parser.js';
 
 const FTP_HOST = 'ftp.datasus.gov.br';
@@ -48,6 +49,11 @@ const DATASETS: Record<string, DatasetConfig> = {
 };
 
 interface Cli {
+  /**
+   * Raiz dos Parquet emitidos pelo `archive-sia-pa`. `--mark-processed`
+   * só promove a processada a competência que tenha artefato real aqui.
+   */
+  buildDir: string;
   datasets: string[];
   markProcessed: boolean;
   outPending: string;
@@ -108,6 +114,7 @@ function parseArgs(argv: string[]): Cli {
   const repoRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
   const datasetsArg = get('--dataset', Object.keys(DATASETS).join(','));
   return {
+    buildDir: resolve(repoRoot, get('--build-dir', 'build')),
     datasets: datasetsArg.split(',').map((s) => s.trim()),
     markProcessed: argv.includes('--mark-processed'),
     outPending: resolve(repoRoot, get('--out', 'state/pending.json')),
@@ -220,6 +227,26 @@ function setGhOutput(key: string, value: string): void {
   appendFileSync(file, `${key}=${value}\n`);
 }
 
+/**
+ * Uma competência só conta como processada se o `archive-sia-pa`
+ * realmente emitiu o Parquet — ou se o watchdog marcou a partição como
+ * insalvável (`part.parquet.skipped`, DBC corrompido na origem).
+ *
+ * Sem essa checagem o merge era cego: o refresh de 2026-08-17 arquivou
+ * 12 partições de AC/2024 e mesmo assim marcou as 324 competências
+ * pendentes como processadas. O estado passou a alegar cobertura até
+ * 2026-06 enquanto o bucket parava em 2026-02, e todo refresh seguinte
+ * virou no-op porque não sobrava nada pendente.
+ */
+function wasArchived(cli: Cli, datasetId: string, entry: PendingEntry): boolean {
+  const paths = partitionArtifactPaths(cli.buildDir, datasetId, {
+    month: entry.month,
+    uf: entry.uf,
+    year: entry.year,
+  });
+  return existsSync(paths.parquet) || existsSync(paths.skippedMarker);
+}
+
 function markProcessed(cli: Cli): void {
   if (!existsSync(cli.outPending)) {
     throw new Error(`--mark-processed requer ${cli.outPending} existente.`);
@@ -234,15 +261,31 @@ function markProcessed(cli: Cli): void {
   for (const [datasetId, entries] of byDataset) {
     const path = stateFilePath(cli.stateDir, datasetId);
     const state = loadState(path);
+    let merged = 0;
+    const naoArquivadas: string[] = [];
     for (const entry of entries) {
-      const bucket = state.processed[entry.uf] ?? {};
       const competencia = `${entry.year}-${String(entry.month).padStart(2, '0')}`;
+      if (!wasArchived(cli, datasetId, entry)) {
+        naoArquivadas.push(`${entry.uf} ${competencia}`);
+        continue;
+      }
+      const bucket = state.processed[entry.uf] ?? {};
       bucket[competencia] = { sourceMtime: entry.ftpMtime, sourceSize: entry.ftpSize };
       state.processed[entry.uf] = bucket;
+      merged += 1;
     }
     state.lastRun = new Date().toISOString();
     saveState(path, state);
-    process.stderr.write(`✓ ${datasetId}: ${entries.length} entradas merged em ${path}\n`);
+    process.stderr.write(
+      `✓ ${datasetId}: ${merged}/${entries.length} entradas merged em ${path}\n`,
+    );
+    if (naoArquivadas.length > 0) {
+      // Continuam pendentes de propósito: o próximo refresh tenta de novo.
+      process.stderr.write(
+        `⚠ ${datasetId}: ${naoArquivadas.length} competências pendentes sem Parquet em ` +
+          `${cli.buildDir} — seguem pendentes (ex.: ${naoArquivadas.slice(0, 5).join(', ')})\n`,
+      );
+    }
   }
 }
 

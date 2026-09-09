@@ -16,7 +16,12 @@
  * Uso:
  *   pnpm archive-sia-pa -- --ufs AC --years 2024
  *   pnpm archive-sia-pa -- --ufs ALL --years 2008-2025
- *   pnpm archive-sia-pa -- --ufs SP --years 2021 --months 03,04,05  # cleanup precise
+ *   pnpm archive-sia-pa -- --ufs SP --years 2021 --months 03,04,05  # cleanup preciso
+ *   pnpm archive-sia-pa -- --from-pending state/pending.json         # delta do detect-new
+ *
+ * `--from-pending` tem precedência sobre `--ufs`/`--years`/`--months`:
+ * arquiva exatamente as tuplas que o `detect-new` marcou como pendentes.
+ * É o modo usado pelo workflow de refresh.
  *
  * Observações:
  *   - Lê via `@precisa-saude/datasus` que gerencia cache FTP local
@@ -32,6 +37,7 @@ import {
   existsSync,
   mkdirSync,
   openSync,
+  readFileSync,
   rmSync,
   statSync,
   writeFileSync,
@@ -43,6 +49,8 @@ import { fileURLToPath } from 'node:url';
 import { readDbcRecords } from '@precisa-saude/datasus-dbc';
 import { download, sia, type SiaProducaoAmbulatorialRecord } from '@precisa-saude/datasus-sdk';
 import duckdb from 'duckdb';
+
+import { parsePendingTargets, sortTargets, type Target } from './lib/refresh-targets.js';
 
 const SIA_PA_DIR = '/dissemin/publicos/SIASUS/200801_/Dados';
 const VARIANT_SUFFIXES = ['a', 'b', 'c', 'd', 'e'];
@@ -131,6 +139,13 @@ async function* streamMonthWithVariants(
 interface Cli {
   months: number[];
   outDir: string;
+  /**
+   * Tuplas (UF, ano, mês) que serão de fato arquivadas. Com
+   * `--from-pending`, vêm do `pending.json` emitido pelo `detect-new`;
+   * sem ele, é o produto cartesiano `ufs × years × months` (retrocompat
+   * com as invocações manuais documentadas no cabeçalho).
+   */
+  targets: Target[];
   throttleMs: number;
   ufs: string[];
   yearPauseMs: number;
@@ -211,7 +226,25 @@ function parseArgs(argv: string[]): Cli {
   const outDir = resolve(repoRoot, get('--out', 'build/sia-pa'));
   const throttleMs = Number(get('--throttle-ms', '500'));
   const yearPauseMs = Number(get('--year-pause-ms', '2000'));
-  return { months, outDir, throttleMs, ufs, yearPauseMs, years };
+
+  const fromPending = get('--from-pending', '');
+  let targets: Target[];
+  if (fromPending === '') {
+    targets = [];
+    for (const year of years) {
+      for (const uf of ufs) {
+        for (const month of months) targets.push({ month, uf, year });
+      }
+    }
+  } else {
+    const pendingPath = resolve(repoRoot, fromPending);
+    if (!existsSync(pendingPath)) {
+      throw new Error(`--from-pending: arquivo não encontrado: ${pendingPath}`);
+    }
+    targets = parsePendingTargets(readFileSync(pendingPath, 'utf8'), 'sia-pa');
+  }
+
+  return { months, outDir, targets: sortTargets(targets), throttleMs, ufs, yearPauseMs, years };
 }
 
 function sleep(ms: number): Promise<void> {
@@ -351,26 +384,31 @@ async function writeMonthPartition(
 async function main(): Promise<void> {
   const cli = parseArgs(process.argv.slice(2));
   mkdirSync(cli.outDir, { recursive: true });
+  const ufsAlvo = [...new Set(cli.targets.map((t) => t.uf))];
+  const anosAlvo = [...new Set(cli.targets.map((t) => t.year))].sort((a, b) => a - b);
   process.stderr.write(
-    `Archive SIA-PA → Parquet | UFs=${cli.ufs.join(',')} | anos=${cli.years.join(',')} | out=${cli.outDir}\n`,
+    `Archive SIA-PA → Parquet | ${cli.targets.length} partições | ` +
+      `UFs=${ufsAlvo.join(',')} | anos=${anosAlvo.join(',')} | out=${cli.outDir}\n`,
   );
 
   let totalRows = 0;
   let skipped = 0;
-  for (let yIdx = 0; yIdx < cli.years.length; yIdx += 1) {
-    const year = cli.years[yIdx]!;
-    for (const uf of cli.ufs) {
-      process.stderr.write(`[${year}] ${uf}\n`);
-      for (const month of cli.months) {
-        const r = await writeMonthPartition(cli, uf, year, month);
-        totalRows += r.rows;
-        if (r.skipped) skipped += 1;
-        if (cli.throttleMs > 0) await sleep(cli.throttleMs);
-      }
-    }
-    if (cli.yearPauseMs > 0 && yIdx < cli.years.length - 1) {
+  let prevYear: null | number = null;
+  let prevGroup = '';
+  for (const target of cli.targets) {
+    if (prevYear !== null && target.year !== prevYear && cli.yearPauseMs > 0) {
       await sleep(cli.yearPauseMs);
     }
+    const group = `${target.year} ${target.uf}`;
+    if (group !== prevGroup) {
+      process.stderr.write(`[${target.year}] ${target.uf}\n`);
+      prevGroup = group;
+    }
+    prevYear = target.year;
+    const r = await writeMonthPartition(cli, target.uf, target.year, target.month);
+    totalRows += r.rows;
+    if (r.skipped) skipped += 1;
+    if (cli.throttleMs > 0) await sleep(cli.throttleMs);
   }
 
   const batchManifest = resolve(cli.outDir, '_archive-run.json');
@@ -379,7 +417,7 @@ async function main(): Promise<void> {
     `${JSON.stringify(
       {
         finishedAt: new Date().toISOString(),
-        params: { ufs: cli.ufs, years: cli.years },
+        params: { targetCount: cli.targets.length, ufs: ufsAlvo, years: anosAlvo },
         stats: { rowsEmitted: totalRows, skippedExisting: skipped },
       },
       null,
