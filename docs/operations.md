@@ -82,9 +82,25 @@ gh workflow run refresh.yml --repo Precisa-Saude/datasus-parquet -F forceManifes
 ```
 
 Nesse modo rodam só os passos de catálogo (listar bucket → build
-manifest → guarda anti-regressão → upload → invalidação). Archive,
-provenance, state e **release** ficam de fora — a release emite DOI, e
-não há competência nova para versionar.
+manifest → guarda anti-regressão → upload → invalidação).
+
+O que ele **não** faz, e por quê:
+
+- **não arquiva nem sobe Parquet** — não há delta; o `build/` sequer
+  existe, e o `aws s3 sync build/` do passo de delta falharia. O
+  `build-manifest` em modo `--s3-listing` monta o catálogo a partir da
+  listagem do bucket e cria o diretório de saída sozinho, então não
+  depende do `build/`.
+- **não mexe no state** — nada foi ingerido nesta rodada.
+- **não cria release nem emite DOI.** É deliberado: DOI é permanente e
+  versiona _dado_, não catálogo. Um rebuild não acrescenta competência
+  nenhuma, então não há o que versionar — e `latestCompetencia` viria
+  vazio, gerando uma tag `dataset-`. O dado publicado por um backfill
+  fica sem DOI próprio até a próxima competência nova gerar uma release;
+  se um DOI for desejado para aquele lote, crie a release à mão.
+
+A guarda anti-regressão continua ativa: um manifest que cobrisse menos
+partições que o publicado é rejeitado antes do upload.
 
 ## O que um timeout preserva
 
