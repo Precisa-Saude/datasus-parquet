@@ -81,8 +81,13 @@ inteiro — e é lá dentro que o manifest é reconstruído. Use:
 gh workflow run refresh.yml --repo Precisa-Saude/datasus-parquet -F forceManifest=true
 ```
 
-Nesse modo rodam só os passos de catálogo (listar bucket → build
-manifest → guarda anti-regressão → upload → invalidação).
+> **Este modo não processa dado nenhum.** Ele só reescreve o catálogo a
+> partir do que já está no bucket. Se a intenção era ingerir competência
+> nova, o caminho é `refresh.yml` sem flag (delta) ou `backfill.yml`
+> (volume) — ver a tabela no topo.
+
+Rodam só os passos de catálogo: listar bucket → build manifest → guarda
+anti-regressão → upload → invalidação.
 
 O que ele **não** faz, e por quê:
 
@@ -95,9 +100,13 @@ O que ele **não** faz, e por quê:
 - **não cria release nem emite DOI.** É deliberado: DOI é permanente e
   versiona _dado_, não catálogo. Um rebuild não acrescenta competência
   nenhuma, então não há o que versionar — e `latestCompetencia` viria
-  vazio, gerando uma tag `dataset-`. O dado publicado por um backfill
-  fica sem DOI próprio até a próxima competência nova gerar uma release;
-  se um DOI for desejado para aquele lote, crie a release à mão.
+  vazio, gerando uma tag `dataset-`.
+
+  Isso **não** impede o lote de um backfill de ter DOI: basta criar a
+  release à mão, com tag e descrição próprias para aquele lote. O que o
+  modo evita é emitir DOI automático e permanente para algo que não é
+  versão nova do dado. Sem release manual, o lote entra no DOI da
+  próxima competência nova.
 
 A guarda anti-regressão continua ativa: um manifest que cobrisse menos
 partições que o publicado é rejeitado antes do upload.
