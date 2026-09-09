@@ -29,7 +29,21 @@ export interface PendingTargetEntry {
 }
 
 interface PendingFileShape {
-  pending?: PendingTargetEntry[];
+  pending?: unknown;
+}
+
+function isValidEntry(value: unknown): value is PendingTargetEntry {
+  if (typeof value !== 'object' || value === null) return false;
+  const e = value as Record<string, unknown>;
+  return (
+    typeof e['dataset'] === 'string' &&
+    typeof e['uf'] === 'string' &&
+    e['uf'] !== '' &&
+    Number.isInteger(e['year']) &&
+    Number.isInteger(e['month']) &&
+    (e['month'] as number) >= 1 &&
+    (e['month'] as number) <= 12
+  );
 }
 
 export function sortTargets(targets: Target[]): Target[] {
@@ -43,9 +57,30 @@ export function sortTargets(targets: Target[]): Target[] {
  * conteúdo bruto do `pending.json`.
  */
 export function parsePendingTargets(raw: string, dataset: string): Target[] {
-  const parsed = JSON.parse(raw) as PendingFileShape;
+  let parsed: PendingFileShape;
+  try {
+    parsed = JSON.parse(raw) as PendingFileShape;
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new Error(`pending.json inválido: não é JSON (${msg})`);
+  }
+  if (typeof parsed !== 'object' || parsed === null) {
+    throw new Error('pending.json inválido: raiz não é um objeto');
+  }
+  const entries = parsed.pending ?? [];
+  if (!Array.isArray(entries)) {
+    throw new Error('pending.json inválido: `pending` não é uma lista');
+  }
   const targets: Target[] = [];
-  for (const entry of parsed.pending ?? []) {
+  for (const [i, entry] of entries.entries()) {
+    // Falha alto em vez de pular: uma entrada malformada viraria alvo
+    // `undefined` e o archive gravaria partição inválida sem reclamar —
+    // exatamente a classe de silêncio que este PR está corrigindo.
+    if (!isValidEntry(entry)) {
+      throw new Error(
+        `pending.json inválido: entrada ${i} não tem {dataset, uf, year, month} válidos`,
+      );
+    }
     if (entry.dataset !== dataset) continue;
     targets.push({ month: entry.month, uf: entry.uf, year: entry.year });
   }

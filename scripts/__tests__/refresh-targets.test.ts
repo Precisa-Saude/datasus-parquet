@@ -40,6 +40,30 @@ describe('parsePendingTargets', () => {
     expect(parsePendingTargets('{"detectedAt":"x"}', 'sia-pa')).toEqual([]);
   });
 
+  it('rejeita JSON malformado com mensagem explícita', () => {
+    expect(() => parsePendingTargets('{ nao json', 'sia-pa')).toThrow(/não é JSON/);
+  });
+
+  it('rejeita raiz que não é objeto', () => {
+    expect(() => parsePendingTargets('42', 'sia-pa')).toThrow(/raiz não é um objeto/);
+  });
+
+  it('rejeita `pending` que não é lista', () => {
+    expect(() => parsePendingTargets('{"pending":{}}', 'sia-pa')).toThrow(/não é uma lista/);
+  });
+
+  it.each([
+    ['sem uf', { dataset: 'sia-pa', month: 3, year: 2026 }],
+    ['uf vazia', { dataset: 'sia-pa', month: 3, uf: '', year: 2026 }],
+    ['ano não inteiro', { dataset: 'sia-pa', month: 3, uf: 'SP', year: '2026' }],
+    ['mês fora de 1-12', { dataset: 'sia-pa', month: 13, uf: 'SP', year: 2026 }],
+    ['mês zero', { dataset: 'sia-pa', month: 0, uf: 'SP', year: 2026 }],
+    ['entrada nula', null],
+  ])('rejeita entrada malformada: %s', (_label, entry) => {
+    // Pular em silêncio produziria alvo `undefined` e partição inválida.
+    expect(() => parsePendingTargets(pendingJson([entry]), 'sia-pa')).toThrow(/entrada 0/);
+  });
+
   it('cobre as 108 partições de 2026-03..06 × 27 UFs sem perder nenhuma', () => {
     // Regressão do incidente 2026-08-17: o archive rodava com os
     // defaults AC/2024 e ignorava o delta inteiro.
