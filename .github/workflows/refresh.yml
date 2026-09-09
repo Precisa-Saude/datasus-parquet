@@ -21,6 +21,10 @@ on:
         description: 'Dry run — detect only, skip archive/upload'
         type: boolean
         default: false
+      forceManifest:
+        description: 'Reconstrói o manifest.json mesmo sem competência nova (usar após backfill)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -52,7 +56,14 @@ jobs:
 
   archive:
     needs: detect
-    if: needs.detect.outputs.hasNew == 'true' && inputs.dryRun != true
+    # `forceManifest` existe porque o manifest só era reconstruído como
+    # efeito colateral de ingerir dado novo. Depois de um `backfill.yml`
+    # — que publica Parquet mas não toca no manifest — o catálogo fica
+    # defasado e o detect não acha nada pendente, então não havia caminho
+    # para corrigi-lo. Ver docs/operations.md.
+    if: >-
+      (needs.detect.outputs.hasNew == 'true' || inputs.forceManifest) &&
+      inputs.dryRun != true
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -82,9 +93,11 @@ jobs:
       # defaults `--ufs AC --years 2024` e arquiva 12 partições fixas,
       # independente do que o detect-new encontrou.
       - name: Archive SIA-PA delta (DBC → Parquet raw)
+        if: needs.detect.outputs.hasNew == 'true'
         run: pnpm archive-sia-pa -- --from-pending state/pending.json
 
       - name: Emit provenance (SHA256 + schema + metadata)
+        if: needs.detect.outputs.hasNew == 'true'
         run: pnpm emit-provenance
 
       - uses: aws-actions/configure-aws-credentials@517a711dbcd0e402f90c77e7e2f81e849156e31d # v6.2.2
@@ -95,6 +108,7 @@ jobs:
       # Sobe primeiro os arquivos do delta (sem manifest.json — esse é
       # reconstruído logo abaixo a partir do estado real do bucket).
       - name: Upload delta para S3
+        if: needs.detect.outputs.hasNew == 'true'
         run: |
           aws s3 sync build/ "s3://${{ secrets.S3_BUCKET }}/" \
             --exclude '_archive-run.json' \
@@ -145,9 +159,11 @@ jobs:
       # Só promove a processada o que tem Parquet em build/ — uma
       # partição que falhou continua pendente pro próximo refresh.
       - name: Atualizar state (merge pending → dataset state)
+        if: needs.detect.outputs.hasNew == 'true'
         run: pnpm detect-new -- --mark-processed --build-dir build
 
       - name: Commit state atualizado
+        if: needs.detect.outputs.hasNew == 'true'
         run: |
           git config user.name 'precisa-saude-release-bot[bot]'
           git config user.email '${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
@@ -160,7 +176,11 @@ jobs:
           git pull --rebase origin main
           git push
 
+      # Nunca num rebuild só de manifest: a release emite DOI via Zenodo, e
+      # DOI é permanente. Sem competência nova não há o que versionar — e
+      # `latestCompetencia` viria vazio, gerando uma tag `dataset-`.
       - name: Criar GitHub Release (dispara webhook Zenodo → DOI)
+        if: needs.detect.outputs.hasNew == 'true'
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: dataset-${{ needs.detect.outputs.latestCompetencia }}

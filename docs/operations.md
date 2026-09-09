@@ -67,12 +67,49 @@ gh workflow run backfill.yml -F ufs=SP,MG,RJ -F years=2026 -F months=03,04,05,06
 É **idempotente**: o archive pula partição que já tem `part.parquet`, então
 repetir um chunk que falhou no meio só refaz o que falta.
 
-### Depois de um backfill: rode o refresh
+### Depois de um backfill: rode o refresh com `forceManifest`
 
 `backfill.yml` **não reconstrói o `manifest.json`** — sobe os Parquet,
 atualiza o state e invalida o CloudFront, só isso. O catálogo público
-continua sem as partições novas até que um `refresh.yml` rode (no
-dispatch seguinte ou no cron de segunda).
+continua sem as partições novas.
+
+E um `refresh.yml` comum **não resolve**: depois que o backfill marcou o
+state, o `detect-new` não acha nada pendente, o job `archive` é pulado
+inteiro — e é lá dentro que o manifest é reconstruído. Use:
+
+```bash
+gh workflow run refresh.yml --repo Precisa-Saude/datasus-parquet -F forceManifest=true
+```
+
+> **Este modo não processa dado nenhum.** Ele só reescreve o catálogo a
+> partir do que já está no bucket. Se a intenção era ingerir competência
+> nova, o caminho é `refresh.yml` sem flag (delta) ou `backfill.yml`
+> (volume) — ver a tabela no topo.
+
+Rodam só os passos de catálogo: listar bucket → build manifest → guarda
+anti-regressão → upload → invalidação.
+
+O que ele **não** faz, e por quê:
+
+- **não arquiva nem sobe Parquet** — não há delta; o `build/` sequer
+  existe, e o `aws s3 sync build/` do passo de delta falharia. O
+  `build-manifest` em modo `--s3-listing` monta o catálogo a partir da
+  listagem do bucket e cria o diretório de saída sozinho, então não
+  depende do `build/`.
+- **não mexe no state** — nada foi ingerido nesta rodada.
+- **não cria release nem emite DOI.** É deliberado: DOI é permanente e
+  versiona _dado_, não catálogo. Um rebuild não acrescenta competência
+  nenhuma, então não há o que versionar — e `latestCompetencia` viria
+  vazio, gerando uma tag `dataset-`.
+
+  Isso **não** impede o lote de um backfill de ter DOI: basta criar a
+  release à mão, com tag e descrição próprias para aquele lote. O que o
+  modo evita é emitir DOI automático e permanente para algo que não é
+  versão nova do dado. Sem release manual, o lote entra no DOI da
+  próxima competência nova.
+
+A guarda anti-regressão continua ativa: um manifest que cobrisse menos
+partições que o publicado é rejeitado antes do upload.
 
 ## O que um timeout preserva
 
