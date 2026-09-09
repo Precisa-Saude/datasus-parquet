@@ -67,12 +67,24 @@ gh workflow run backfill.yml -F ufs=SP,MG,RJ -F years=2026 -F months=03,04,05,06
 É **idempotente**: o archive pula partição que já tem `part.parquet`, então
 repetir um chunk que falhou no meio só refaz o que falta.
 
-### Depois de um backfill: rode o refresh
+### Depois de um backfill: rode o refresh com `forceManifest`
 
 `backfill.yml` **não reconstrói o `manifest.json`** — sobe os Parquet,
 atualiza o state e invalida o CloudFront, só isso. O catálogo público
-continua sem as partições novas até que um `refresh.yml` rode (no
-dispatch seguinte ou no cron de segunda).
+continua sem as partições novas.
+
+E um `refresh.yml` comum **não resolve**: depois que o backfill marcou o
+state, o `detect-new` não acha nada pendente, o job `archive` é pulado
+inteiro — e é lá dentro que o manifest é reconstruído. Use:
+
+```bash
+gh workflow run refresh.yml --repo Precisa-Saude/datasus-parquet -F forceManifest=true
+```
+
+Nesse modo rodam só os passos de catálogo (listar bucket → build
+manifest → guarda anti-regressão → upload → invalidação). Archive,
+provenance, state e **release** ficam de fora — a release emite DOI, e
+não há competência nova para versionar.
 
 ## O que um timeout preserva
 
