@@ -78,8 +78,11 @@ jobs:
           name: pending
           path: state/
 
+      # `--from-pending` é obrigatório aqui: sem ele o script cai nos
+      # defaults `--ufs AC --years 2024` e arquiva 12 partições fixas,
+      # independente do que o detect-new encontrou.
       - name: Archive SIA-PA delta (DBC → Parquet raw)
-        run: pnpm archive-sia-pa
+        run: pnpm archive-sia-pa -- --from-pending state/pending.json
 
       - name: Emit provenance (SHA256 + schema + metadata)
         run: pnpm emit-provenance
@@ -139,8 +142,10 @@ jobs:
             --distribution-id "$DIST_ID" \
             --paths '/manifest.json' '/*/provenance/*'
 
+      # Só promove a processada o que tem Parquet em build/ — uma
+      # partição que falhou continua pendente pro próximo refresh.
       - name: Atualizar state (merge pending → dataset state)
-        run: pnpm detect-new -- --mark-processed
+        run: pnpm detect-new -- --mark-processed --build-dir build
 
       - name: Commit state atualizado
         run: |
