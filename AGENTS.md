@@ -24,6 +24,23 @@ packages/
 site/  (if applicable)
 ```
 
+## Publicar dados — leia antes de disparar workflow
+
+Dois workflows publicam Parquet e eles **não** são intercambiáveis:
+
+- `refresh.yml` — delta semanal, runner do GitHub, teto de **180 min**,
+  reconstrói o `manifest.json`.
+- `backfill.yml` — volume grande, runner **self-hosted** (`rafael-desktop-archive`),
+  teto de **24h**, escopado por `ufs`/`years`/`months`, com watchdog. **Não**
+  reconstrói o manifest.
+
+Acima de ~20 partições pendentes, é `backfill.yml` em chunks, com SP/MG/RJ
+num run separado. Um timeout **não preserva progresso** no runner do GitHub:
+o upload ao S3 só acontece depois que todas as partições terminam.
+
+Procedimento completo, incluindo verificação pós-publicação, em
+[`docs/operations.md`](docs/operations.md).
+
 ## Commit scopes
 
 Valid scopes: `data`, `schema`, `scripts`, `ci`, `deps`, `docs`, `lint`, `config`.

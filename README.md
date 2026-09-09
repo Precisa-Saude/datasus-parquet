@@ -121,6 +121,11 @@ ftp.datasus.gov.br → detect-new → archive-<dataset> → provenance → S3 �
 
 Workflow em [`.github/workflows/refresh.yml`](.github/workflows/refresh.yml).
 
+Esse é o caminho do **delta semanal**. Recuperar meses ou anos atrasados é
+outro workflow, em outro runner, com outro teto de tempo — e escolher
+errado custa horas. Antes de disparar qualquer publicação, veja
+[`docs/operations.md`](docs/operations.md).
+
 > **Site `datasus-viz` e cadeia _end-to-end_:** este repo publica os
 > _Parquets brutos_ no S3 — o site `datasus-viz` consome via CloudFront,
 > agrega para LOINC e republica artefatos otimizados. A cadeia inteira
