@@ -125,6 +125,19 @@ jobs:
           eval "$($HOME/.local/bin/mise activate bash)"
           pnpm detect-new -- --mark-processed
 
+      # Token novo logo antes do push. O do início do job vale 60 min e o
+      # archive costuma passar disso: no run 34406745127 o commit rodou 75
+      # min depois da geração (117 min no 34387495980) e o push morreu com
+      # "Invalid username or token". O commit em si é criado — o que se
+      # perde é só o envio, então o sintoma é state parado com dado já no S3.
+      - name: Renovar token do release-bot para o push
+        id: app-token-push
+        if: ${{ inputs.markProcessed }}
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
       - name: Commit state/sia-pa.json
         if: ${{ inputs.markProcessed }}
         run: |
@@ -142,6 +155,13 @@ jobs:
           git config user.email '${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
           git add state/sia-pa.json
           git commit -m "chore(data): backfill sia-pa ${{ inputs.ufs }} × ${{ inputs.years }} (run ${{ github.run_id }})"
+          # O `actions/checkout` grava o token antigo num
+          # `http.<host>.extraheader`, que tem precedência sobre credencial
+          # embutida na URL — sem remover, o push continuaria autenticando
+          # com o token expirado.
+          git config --local --unset-all http.https://github.com/.extraheader || true
+          git remote set-url origin \
+            "https://x-access-token:${{ steps.app-token-push.outputs.token }}@github.com/${{ github.repository }}.git"
           git pull --rebase origin main
           git push origin HEAD:main
 
