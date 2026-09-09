@@ -137,6 +137,10 @@ jobs:
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          # Este token só empurra um commit de state — não precisa de mais
+          # nada. Sem `permission-*`, viria com todas as permissões que a
+          # instalação do app concede.
+          permission-contents: write
 
       - name: Commit state/sia-pa.json
         if: ${{ inputs.markProcessed }}
