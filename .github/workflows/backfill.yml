@@ -128,6 +128,12 @@ jobs:
       - name: Commit state/sia-pa.json
         if: ${{ inputs.markProcessed }}
         run: |
+          # `mise activate` como nos demais passos: o hook de pre-commit do
+          # husky chama `pnpm`, que no runner self-hosted só existe via mise.
+          # Sem isso o commit morre com `pnpm: command not found` (code 127) —
+          # foi o que aconteceu no run 34387495980, que publicou 108 partições
+          # no S3 e deixou o state sem commitar.
+          eval "$($HOME/.local/bin/mise activate bash)"
           if git diff --quiet -- state/sia-pa.json; then
             echo "state/sia-pa.json sem mudança — nada pra commitar"
             exit 0
