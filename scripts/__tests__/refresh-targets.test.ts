@@ -118,3 +118,34 @@ describe('partitionArtifactPaths', () => {
     expect(paths.parquet).toContain('mes=12/');
   });
 });
+
+describe('ordem newest-first', () => {
+  const targets = [
+    { month: 8, uf: 'SP', year: 2025 },
+    { month: 7, uf: 'AC', year: 2026 },
+    { month: 12, uf: 'RJ', year: 2025 },
+    { month: 7, uf: 'BA', year: 2026 },
+  ];
+
+  it('põe a competência mais recente primeiro e desempata por UF', () => {
+    expect(sortTargets(targets, 'newest-first')).toEqual([
+      { month: 7, uf: 'AC', year: 2026 },
+      { month: 7, uf: 'BA', year: 2026 },
+      { month: 12, uf: 'RJ', year: 2025 },
+      { month: 8, uf: 'SP', year: 2025 },
+    ]);
+  });
+
+  it('mantém a ordem cronológica (ano → UF → mês) como padrão', () => {
+    expect(sortTargets(targets)[0]).toEqual({ month: 12, uf: 'RJ', year: 2025 });
+  });
+
+  it('parsePendingTargets repassa a ordem pedida', () => {
+    const raw = pendingJson(targets.map((t) => ({ dataset: 'sia-pa', ...t })));
+    expect(parsePendingTargets(raw, 'sia-pa', 'newest-first')[0]).toEqual({
+      month: 7,
+      uf: 'AC',
+      year: 2026,
+    });
+  });
+});
