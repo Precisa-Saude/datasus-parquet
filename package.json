@@ -7,6 +7,7 @@
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
+    "archive:watch": "bash scripts/archive-watchdog.sh",
     "archive-sia-pa": "tsx scripts/archive-sia-pa.ts",
     "build-manifest": "tsx scripts/build-manifest.ts",
     "detect-new": "tsx scripts/detect-new.ts",
