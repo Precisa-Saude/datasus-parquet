@@ -20,7 +20,16 @@ export async function ftpRecordCount(ftpPath: string, attempts = 4): Promise<nul
     try {
       const { stdout } = await execFileAsync(
         'curl',
-        ['-s', '--max-time', '60', '-r', '0-11', `ftp://${FTP_HOST}${ftpPath}`],
+        [
+          '-s',
+          '--connect-timeout',
+          '20',
+          '--max-time',
+          '60',
+          '-r',
+          '0-11',
+          `ftp://${FTP_HOST}${ftpPath}`,
+        ],
         { encoding: 'buffer', maxBuffer: 1024 },
       );
       const count = parseRecordCount(new Uint8Array(stdout));
