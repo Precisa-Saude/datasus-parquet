@@ -5,38 +5,74 @@ comece por aqui.
 
 |                            | `refresh.yml`                                                  | `backfill.yml`                                                                    |
 | -------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| Para que serve             | delta semanal (o que o DATASUS publicou desde a última rodada) | recuperar volume grande: meses/anos atrasados, re-arquivar competência corrompida |
+| Para que serve             | publicação mensal do DATASUS: janela revisável inteira + delta | recuperar volume grande: meses/anos atrasados, re-arquivar competência corrompida |
 | Gatilho                    | cron segunda 06:00 UTC + `workflow_dispatch`                   | só `workflow_dispatch`                                                            |
-| Onde roda                  | runner do GitHub (`ubuntu-latest`)                             | **`rafael-desktop-archive`** (self-hosted, label `archive`)                       |
-| Teto de tempo              | **180 min**                                                    | **1440 min (24h)**                                                                |
-| Escopo                     | tudo que o `detect-new` achar pendente                         | você escolhe `ufs` × `years` × `months`                                           |
-| Resiliência                | nenhuma — job morre, perde tudo                                | watchdog reinicia partição travada                                                |
+| Onde roda                  | detect no GitHub; archive no **`rafael-desktop-archive`**      | **`rafael-desktop-archive`** (self-hosted, label `archive`)                       |
+| Teto de tempo              | **1440 min (24h)** no archive                                  | **1440 min (24h)**                                                                |
+| Escopo                     | janela de 13 competências × 27 UFs quando há publicação nova   | você escolhe `ufs` × `years` × `months`                                           |
+| Resiliência                | watchdog + verificação contra o FTP antes do upload            | watchdog reinicia partição travada                                                |
 | Reconstrói `manifest.json` | sim, com guarda anti-regressão                                 | **não**                                                                           |
 
 ## Regra prática
 
-Rode `detect-new` (ou olhe o job `detect` do último refresh) e conte as
-pendências:
+- **Publicação mensal do DATASUS** → `refresh.yml` (automático, segunda).
+  Reprocessa a janela revisável inteira sem acompanhamento.
+- **Recuperar o que está fora da janela** (anos antigos, partição que a
+  auditoria apontou) → `backfill.yml`, em chunks.
 
-- **até ~20 partições** → `refresh.yml` dá conta.
-- **acima disso** → `backfill.yml`, em chunks.
-
-Para dimensionar: 108 partições (4 meses × 27 UFs) **estouraram os 180
-minutos do refresh sem publicar nada**. Ver "O que um timeout preserva".
-
-## `refresh.yml` — delta semanal
+## `refresh.yml` — publicação mensal (#46)
 
 ```bash
 gh workflow run refresh.yml --repo Precisa-Saude/datasus-parquet
 ```
 
-Ordem dos passos: `detect-new` → archive de **todas** as pendências →
-provenance → S3 sync → rebuild do `manifest.json` a partir da listagem do
-bucket → guarda anti-regressão → invalidação do CloudFront →
-`--mark-processed` → commit do state → GitHub Release (dispara o webhook
-do Zenodo e **emite DOI**).
+### Janela revisável
+
+Pelas datas dos arquivos no FTP, cada publicação mensal do DATASUS reescreve
+a competência mais recente **e as 12 anteriores**; depois disso a
+competência deixa de mudar. Por isso o `detect-new -- --window 13`:
+
+- sem nenhum delta contra o state (tamanho ou mtime) → nada pendente, o run
+  é no-op;
+- com qualquer delta → entram **todas** as partições da janela (13 × 27 ≈
+  350), além do delta fora dela. Cada entrada do `pending.json` traz o
+  `reason`: `novo`, `alterado` ou `janela`.
+
+Custo: julho/2026 (27 partições) levou ~40 min no runner; a janela inteira,
+8–10 h, uma vez por mês.
+
+### Passos
+
+1. `detect-new --window 13` no runner do GitHub.
+2. No runner self-hosted, archive sob o watchdog com `--order newest-first`
+   (a competência nova primeiro, para que uma falha no meio publique pelo
+   menos o mês novo), num diretório próprio do run, `build-refresh/`. O
+   `build/` do runner guarda partições de backfills antigos, e o
+   `aws s3 sync` sobe qualquer arquivo de tamanho diferente — inclusive um
+   mais velho que o do S3.
+3. `verify-partitions`: compara as linhas de cada parquet com o
+   `recordCount` dos cabeçalhos dos DBCs **lidos direto do FTP** (12 bytes,
+   nunca do cache). Divergente, sem parquet ou ilegível vai para
+   `build-rejected/` e não é publicado.
+4. Provenance → S3 sync (só `build-refresh/`) → rebuild do `manifest.json`
+   → guarda anti-regressão → invalidação do CloudFront (incluindo
+   `/sia-pa/*`, porque a janela reescreve objetos existentes).
+5. `--mark-processed --verified`: o state só recebe o que passou na
+   verificação; o resto segue pendente para o próximo refresh.
+6. Commit do state → GitHub Release (dispara o webhook do Zenodo e **emite
+   DOI**) → dispara o `refresh.yml` do datasus-viz.
+7. Se alguma partição foi rejeitada, o job termina em falha depois de
+   publicar as aprovadas.
 
 > O DOI é permanente. Não dispare "só pra testar".
+
+## `audit.yml` — auditoria mensal
+
+Todo dia 25 (e sob demanda), `pnpm audit-partitions` compara cada partição
+do S3 (linhas no footer do parquet, sem baixar) com o `recordCount` dos
+cabeçalhos no FTP (12 bytes por DBC). Havendo divergência, abre uma issue
+com a label `audit` — ou comenta na que já estiver aberta. O conserto de uma
+divergência fora da janela é um `backfill.yml` escopado.
 
 ## `backfill.yml` — volume grande, em chunks
 
@@ -129,6 +165,9 @@ progresso. A próxima rodada recomeça do zero.
 
 No runner self-hosted o `build/` sobrevive entre runs, e é por isso que o
 backfill em chunks funciona: cada chunk aproveita o que o anterior deixou.
+O refresh, ao contrário, começa cada run com um `build-refresh/` vazio:
+como a janela reescreve partições que já existem, reaproveitar um parquet
+de um run anterior significaria publicar a versão velha.
 
 ## Verificação do DBC antes de decodificar
 

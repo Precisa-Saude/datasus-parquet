@@ -15,7 +15,9 @@
  * Uso local:
  *   pnpm detect-new
  *   pnpm detect-new -- --dataset sia-pa
+ *   pnpm detect-new -- --window 13        (refresh: janela revisável, issue #46)
  *   pnpm detect-new -- --mark-processed   (pós-archive, atualiza state)
+ *   pnpm detect-new -- --mark-processed --verified build/_verified.json
  */
 
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -24,8 +26,10 @@ import { fileURLToPath } from 'node:url';
 
 import { Client } from 'basic-ftp';
 
+import { type PendingReason, selectPending } from './lib/pending-selection.js';
 import { partitionArtifactPaths } from './lib/refresh-targets.js';
 import { parseSiaPaFileName, SIA_PA_REGEX } from './lib/sia-pa-parser.js';
+import { partitionKey, verifiedKeys } from './lib/verification.js';
 
 const FTP_HOST = 'ftp.datasus.gov.br';
 
@@ -58,6 +62,14 @@ interface Cli {
   markProcessed: boolean;
   outPending: string;
   stateDir: string;
+  /**
+   * Arquivo `_verified.json` do `verify-partitions`. Com ele, o
+   * `--mark-processed` só promove partições que passaram na verificação
+   * contra o FTP (issue #46).
+   */
+  verifiedFile: null | string;
+  /** Tamanho da janela revisável; 0 desliga (só delta contra o state). */
+  windowSize: number;
 }
 
 interface StateEntry {
@@ -85,6 +97,12 @@ interface PendingEntry {
   /** Soma dos tamanhos de todas as variantes. */
   ftpSize: number;
   month: number;
+  /**
+   * Por que entrou: `novo`/`alterado` (delta contra o state) ou `janela`
+   * (dentro da janela revisável, reprocessada inteira quando há publicação
+   * nova — issue #46).
+   */
+  reason: PendingReason;
   uf: string;
   /**
    * Variantes disponíveis no FTP para esse (UF, ano, mês). Lista com
@@ -119,6 +137,8 @@ function parseArgs(argv: string[]): Cli {
     markProcessed: argv.includes('--mark-processed'),
     outPending: resolve(repoRoot, get('--out', 'state/pending.json')),
     stateDir: resolve(repoRoot, get('--state-dir', 'state')),
+    verifiedFile: argv.includes('--verified') ? resolve(repoRoot, get('--verified', '')) : null,
+    windowSize: Number.parseInt(get('--window', '0'), 10),
   };
 }
 
@@ -157,7 +177,8 @@ function computeDelta(
   cfg: DatasetConfig,
   remote: Array<{ mtime: Date; name: string; size: number }>,
   state: State,
-): PendingEntry[] {
+  windowSize: number,
+): { latest: null | string; pending: PendingEntry[]; windowStart: null | string } {
   // Agrupa variantes por (uf, year, month) antes de comparar com state.
   const groups = new Map<
     string,
@@ -184,41 +205,45 @@ function computeDelta(
     groups.set(key, bucket);
   }
 
-  const out: PendingEntry[] = [];
-  for (const group of groups.values()) {
+  const prepared = [...groups.values()].map((group) => {
     group.variants.sort((a, b) => a.suffix.localeCompare(b.suffix));
-    const aggregateSize = group.variants.reduce((sum, v) => sum + v.ftpSize, 0);
     const latestMtime = group.variants.reduce(
       (latest, v) => (v.mtime.getTime() > latest.getTime() ? v.mtime : latest),
       new Date(0),
     );
-    const competencia = `${group.year}-${String(group.month).padStart(2, '0')}`;
-    const known = state.processed[group.uf]?.[competencia];
-    const changed =
-      !known ||
-      known.sourceSize !== aggregateSize ||
-      new Date(known.sourceMtime).getTime() !== latestMtime.getTime();
-    if (!changed) continue;
-    out.push({
-      dataset: datasetId,
-      ftpMtime: latestMtime.toISOString(),
-      ftpSize: aggregateSize,
-      month: group.month,
-      uf: group.uf,
-      variants: group.variants.map(({ ftpMtime, ftpPath, ftpSize, suffix }) => ({
-        ftpMtime,
-        ftpPath,
-        ftpSize,
-        suffix,
-      })),
-      year: group.year,
-    });
-  }
-  return out.sort((a, b) => {
+    return {
+      ...group,
+      mtime: latestMtime.toISOString(),
+      size: group.variants.reduce((sum, v) => sum + v.ftpSize, 0),
+    };
+  });
+  const { latest, selected, windowStart } = selectPending(
+    prepared,
+    (uf, competencia) => state.processed[uf]?.[competencia],
+    windowSize,
+  );
+
+  const out: PendingEntry[] = selected.map(({ group, reason }) => ({
+    dataset: datasetId,
+    ftpMtime: group.mtime,
+    ftpSize: group.size,
+    month: group.month,
+    reason,
+    uf: group.uf,
+    variants: group.variants.map(({ ftpMtime, ftpPath, ftpSize, suffix }) => ({
+      ftpMtime,
+      ftpPath,
+      ftpSize,
+      suffix,
+    })),
+    year: group.year,
+  }));
+  out.sort((a, b) => {
     if (a.uf !== b.uf) return a.uf.localeCompare(b.uf);
     if (a.year !== b.year) return a.year - b.year;
     return a.month - b.month;
   });
+  return { latest, pending: out, windowStart };
 }
 
 function setGhOutput(key: string, value: string): void {
@@ -258,15 +283,24 @@ function markProcessed(cli: Cli): void {
     bucket.push(entry);
     byDataset.set(entry.dataset, bucket);
   }
+  const aprovadas =
+    cli.verifiedFile === null ? null : verifiedKeys(readFileSync(cli.verifiedFile, 'utf8'));
   for (const [datasetId, entries] of byDataset) {
     const path = stateFilePath(cli.stateDir, datasetId);
     const state = loadState(path);
     let merged = 0;
     const naoArquivadas: string[] = [];
+    const naoVerificadas: string[] = [];
     for (const entry of entries) {
       const competencia = `${entry.year}-${String(entry.month).padStart(2, '0')}`;
       if (!wasArchived(cli, datasetId, entry)) {
         naoArquivadas.push(`${entry.uf} ${competencia}`);
+        continue;
+      }
+      // Com --verified, só entra no state o que bateu com o FTP; partição
+      // rejeitada ou marcada .skipped continua pendente para o próximo run.
+      if (aprovadas !== null && !aprovadas.has(partitionKey(entry))) {
+        naoVerificadas.push(`${entry.uf} ${competencia}`);
         continue;
       }
       const bucket = state.processed[entry.uf] ?? {};
@@ -279,6 +313,12 @@ function markProcessed(cli: Cli): void {
     process.stderr.write(
       `✓ ${datasetId}: ${merged}/${entries.length} entradas merged em ${path}\n`,
     );
+    if (naoVerificadas.length > 0) {
+      process.stderr.write(
+        `⚠ ${datasetId}: ${naoVerificadas.length} competências arquivadas mas não verificadas ` +
+          `contra o FTP — seguem pendentes (ex.: ${naoVerificadas.slice(0, 5).join(', ')})\n`,
+      );
+    }
     if (naoArquivadas.length > 0) {
       // Continuam pendentes de propósito: o próximo refresh tenta de novo.
       process.stderr.write(
@@ -310,9 +350,23 @@ async function main(): Promise<void> {
     );
     const remote = await listRemote(cfg.dir);
     process.stderr.write(`  ${remote.length} arquivos no FTP\n`);
-    const delta = computeDelta(datasetId, cfg, remote, state);
-    process.stderr.write(`  ${delta.length} competências pendentes\n`);
-    allPending.push(...delta);
+    const { latest, pending, windowStart } = computeDelta(
+      datasetId,
+      cfg,
+      remote,
+      state,
+      cli.windowSize,
+    );
+    const porMotivo = pending.reduce<Record<string, number>>((acc, p) => {
+      acc[p.reason] = (acc[p.reason] ?? 0) + 1;
+      return acc;
+    }, {});
+    const janela = windowStart ? ` — janela ${windowStart}..${latest}` : '';
+    process.stderr.write(
+      `  ${pending.length} competências pendentes ${JSON.stringify(porMotivo)}${janela}\n`,
+    );
+    if (windowStart) setGhOutput('windowStart', windowStart);
+    allPending.push(...pending);
   }
 
   const latestCompetencia =

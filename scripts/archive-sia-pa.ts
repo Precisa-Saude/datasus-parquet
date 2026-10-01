@@ -18,6 +18,7 @@
  *   pnpm archive-sia-pa -- --ufs ALL --years 2008-2025
  *   pnpm archive-sia-pa -- --ufs SP --years 2021 --months 03,04,05  # cleanup preciso
  *   pnpm archive-sia-pa -- --from-pending state/pending.json         # delta do detect-new
+ *   pnpm archive-sia-pa -- --from-pending state/pending.json --order newest-first  # refresh
  *
  * `--from-pending` tem precedência sobre `--ufs`/`--years`/`--months`:
  * arquiva exatamente as tuplas que o `detect-new` marcou como pendentes.
@@ -56,7 +57,12 @@ import { Client } from 'basic-ftp';
 import duckdb from 'duckdb';
 
 import { fetchVerified, resolvePartitionFiles, SizeMismatchError } from './lib/dbc-source.js';
-import { parsePendingTargets, sortTargets, type Target } from './lib/refresh-targets.js';
+import {
+  parsePendingTargets,
+  sortTargets,
+  type Target,
+  type TargetOrder,
+} from './lib/refresh-targets.js';
 
 const FTP_HOST = 'ftp.datasus.gov.br';
 const SIA_PA_DIR = '/dissemin/publicos/SIASUS/200801_/Dados';
@@ -231,6 +237,12 @@ function parseArgs(argv: string[]): Cli {
   const throttleMs = Number(get('--throttle-ms', '500'));
   const yearPauseMs = Number(get('--year-pause-ms', '2000'));
 
+  const orderArg = get('--order', 'chronological');
+  if (orderArg !== 'chronological' && orderArg !== 'newest-first') {
+    throw new Error(`--order inválido: '${orderArg}' (use chronological ou newest-first)`);
+  }
+  const order: TargetOrder = orderArg;
+
   const fromPending = get('--from-pending', '');
   let targets: Target[];
   if (fromPending === '') {
@@ -245,10 +257,18 @@ function parseArgs(argv: string[]): Cli {
     if (!existsSync(pendingPath)) {
       throw new Error(`--from-pending: arquivo não encontrado: ${pendingPath}`);
     }
-    targets = parsePendingTargets(readFileSync(pendingPath, 'utf8'), 'sia-pa');
+    targets = parsePendingTargets(readFileSync(pendingPath, 'utf8'), 'sia-pa', order);
   }
 
-  return { months, outDir, targets: sortTargets(targets), throttleMs, ufs, yearPauseMs, years };
+  return {
+    months,
+    outDir,
+    targets: sortTargets(targets, order),
+    throttleMs,
+    ufs,
+    yearPauseMs,
+    years,
+  };
 }
 
 function sleep(ms: number): Promise<void> {

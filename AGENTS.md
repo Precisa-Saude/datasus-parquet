@@ -28,15 +28,17 @@ site/  (if applicable)
 
 Dois workflows publicam Parquet e eles **não** são intercambiáveis:
 
-- `refresh.yml` — delta semanal, runner do GitHub, teto de **180 min**,
-  reconstrói o `manifest.json`.
+- `refresh.yml` — semanal; quando há publicação nova do DATASUS,
+  reprocessa a janela revisável (13 competências × 27 UFs) no runner
+  **self-hosted**, confere cada partição contra o FTP antes do upload e
+  reconstrói o `manifest.json` (#46).
 - `backfill.yml` — volume grande, runner **self-hosted** (`rafael-desktop-archive`),
   teto de **24h**, escopado por `ufs`/`years`/`months`, com watchdog. **Não**
   reconstrói o manifest.
 
-Acima de ~20 partições pendentes, é `backfill.yml` em chunks, com SP/MG/RJ
-num run separado. Um timeout **não preserva progresso** no runner do GitHub:
-o upload ao S3 só acontece depois que todas as partições terminam.
+A publicação mensal é do `refresh.yml`. `backfill.yml` é para recuperar o
+que está fora da janela (anos antigos, divergências apontadas pelo
+`audit.yml`), em chunks, com SP/MG/RJ num run separado.
 
 Procedimento completo, incluindo verificação pós-publicação, em
 [`docs/operations.md`](docs/operations.md).

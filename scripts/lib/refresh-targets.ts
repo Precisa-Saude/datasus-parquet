@@ -46,7 +46,20 @@ function isValidEntry(value: unknown): value is PendingTargetEntry {
   );
 }
 
-export function sortTargets(targets: Target[]): Target[] {
+/**
+ * `chronological`: ano → UF → mês (padrão; bom para backfill em chunks).
+ * `newest-first`: competência mais recente primeiro, depois UF — usado no
+ * refresh para que uma falha no meio publique pelo menos o mês novo, em vez
+ * de ele esperar atrás das revisões (issue #46).
+ */
+export type TargetOrder = 'chronological' | 'newest-first';
+
+export function sortTargets(targets: Target[], order: TargetOrder = 'chronological'): Target[] {
+  if (order === 'newest-first') {
+    return [...targets].sort(
+      (a, b) => b.year - a.year || b.month - a.month || a.uf.localeCompare(b.uf),
+    );
+  }
   return [...targets].sort(
     (a, b) => a.year - b.year || a.uf.localeCompare(b.uf) || a.month - b.month,
   );
@@ -56,7 +69,11 @@ export function sortTargets(targets: Target[]): Target[] {
  * Extrai as tuplas (UF, ano, mês) pendentes de um dataset a partir do
  * conteúdo bruto do `pending.json`.
  */
-export function parsePendingTargets(raw: string, dataset: string): Target[] {
+export function parsePendingTargets(
+  raw: string,
+  dataset: string,
+  order: TargetOrder = 'chronological',
+): Target[] {
   let parsed: PendingFileShape;
   try {
     parsed = JSON.parse(raw) as PendingFileShape;
@@ -84,7 +101,7 @@ export function parsePendingTargets(raw: string, dataset: string): Target[] {
     if (entry.dataset !== dataset) continue;
     targets.push({ month: entry.month, uf: entry.uf, year: entry.year });
   }
-  return sortTargets(targets);
+  return sortTargets(targets, order);
 }
 
 /**
