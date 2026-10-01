@@ -21,6 +21,8 @@ import { fileURLToPath } from 'node:url';
 
 import duckdb from 'duckdb';
 
+import { gitSha } from './lib/git-sha.js';
+
 const DATASET_CONFIG: Record<
   string,
   {
@@ -70,18 +72,6 @@ function defaultCacheDir(): string {
 
 function sha256OfFile(path: string): string {
   return createHash('sha256').update(readFileSync(path)).digest('hex');
-}
-
-function gitSha(repoRoot: string): string {
-  try {
-    const headRef = readFileSync(join(repoRoot, '.git', 'HEAD'), 'utf8').trim();
-    if (headRef.startsWith('ref: ')) {
-      return readFileSync(join(repoRoot, '.git', headRef.slice(5)), 'utf8').trim();
-    }
-    return headRef;
-  } catch {
-    return 'unknown';
-  }
 }
 
 interface PackageInfo {
