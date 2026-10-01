@@ -113,12 +113,15 @@ async function main(): Promise<void> {
   }
   process.stderr.write(`FTP: ${parts.size} partições em ${files.length} arquivos\n`);
 
+  // S3 antes do FTP: os footers saem em minutos, e as ~6.600 leituras de
+  // cabeçalho no FTP levam ~1 h — se o S3 viesse depois, a sessão AWS do
+  // runner (1 h por padrão) expiraria no meio (HTTP 400, run 36936032619).
+  const years = [...new Set([...parts.values()].map((p) => p.year))].sort((a, b) => a - b);
+  const s3 = await s3Counts(bucket, years);
+
   const flat = [...parts.values()].flatMap((p) => p.files);
   const counts = await mapLimit(flat, 8, (name) => ftpRecordCount(`${SIA_PA_DIR}/${name}`));
   const byFile = new Map(flat.map((name, i) => [name, counts[i] ?? null]));
-
-  const years = [...new Set([...parts.values()].map((p) => p.year))].sort((a, b) => a - b);
-  const s3 = await s3Counts(bucket, years);
 
   const rows: VerificationRow[] = [...parts.entries()].map(([key, p]) => {
     const fileCounts = p.files.map((f) => byFile.get(f) ?? null);
