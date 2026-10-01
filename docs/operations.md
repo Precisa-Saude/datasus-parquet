@@ -130,17 +130,44 @@ progresso. A próxima rodada recomeça do zero.
 No runner self-hosted o `build/` sobrevive entre runs, e é por isso que o
 backfill em chunks funciona: cada chunk aproveita o que o anterior deixou.
 
-## Watchdog (só no backfill)
+## Verificação do DBC antes de decodificar
+
+O cache de download do SDK (`~/.cache/datasus-brasil/`) reusa o arquivo
+pelo caminho, sem conferir se ainda bate com o FTP. Por isso o
+`archive-sia-pa` lista o diretório do FTP uma vez no início do run e, para
+cada partição:
+
+- resolve canônico ou variantes `a`–`e` pela listagem (sem sondar 550);
+- baixa todos os arquivos da partição e confere o tamanho de cada um contra
+  a listagem **antes** de decodificar o primeiro;
+- se o tamanho divergir (cópia antiga de um arquivo republicado ou download
+  truncado), força um download novo; se ainda divergir, o erro entra no
+  retry de transporte e, esgotado, a partição vira `.failed`.
+
+Antes dessa checagem (issue #43), o pipeline chegou a republicar dados
+antigos depois de uma republicação do DATASUS, a misturar variantes de
+versões diferentes no mesmo mês e a travar horas decodificando um DBC
+truncado.
+
+## Watchdog
 
 `scripts/archive-watchdog.sh` embrulha o archive porque o decoder de DBC
-às vezes entra em loop de CPU sem yield:
+às vezes entra em loop de CPU sem yield. O `backfill.yml` sempre o usa; em
+rodadas locais, use `pnpm archive:watch -- <args do archive>` em vez de
+chamar o archive direto. Funciona no runner (Linux) e no macOS.
 
 - polla a cada 60s procurando `part.ndjson` com 0 byte e mtime > **15 min**
   (o limiar é 15 e não 5 porque SP/MG/RJ levam minutos só para baixar);
-- ao detectar, mata o archive, apaga o DBC do cache e reinicia — o arquivo
-  é rebaixado do FTP;
-- se o mesmo DBC travar **2 vezes**, move para `.bad`, registra em
-  `/tmp/archive-skipped.log` e segue adiante, em vez de travar o run.
+- trata como stall também o log do archive sem linha nova há mais de
+  **45 min** (`WATCHDOG_LOG_STALL_MIN`);
+- ao detectar, mata o archive, apaga do cache os DBCs da partição (canônico
+  e variantes) e reinicia — os arquivos são rebaixados do FTP;
+- se a mesma partição travar **2 vezes**, move os DBCs para `.bad`,
+  registra em `/tmp/archive-skipped.log` e segue adiante;
+- desiste com exit 1 depois de **5** saídas não-zero seguidas do archive
+  (`WATCHDOG_MAX_EXIT_RESTARTS`), em vez de reiniciar para sempre um erro
+  determinístico;
+- respeita `--out`, vigiando o diretório de saída que o archive usa.
 
 O resumo do job conta `part.parquet`, `.skipped` e `.bad`. Qualquer
 `.skipped` ou `.bad` merece olhar o log no runner.

@@ -24,9 +24,13 @@
  * É o modo usado pelo workflow de refresh.
  *
  * Observações:
- *   - Lê via `@precisa-saude/datasus` que gerencia cache FTP local
+ *   - Lê via `@precisa-saude/datasus-sdk`, que gerencia cache FTP local
  *     (`~/.cache/datasus-brasil/`). Se o DBC não estiver em cache,
  *     baixa automaticamente.
+ *   - Lista o diretório do FTP uma vez no início e confere o tamanho de
+ *     cada DBC contra a listagem antes de decodificar (issue #43): cópia
+ *     antiga ou truncada no cache é baixada de novo em vez de decodificada.
+ *     Para rodadas longas, prefira `pnpm archive:watch`.
  *   - Compressão zstd. Row-groups ordenados por `(PA_CMP, PA_CODUNI)`
  *     para pushdown por competência e estabelecimento.
  *   - Idempotente: pula partições já existentes. Deletar para re-emitir.
@@ -47,17 +51,27 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { readDbcRecords } from '@precisa-saude/datasus-dbc';
-import { download, sia, type SiaProducaoAmbulatorialRecord } from '@precisa-saude/datasus-sdk';
+import { download, type SiaProducaoAmbulatorialRecord } from '@precisa-saude/datasus-sdk';
+import { Client } from 'basic-ftp';
 import duckdb from 'duckdb';
 
+import { fetchVerified, resolvePartitionFiles, SizeMismatchError } from './lib/dbc-source.js';
 import { parsePendingTargets, sortTargets, type Target } from './lib/refresh-targets.js';
 
+const FTP_HOST = 'ftp.datasus.gov.br';
 const SIA_PA_DIR = '/dissemin/publicos/SIASUS/200801_/Dados';
-const VARIANT_SUFFIXES = ['a', 'b', 'c', 'd', 'e'];
 
-function isNotFoundError(err: unknown): boolean {
-  const msg = err instanceof Error ? err.message : String(err);
-  return /550|not found|does not exist/i.test(msg);
+/** Nome → tamanho em bytes de cada arquivo do diretório SIA-PA no FTP. */
+async function listRemoteSizes(dir: string): Promise<Map<string, number>> {
+  const client = new Client();
+  client.ftp.verbose = false;
+  try {
+    await client.access({ host: FTP_HOST, port: 21, secure: false });
+    const entries = await client.list(dir);
+    return new Map(entries.filter((e) => e.type === 1).map((e) => [e.name, e.size]));
+  } finally {
+    client.close();
+  }
 }
 
 /**
@@ -74,6 +88,9 @@ function isNotFoundError(err: unknown): boolean {
  * — só o transporte ganha retries generosos.
  */
 function isTransportError(err: unknown): boolean {
+  // Tamanho divergente da listagem = download truncado ou cópia antiga no
+  // cache; um download novo resolve, então entra no retry de transporte.
+  if (err instanceof SizeMismatchError) return true;
   const code = (err as NodeJS.ErrnoException | undefined)?.code;
   if (
     code !== undefined &&
@@ -96,43 +113,30 @@ function isTransportError(err: unknown): boolean {
  * `PA{UF}{YY}{MM}a.dbc`, `b.dbc`, etc. Os records são disjuntos entre
  * variantes e devem ser concatenados logicamente no consumo.
  *
- * Estratégia: tenta canônico primeiro; se der 550, probe sufixos
- * `a-e` e yields records de todas as variantes encontradas. Erros
- * não-550 propagam (abort seguro).
+ * Estratégia: resolve canônico ou variantes pela listagem do FTP e
+ * baixa todos os arquivos, conferindo o tamanho de cada um, ANTES de
+ * decodificar o primeiro. Assim uma variante divergente não deixa
+ * registros de outra versão já gravados no NDJSON (caso MG 2026-06).
  */
 async function* streamMonthWithVariants(
+  listing: ReadonlyMap<string, number>,
   uf: string,
   year: number,
   month: number,
 ): AsyncIterable<SiaProducaoAmbulatorialRecord> {
-  try {
-    for await (const record of sia.streamProducaoAmbulatorial({ month, uf, year })) {
-      yield record;
-    }
-    return;
-  } catch (err) {
-    if (!isNotFoundError(err)) throw err;
+  const files = resolvePartitionFiles(listing, uf, year, month);
+  if (files.length === 0) {
+    const mm = String(month).padStart(2, '0');
+    throw new Error(`550 nenhum DBC encontrado para ${uf} ${year}-${mm} (canônico + a-e)`);
   }
-
-  const yy = String(year % 100).padStart(2, '0');
-  const mm = String(month).padStart(2, '0');
-  let found = 0;
-  for (const suffix of VARIANT_SUFFIXES) {
-    const variantPath = `${SIA_PA_DIR}/PA${uf}${yy}${mm}${suffix}.dbc`;
-    let bytes: Uint8Array;
-    try {
-      bytes = await download({ path: variantPath });
-    } catch (err) {
-      if (isNotFoundError(err)) break;
-      throw err;
-    }
+  const verified: Uint8Array[] = [];
+  for (const file of files) {
+    verified.push(await fetchVerified(file, SIA_PA_DIR, download));
+  }
+  for (const bytes of verified) {
     for await (const record of readDbcRecords(bytes)) {
       yield record as SiaProducaoAmbulatorialRecord;
     }
-    found += 1;
-  }
-  if (found === 0) {
-    throw new Error(`550 nenhum DBC encontrado para ${uf} ${year}-${mm} (canônico + a-e)`);
   }
 }
 
@@ -260,6 +264,7 @@ function bytesHuman(n: number): string {
 
 async function writeMonthPartition(
   cli: Cli,
+  listing: ReadonlyMap<string, number>,
   uf: string,
   year: number,
   month: number,
@@ -302,7 +307,7 @@ async function writeMonthPartition(
     rows = 0;
     const fd = openSync(ndjsonFile, 'w');
     try {
-      for await (const record of streamMonthWithVariants(uf, year, month)) {
+      for await (const record of streamMonthWithVariants(listing, uf, year, month)) {
         writeSync(fd, `${JSON.stringify(record)}\n`);
         rows += 1;
       }
@@ -391,6 +396,12 @@ async function main(): Promise<void> {
       `UFs=${ufsAlvo.join(',')} | anos=${anosAlvo.join(',')} | out=${cli.outDir}\n`,
   );
 
+  // Uma listagem por run. Se o DATASUS republicar no meio de uma rodada
+  // longa, o tamanho diverge da listagem, o retry de transporte esgota e a
+  // partição vira `.failed` — re-rodar pega a listagem nova.
+  const listing = await listRemoteSizes(SIA_PA_DIR);
+  process.stderr.write(`  listagem do FTP: ${listing.size} arquivos em ${SIA_PA_DIR}\n`);
+
   let totalRows = 0;
   let skipped = 0;
   let prevYear: null | number = null;
@@ -405,7 +416,7 @@ async function main(): Promise<void> {
       prevGroup = group;
     }
     prevYear = target.year;
-    const r = await writeMonthPartition(cli, target.uf, target.year, target.month);
+    const r = await writeMonthPartition(cli, listing, target.uf, target.year, target.month);
     totalRows += r.rows;
     if (r.skipped) skipped += 1;
     if (cli.throttleMs > 0) await sleep(cli.throttleMs);
