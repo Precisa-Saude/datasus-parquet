@@ -8,8 +8,14 @@
 #      → reinicia archive (que re-baixa fresco do FTP)
 #   3. se o mesmo DBC corromper 2x consecutivas, move pra `.bad` e
 #      registra em /tmp/archive-skipped.log — não fica em loop infinito
+#   4. trata como stall também o log do archive parado há mais de
+#      LOG_STALL_MIN minutos (travamento com NDJSON já não vazio)
+#   5. desiste após MAX_EXIT_RESTARTS saídas não-zero seguidas, em vez de
+#      reiniciar para sempre (ex.: erro determinístico de schema)
 #
-# Uso: bash scripts/archive-watchdog.sh [--years YYYY[,YYYY-YYYY]]
+# Funciona no runner (Linux) e no macOS. Uso:
+#   pnpm archive:watch -- --ufs SP --years 2026 --months 01,02
+#   bash scripts/archive-watchdog.sh [args do archive-sia-pa]
 
 set -uo pipefail
 
@@ -17,7 +23,6 @@ CACHE_DIR=$HOME/.cache/datasus-brasil/dissemin/publicos/SIASUS/200801_/Dados
 # REPO_DIR padrão é o diretório do script (pra funcionar em worktrees);
 # pode ser sobrescrito via env DATASUS_REPO_DIR.
 REPO_DIR="${DATASUS_REPO_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
-BUILD_DIR=$REPO_DIR/build/sia-pa
 # Caminhos de log/estado podem ser sobrescritos via env (útil quando duas
 # instâncias do watchdog rodam em paralelo, ex: transform + FTP-backfill).
 ARCHIVE_LOG="${WATCHDOG_ARCHIVE_LOG:-/tmp/archive-run-watchdog.log}"
@@ -29,7 +34,10 @@ SKIPPED_LOG="${WATCHDOG_SKIPPED_LOG:-/tmp/archive-skipped.log}"
 # vários minutos sem que haja stall real. Antes esse threshold criava
 # falsos positivos que viravam `.skipped` (ver issue #20).
 STALL_THRESHOLD_MIN=15
+# Log sem nenhuma linha nova: download de ~200 MB + retries cabem com folga.
+LOG_STALL_MIN="${WATCHDOG_LOG_STALL_MIN:-45}"
 MAX_RETRIES=2
+MAX_EXIT_RESTARTS="${WATCHDOG_MAX_EXIT_RESTARTS:-5}"
 
 # Args do archive-sia-pa: tudo passado via "$@" é repassado pro pnpm
 # archive-sia-pa --. Default cobre o caso comum.
@@ -38,6 +46,19 @@ if [ $# -eq 0 ]; then
 else
   ARCHIVE_ARGS=("$@")
 fi
+
+# Respeita `--out` do archive (default build/sia-pa), senão o watchdog
+# vigiaria o diretório errado.
+BUILD_DIR=$REPO_DIR/build/sia-pa
+for ((i = 0; i < ${#ARCHIVE_ARGS[@]}; i++)); do
+  if [ "${ARCHIVE_ARGS[$i]}" = "--out" ] && [ $((i + 1)) -lt ${#ARCHIVE_ARGS[@]} ]; then
+    out="${ARCHIVE_ARGS[$((i + 1))]}"
+    case "$out" in
+      /*) BUILD_DIR="$out" ;;
+      *) BUILD_DIR="$REPO_DIR/$out" ;;
+    esac
+  fi
+done
 
 # Map DBC path → tentativas. Usa arquivo em vez de assoc array pra
 # sobreviver entre invocações se quiser dar resume manual.
@@ -83,7 +104,10 @@ start_archive() {
   ARCHIVE_PID=$!
 }
 
-log "===== Watchdog start (repo=$REPO_DIR, args=${ARCHIVE_ARGS[*]}, stall=${STALL_THRESHOLD_MIN}min, max_retries=$MAX_RETRIES) ====="
+log "===== Watchdog start (repo=$REPO_DIR, out=$BUILD_DIR, args=${ARCHIVE_ARGS[*]}, stall=${STALL_THRESHOLD_MIN}min, log_stall=${LOG_STALL_MIN}min, max_retries=$MAX_RETRIES) ====="
+
+EXIT_RESTARTS=0
+FINAL_RC=0
 
 while true; do
   start_archive
@@ -95,14 +119,26 @@ while true; do
 
     # Find first 0-byte ndjson older than threshold
     STALLED=$(find "$BUILD_DIR" -name part.ndjson -size 0 -mmin +"$STALL_THRESHOLD_MIN" 2>/dev/null | head -1)
-    [ -z "$STALLED" ] && continue
+    if [ -z "$STALLED" ]; then
+      # Regra 2: log parado. A partição em curso é o NDJSON mais recente.
+      [ -n "$(find "$ARCHIVE_LOG" -mmin +"$LOG_STALL_MIN" 2>/dev/null)" ] || continue
+      STALLED=$(find "$BUILD_DIR" -name part.ndjson -exec ls -t {} + 2>/dev/null | head -1)
+      if [ -z "$STALLED" ]; then
+        log "STALL: log parado há >${LOG_STALL_MIN}min sem NDJSON em curso — reiniciando"
+        kill_tree "$ARCHIVE_PID"
+        STALLED_THIS_RUN="yes"
+        break
+      fi
+      log "STALL: log parado há >${LOG_STALL_MIN}min"
+    fi
 
     # Parse partition path: build/sia-pa/ano=YYYY/uf=XX/mes=MM/part.ndjson
     ANO=$(echo "$STALLED" | grep -oE 'ano=[0-9]+' | cut -d= -f2)
     UF=$(echo "$STALLED" | grep -oE 'uf=[A-Z]+' | cut -d= -f2)
     MES=$(echo "$STALLED" | grep -oE 'mes=[0-9]+' | cut -d= -f2)
     YY=${ANO:2:2}
-    DBC="$CACHE_DIR/PA${UF}${YY}${MES}.dbc"
+    # Canônico ou variantes a–e: limpa todos os arquivos da partição.
+    DBC="$CACHE_DIR/PA${UF}${YY}${MES}"
 
     n=$(retry_count "$DBC")
     log "STALL: $UF $ANO-$MES (DBC=$DBC, retries=$n)"
@@ -113,14 +149,14 @@ while true; do
 
     if [ "$n" -ge "$MAX_RETRIES" ]; then
       log "  ABORT: $DBC corrompeu $n vezes — movendo pra .bad e marcando skip"
-      [ -f "$DBC" ] && mv "$DBC" "$DBC.bad"
+      for f in "$DBC".dbc "$DBC"?.dbc; do [ -f "$f" ] && mv "$f" "$f.bad"; done
       echo "$(date '+%Y-%m-%d %H:%M:%S') $UF $ANO-$MES $DBC" >> "$SKIPPED_LOG"
       # Cria placeholder vazio pra archive não tentar processar de novo
       mkdir -p "$BUILD_DIR/ano=$ANO/uf=$UF/mes=$MES"
       touch "$BUILD_DIR/ano=$ANO/uf=$UF/mes=$MES/part.parquet.skipped"
     else
       log "  deletando cache corrompido pra forçar re-download"
-      [ -f "$DBC" ] && rm -f "$DBC"
+      for f in "$DBC".dbc "$DBC"?.dbc; do [ -f "$f" ] && rm -f "$f"; done
       bump_retry "$DBC"
     fi
 
@@ -135,10 +171,17 @@ while true; do
     if [ "$rc" -eq 0 ]; then
       log "Archive concluído com sucesso (exit 0)"
       break
-    else
-      log "Archive saiu com exit=$rc — reiniciando"
     fi
+    EXIT_RESTARTS=$((EXIT_RESTARTS + 1))
+    if [ "$EXIT_RESTARTS" -ge "$MAX_EXIT_RESTARTS" ]; then
+      log "ABORT: archive saiu com exit=$rc $EXIT_RESTARTS vezes seguidas — veja $ARCHIVE_LOG"
+      tail -20 "$ARCHIVE_LOG" | tee -a "$WATCHDOG_LOG"
+      FINAL_RC=1
+      break
+    fi
+    log "Archive saiu com exit=$rc — reiniciando ($EXIT_RESTARTS/$MAX_EXIT_RESTARTS)"
   else
+    EXIT_RESTARTS=0
     log "Reiniciando após stall handling"
   fi
   sleep 3
@@ -147,3 +190,4 @@ done
 log "===== Watchdog done ====="
 log "Skipped DBCs (após $MAX_RETRIES tentativas, ver $SKIPPED_LOG):"
 cat "$SKIPPED_LOG" | tee -a "$WATCHDOG_LOG"
+exit "$FINAL_RC"
