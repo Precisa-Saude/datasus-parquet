@@ -17,6 +17,20 @@ pnpm format:check
 if pnpm exec turbo --version >/dev/null 2>&1; then
   echo "→ lint + typecheck + test + coverage (turbo)"
   pnpm turbo run lint typecheck test test:coverage
+elif [ "$(pnpm ls -r --depth -1 --parseable 2>/dev/null | wc -l | tr -d ' ')" -le 1 ]; then
+  # Single-package repo (pnpm-workspace.yaml with `packages: []`, e.g.
+  # datasus-parquet). `pnpm -r` does not include the workspace root, so
+  # it would print "No projects matched the filters" and exit 0 without
+  # running anything. Run the root scripts directly instead — a missing
+  # script fails the push loudly rather than being skipped.
+  echo "→ lint"
+  pnpm run lint
+  echo "→ typecheck"
+  pnpm run typecheck
+  echo "→ test"
+  pnpm run test
+  echo "→ coverage"
+  pnpm run test:coverage
 else
   # Fallback without turbo. Lint runs in parallel (no cross-package
   # output dependencies). Typecheck/test run topologically (pnpm -r
