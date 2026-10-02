@@ -29,7 +29,10 @@ concurrency:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    # O run de 2026-10-02 levou 1h59 (quase todo nas leituras de cabeçalho no
+    # FTP). 180 min dá folga e ainda cabe na sessão AWS de 3 h — que, com o S3
+    # lido primeiro, só é usada nos minutos iniciais.
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9

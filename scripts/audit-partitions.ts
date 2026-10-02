@@ -120,7 +120,9 @@ async function main(): Promise<void> {
   const s3 = await s3Counts(bucket, years);
 
   const flat = [...parts.values()].flatMap((p) => p.files);
-  const counts = await mapLimit(flat, 8, (name) => ftpRecordCount(`${SIA_PA_DIR}/${name}`));
+  // 12 leituras simultâneas: cada uma é um GET de 12 bytes, e o tempo é
+  // dominado pela latência de conexão do FTP, não por banda.
+  const counts = await mapLimit(flat, 12, (name) => ftpRecordCount(`${SIA_PA_DIR}/${name}`));
   const byFile = new Map(flat.map((name, i) => [name, counts[i] ?? null]));
 
   const rows: VerificationRow[] = [...parts.entries()].map(([key, p]) => {
