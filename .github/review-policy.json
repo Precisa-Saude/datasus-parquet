@@ -2,7 +2,7 @@
   "enabled": false,
   "provider": "github-models",
   "fallbackProviders": [],
-  "includePaths": ["src/**"],
+  "includePaths": ["scripts/**"],
   "excludePaths": ["**/fixtures/**"],
   "scanForSecretsBeforeSending": true,
   "onSensitiveContent": "block"
