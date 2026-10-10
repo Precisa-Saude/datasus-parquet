@@ -60,9 +60,22 @@ jobs:
       - run: pnpm format:check
 
   review:
-    needs: [lint, typecheck, format]
+    needs: [lint, typecheck, format, test]
     if: github.event_name == 'pull_request'
-    uses: ./.github/workflows/review.yml
+    uses: Precisa-Saude/tooling/.github/workflows/review.yml@1d231f69c570aea4b70b3018a32da9ff9dd2ec1c # v1.16.0
     with:
       pr_number: ${{ github.event.pull_request.number }}
     secrets: inherit
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+    name: Testes
