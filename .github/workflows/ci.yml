@@ -62,7 +62,7 @@ jobs:
   review:
     needs: [lint, typecheck, format, test]
     if: github.event_name == 'pull_request'
-    uses: Precisa-Saude/tooling/.github/workflows/review.yml@1d231f69c570aea4b70b3018a32da9ff9dd2ec1c # v1.16.0
+    uses: Precisa-Saude/tooling/.github/workflows/review.yml@7a61cab18cac4aa7e2163f92dab77209109480de # v2.0.0
     with:
       pr_number: ${{ github.event.pull_request.number }}
     secrets: inherit
