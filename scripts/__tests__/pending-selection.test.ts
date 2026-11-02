@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { type KnownEntry, type RemoteGroup, selectPending } from '../lib/pending-selection.js';
+import {
+  hasChanged,
+  type KnownEntry,
+  type RemoteGroup,
+  selectPending,
+} from '../lib/pending-selection.js';
 
 const EPOCH = '1970-01-01T00:00:00.000Z';
 
@@ -73,8 +78,28 @@ describe('selectPending', () => {
   it('detecta mudança de mtime mesmo com tamanho igual', () => {
     const known = (_uf: string, comp: string) =>
       comp === '2026-07' ? { sourceMtime: '2026-09-17T00:00:00.000Z', sourceSize: 40 } : undefined;
-    const r = selectPending([g('AC', 2026, 7, 40)], known, 0);
+    const remote = { ...g('AC', 2026, 7, 40), mtime: '2026-10-30T21:51:00.000Z' };
+    const r = selectPending([remote], known, 0);
     expect(r.selected[0]?.reason).toBe('alterado');
+  });
+
+  it('mesmo tamanho e mesmo mtime não é alteração', () => {
+    const known = () => ({ sourceMtime: '2026-10-30T21:51:00.000Z', sourceSize: 40 });
+    const remote = { ...g('AC', 2026, 7, 40), mtime: '2026-10-30T21:51:00.000Z' };
+    expect(selectPending([remote], known, 0).selected).toEqual([]);
+  });
+
+  it('state sem mtime (epoch) compara só por tamanho — migração sem reprocessar tudo', () => {
+    const known = stateOf([['AC', '2026-07', 40]]);
+    const remote = { ...g('AC', 2026, 7, 40), mtime: '2026-10-30T21:51:00.000Z' };
+    expect(selectPending([remote], known, 0).selected).toEqual([]);
+    expect(hasChanged({ sourceMtime: EPOCH, sourceSize: 40 }, remote)).toBe(false);
+    expect(hasChanged({ sourceMtime: EPOCH, sourceSize: 41 }, remote)).toBe(true);
+  });
+
+  it('FTP sem mtime legível também compara só por tamanho', () => {
+    const known = () => ({ sourceMtime: '2026-10-30T21:51:00.000Z', sourceSize: 40 });
+    expect(selectPending([g('AC', 2026, 7, 40)], known, 0).selected).toEqual([]);
   });
 
   it('janela 0 se comporta como o detect antigo (só delta)', () => {

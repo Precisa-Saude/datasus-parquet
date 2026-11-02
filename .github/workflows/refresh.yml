@@ -1,15 +1,16 @@
 name: refresh
 
-# Sonda o FTP DATASUS e, quando há publicação nova, reprocessa a janela
-# revisável (competência mais recente + 12 anteriores, todas as UFs), confere
-# cada partição contra o FTP, sincroniza com o S3, invalida o CloudFront,
-# atualiza o state, publica a GitHub Release (webhook Zenodo → DOI) e dispara
-# o refresh do datasus-viz. Desenho em #46.
+# Sonda o FTP DATASUS e, quando há publicação nova, reprocessa as partições
+# cujo tamanho ou mtime mudou (todas as UFs), confere cada partição contra o
+# FTP, sincroniza com o S3, invalida o CloudFront, atualiza o state, publica
+# a GitHub Release (webhook Zenodo → DOI) e dispara o refresh do datasus-viz.
+# Desenho em #46.
 #
-# Por que a janela inteira: cada publicação mensal do DATASUS reescreve as 12
-# competências anteriores à nova (padrão das datas no FTP). Sem delta nenhum
-# contra o state, o run é no-op — o custo fica em uma janela (~350 partições,
-# 8–10 h) por mês.
+# Cada publicação mensal do DATASUS reescreve a competência nova e as 11
+# anteriores (padrão das datas no FTP), então o delta de uma publicação é
+# ~12 × 27 partições, 8–10 h. Sem delta nenhum contra o state, o run é no-op.
+# A janela fixa (`--window N`) continua disponível no detect-new como
+# fallback, mas não é usada aqui: o mtime da listagem passou a ser lido.
 #
 # Por que o runner self-hosted: no runner do GitHub o teto é 3 h e o upload
 # só acontece no fim; em 14/09 e 21/09/2026 a fila estourou o teto sem
@@ -64,8 +65,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - id: detect
-        # Janela de 13: só entra inteira quando há delta contra o state.
-        run: pnpm detect-new -- --window 13
+        # Só delta (tamanho + mtime) contra o state; sem janela fixa.
+        run: pnpm detect-new
       - name: Resumo da detecção
         run: |
           {

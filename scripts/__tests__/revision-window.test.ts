@@ -10,9 +10,13 @@ describe('competencia', () => {
 });
 
 describe('windowStart', () => {
+  it('janela observada (12) terminando em 2026-08 começa em 2025-09', () => {
+    expect(REVISION_WINDOW).toBe(12);
+    expect(windowStart('2026-08', REVISION_WINDOW)).toBe('2025-09');
+  });
+
   it('janela de 13 terminando em 2026-07 começa em 2025-07', () => {
-    expect(REVISION_WINDOW).toBe(13);
-    expect(windowStart('2026-07', REVISION_WINDOW)).toBe('2025-07');
+    expect(windowStart('2026-07', 13)).toBe('2025-07');
   });
 
   it('atravessa a virada de ano', () => {

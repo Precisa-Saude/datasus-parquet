@@ -2,15 +2,21 @@
  * Decide o que entra no `pending.json` (issue #46).
  *
  * Duas fontes:
- *   - delta contra o state: partição nova ou com tamanho/mtime diferente;
- *   - janela revisável: quando há qualquer delta (sinal de que o DATASUS
- *     publicou), a competência mais recente e as anteriores dentro da
- *     janela entram inteiras, mesmo as que o state considera em dia — a
- *     publicação reescreve todas elas, e o state já errou antes.
+ *   - delta contra o state: partição nova ou com tamanho/mtime diferente.
+ *     O mtime só conta quando os dois lados o conhecem: entradas do state
+ *     gravadas antes do parser de listagem DOS (`lib/ftp-mtime.ts`) têm
+ *     epoch e são comparadas só por tamanho — senão o primeiro run depois
+ *     da correção reprocessaria o dataset inteiro;
+ *   - janela revisável (opcional, `--window N`): quando há qualquer delta,
+ *     a competência mais recente e as anteriores dentro da janela entram
+ *     inteiras, mesmo as que o state considera em dia. Era a rede de
+ *     segurança enquanto o mtime não era lido; com tamanho + mtime o delta
+ *     já cobre exatamente o que o DATASUS reescreveu.
  *
  * Sem delta nenhum, nada é reprocessado: o refresh semanal vira no-op entre
- * publicações, e o custo fica em uma janela por mês.
+ * publicações.
  */
+import { isUnknownMtime } from './ftp-mtime.js';
 import { competencia, inWindow, windowStart } from './revision-window.js';
 
 export interface RemoteGroup {
@@ -41,6 +47,16 @@ export interface SelectionResult<G extends RemoteGroup> {
   windowStart: null | string;
 }
 
+/**
+ * `true` quando o FTP difere do state. Tamanho sempre conta; mtime só
+ * quando conhecido nos dois lados.
+ */
+export function hasChanged(known: KnownEntry, remote: RemoteGroup): boolean {
+  if (known.sourceSize !== remote.size) return true;
+  if (isUnknownMtime(known.sourceMtime) || isUnknownMtime(remote.mtime)) return false;
+  return new Date(known.sourceMtime).getTime() !== new Date(remote.mtime).getTime();
+}
+
 export function selectPending<G extends RemoteGroup>(
   groups: readonly G[],
   known: (uf: string, competencia: string) => KnownEntry | undefined,
@@ -54,10 +70,7 @@ export function selectPending<G extends RemoteGroup>(
     const k = known(g.uf, comp);
     if (!k) {
       delta.set(g, 'novo');
-    } else if (
-      k.sourceSize !== g.size ||
-      new Date(k.sourceMtime).getTime() !== new Date(g.mtime).getTime()
-    ) {
+    } else if (hasChanged(k, g)) {
       delta.set(g, 'alterado');
     }
   }

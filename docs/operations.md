@@ -26,24 +26,35 @@ comece por aqui.
 gh workflow run refresh.yml --repo Precisa-Saude/datasus-parquet
 ```
 
-### Janela revisável
+### O que entra no refresh
 
 Pelas datas dos arquivos no FTP, cada publicação mensal do DATASUS reescreve
-a competência mais recente **e as 12 anteriores**; depois disso a
-competência deixa de mudar. Por isso o `detect-new -- --window 13`:
+a competência mais recente **e as 11 anteriores** (12 ao todo; em
+2026-10-30, 2025-09..2026-08 ganharam mtime novo e 2025-08 ficou como
+estava). Depois disso a competência deixa de mudar: nenhuma partição
+anterior a essa janela mudou de tamanho desde o backfill.
 
-- sem nenhum delta contra o state (tamanho ou mtime) → nada pendente, o run
-  é no-op;
-- com qualquer delta → entram **todas** as partições da janela (13 × 27 ≈
-  350), além do delta fora dela. Cada entrada do `pending.json` traz o
-  `reason`: `novo`, `alterado` ou `janela`.
+O `detect-new` compara cada partição do FTP com o `state/sia-pa.json` por
+**tamanho e mtime**:
 
-Custo: julho/2026 (27 partições) levou ~40 min no runner; a janela inteira,
-8–10 h, uma vez por mês.
+- sem nenhum delta → nada pendente, o run é no-op;
+- com delta → só as partições novas ou alteradas entram. Cada entrada do
+  `pending.json` traz o `reason`: `novo` ou `alterado`.
+
+O mtime vem de `rawModifiedAt` da listagem DOS (`lib/ftp-mtime.ts`): o
+servidor não anuncia MLSD e, até 2026-11, o state guardava 1970 em todas as
+entradas. Essas entradas antigas são comparadas só por tamanho até serem
+reprocessadas; a partir daí o mtime real entra no state.
+
+A janela fixa (`--window N`, `reason: janela`) continua disponível como
+fallback caso o state volte a ficar errado, mas o `refresh.yml` não a usa.
+
+Custo: julho/2026 (27 partições) levou ~40 min no runner; uma publicação
+inteira (12 × 27 = 324 partições), 8–10 h, uma vez por mês.
 
 ### Passos
 
-1. `detect-new --window 13` no runner do GitHub.
+1. `detect-new` no runner do GitHub.
 2. No runner self-hosted, archive sob o watchdog com `--order newest-first`
    (a competência nova primeiro, para que uma falha no meio publique pelo
    menos o mês novo), num diretório próprio do run, `build-refresh/`. O

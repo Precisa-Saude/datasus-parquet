@@ -2,14 +2,17 @@
  * Janela revisável do SIA-PA (issue #46).
  *
  * Pelas datas dos arquivos no FTP, cada publicação mensal do DATASUS
- * reescreve a competência mais recente e as 12 anteriores; depois disso a
- * competência deixa de mudar. O refresh reprocessa essa janela inteira
- * sempre que detecta uma publicação nova, em vez de confiar só no delta de
- * tamanho contra o state.
+ * reescreve a competência mais recente e as 11 anteriores (12 ao todo; na
+ * publicação de 2026-10-30, 2025-09..2026-08 ganharam mtime novo e
+ * 2025-08 ficou como estava); depois disso a competência deixa de mudar.
+ *
+ * A janela era a rede de segurança enquanto o `detect-new` não lia o mtime
+ * do FTP. Com tamanho + mtime no delta ela é opcional (`--window N`) e o
+ * `refresh.yml` não a usa mais.
  */
 
-/** Tamanho padrão da janela: a competência mais recente e as 12 anteriores. */
-export const REVISION_WINDOW = 13;
+/** Tamanho observado da reescrita: a competência mais recente e as 11 anteriores. */
+export const REVISION_WINDOW = 12;
 
 /** `AAAA-MM` a partir de ano e mês. */
 export function competencia(year: number, month: number): string {

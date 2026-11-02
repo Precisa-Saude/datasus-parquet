@@ -26,6 +26,7 @@ import { fileURLToPath } from 'node:url';
 
 import { Client } from 'basic-ftp';
 
+import { parseDosMtime, UNKNOWN_MTIME } from './lib/ftp-mtime.js';
 import { type PendingReason, selectPending } from './lib/pending-selection.js';
 import { partitionArtifactPaths } from './lib/refresh-targets.js';
 import { parseSiaPaFileName, SIA_PA_REGEX } from './lib/sia-pa-parser.js';
@@ -164,9 +165,15 @@ async function listRemote(
   try {
     await client.access({ host: FTP_HOST, port: 21, secure: false });
     const entries = await client.list(dir);
+    // O servidor não anuncia MLSD: `modifiedAt` vem vazio e o mtime está só
+    // em `rawModifiedAt`, no formato DOS (`lib/ftp-mtime.ts`).
     return entries
       .filter((e) => e.type === 1)
-      .map((e) => ({ mtime: e.modifiedAt ?? new Date(0), name: e.name, size: e.size }));
+      .map((e) => ({
+        mtime: e.modifiedAt ?? parseDosMtime(e.rawModifiedAt) ?? UNKNOWN_MTIME,
+        name: e.name,
+        size: e.size,
+      }));
   } finally {
     client.close();
   }
