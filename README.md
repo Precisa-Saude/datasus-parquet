@@ -126,6 +126,10 @@ outro workflow, em outro runner, com outro teto de tempo — e escolher
 errado custa horas. Antes de disparar qualquer publicação, veja
 [`docs/operations.md`](docs/operations.md).
 
+O que o FTP oferece (e não oferece) para detectar mudanças, e o que
+pediríamos ao DATASUS, está em
+[`docs/recomendacoes-datasus.md`](docs/recomendacoes-datasus.md).
+
 > **Site `datasus-viz` e cadeia _end-to-end_:** este repo publica os
 > _Parquets brutos_ no S3 — o site `datasus-viz` consome via CloudFront,
 > agrega para LOINC e republica artefatos otimizados. A cadeia inteira
