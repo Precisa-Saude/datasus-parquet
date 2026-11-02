@@ -113,7 +113,7 @@ export function partitionArtifactPaths(
   buildDir: string,
   dataset: string,
   target: Target,
-): { parquet: string; skippedMarker: string } {
+): { parquet: string; skippedMarker: string; unchangedMarker: string } {
   const mes = String(target.month).padStart(2, '0');
   const partitionDir = resolve(
     buildDir,
@@ -125,5 +125,8 @@ export function partitionArtifactPaths(
   return {
     parquet: resolve(partitionDir, 'part.parquet'),
     skippedMarker: resolve(partitionDir, 'part.parquet.skipped'),
+    // Deixado pelo `skip-unchanged` quando o conteúdo decodificado é
+    // idêntico ao publicado: o parquet sai do diretório de upload.
+    unchangedMarker: resolve(partitionDir, 'part.parquet.unchanged'),
   };
 }

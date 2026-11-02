@@ -3,6 +3,9 @@
  * Gera `<dataset>/provenance/ano=YYYY/uf=XX/mes=MM/part.provenance.json`
  * para cada Parquet em `build/<dataset>/`. Contém:
  *   - SHA256 do Parquet emitido
+ *   - Impressão do conteúdo (linhas, independente da ordem e dos bytes
+ *     do Parquet) — o `skip-unchanged` compara com ela para não
+ *     republicar partição que o DATASUS re-exportou sem mudar
  *   - SHA256 do DBC-fonte (lido do cache `@precisa-saude/datasus`)
  *   - Schema exato do Parquet (colunas + tipos, do footer)
  *   - Row count
@@ -22,6 +25,7 @@ import { fileURLToPath } from 'node:url';
 import duckdb from 'duckdb';
 
 import { gitSha } from './lib/git-sha.js';
+import { fingerprintParquet } from './parquet-fingerprint.js';
 
 const DATASET_CONFIG: Record<
   string,
@@ -151,6 +155,7 @@ async function main(): Promise<void> {
   const sha = gitSha(repoRoot);
   const decoder = readPackageVersion(repoRoot, '@precisa-saude/datasus-dbc');
   const sdk = readPackageVersion(repoRoot, '@precisa-saude/datasus');
+  const fingerprintDb = new duckdb.Database(':memory:');
 
   for (const datasetId of cli.datasets) {
     const cfg = DATASET_CONFIG[datasetId];
@@ -173,6 +178,7 @@ async function main(): Promise<void> {
 
       const { rows, schema } = await parquetSchema(parquetFile);
       const parquetSha = sha256OfFile(parquetFile);
+      const fingerprint = await fingerprintParquet(fingerprintDb, parquetFile);
       const source = existsSync(cachedSource)
         ? {
             bytes: statSync(cachedSource).size,
@@ -195,6 +201,7 @@ async function main(): Promise<void> {
         output: {
           columns: schema.length,
           file: `ano=${p.ano}/uf=${p.uf}/mes=${mesStr}/part.parquet`,
+          fingerprint,
           rows,
           schema,
           sha256: parquetSha,
@@ -216,6 +223,7 @@ async function main(): Promise<void> {
 
     process.stderr.write(`✓ provenance: ${parts.length} arquivos em ${outRoot}\n`);
   }
+  await new Promise<void>((res) => fingerprintDb.close(() => res()));
 }
 
 main().catch((err: unknown) => {
