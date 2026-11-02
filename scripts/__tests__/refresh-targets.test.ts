@@ -111,6 +111,9 @@ describe('partitionArtifactPaths', () => {
     expect(paths.skippedMarker).toBe(
       resolve('/build/sia-pa/ano=2026/uf=SP/mes=03/part.parquet.skipped'),
     );
+    expect(paths.unchangedMarker).toBe(
+      resolve('/build/sia-pa/ano=2026/uf=SP/mes=03/part.parquet.unchanged'),
+    );
   });
 
   it('não zero-pada meses de dois dígitos', () => {
