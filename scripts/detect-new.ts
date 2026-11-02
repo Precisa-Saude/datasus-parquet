@@ -262,7 +262,9 @@ function setGhOutput(key: string, value: string): void {
 /**
  * Uma competência só conta como processada se o `archive-sia-pa`
  * realmente emitiu o Parquet — ou se o watchdog marcou a partição como
- * insalvável (`part.parquet.skipped`, DBC corrompido na origem).
+ * insalvável (`part.parquet.skipped`, DBC corrompido na origem), ou se o
+ * `skip-unchanged` provou que o conteúdo é idêntico ao publicado
+ * (`part.parquet.unchanged`, parquet movido para fora do upload).
  *
  * Sem essa checagem o merge era cego: o refresh de 2026-08-17 arquivou
  * 12 partições de AC/2024 e mesmo assim marcou as 324 competências
@@ -276,7 +278,11 @@ function wasArchived(cli: Cli, datasetId: string, entry: PendingEntry): boolean 
     uf: entry.uf,
     year: entry.year,
   });
-  return existsSync(paths.parquet) || existsSync(paths.skippedMarker);
+  return (
+    existsSync(paths.parquet) ||
+    existsSync(paths.skippedMarker) ||
+    existsSync(paths.unchangedMarker)
+  );
 }
 
 function markProcessed(cli: Cli): void {

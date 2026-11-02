@@ -23,6 +23,7 @@ Para cada `<dataset>/ano=YYYY/uf=XX/mes=MM/part.parquet`, existe
   "output": {
     "file": "ano=2024/uf=AC/mes=01/part.parquet",
     "sha256": "e5f6a7b8…",
+    "fingerprint": "v1:462192:15454E690ECE470AA0AEE:8E22F8F5EC55E60E",
     "rows": 462192,
     "columns": 47,
     "schema": [
@@ -40,6 +41,14 @@ Para cada `<dataset>/ano=YYYY/uf=XX/mes=MM/part.parquet`, existe
   "generatedAt": "2026-04-24T12:00:00Z"
 }
 ```
+
+`output.fingerprint` é a impressão do **conteúdo** (md5 do JSON de cada
+linha, combinado por soma e XOR, mais a contagem — `v1:<linhas>:<soma>:<xor>`).
+Ao contrário do `sha256`, não depende da ordem das linhas nem da versão
+do DuckDB que escreveu o Parquet. O refresh a usa para não republicar
+partição cujo DBC o DATASUS re-exportou sem mudar o conteúdo; nesse caso o
+provenance publicado continua sendo o da decodificação original, e o
+`source` descreve o DBC daquela época, não o re-exportado.
 
 ## Como validar
 

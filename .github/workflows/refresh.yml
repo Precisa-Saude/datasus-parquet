@@ -121,7 +121,7 @@ jobs:
       # backfills antigos, e o `aws s3 sync` sobe qualquer arquivo de tamanho
       # diferente — inclusive um mais velho que o do S3.
       - name: Prepara diretório do run
-        run: rm -rf build-refresh build-rejected
+        run: rm -rf build-refresh build-rejected build-unchanged
 
       - name: Archive SIA-PA (watchdog, mais recente primeiro)
         if: env.HAS_NEW == 'true'
@@ -144,6 +144,22 @@ jobs:
             --build-dir build-refresh \
             --rejected-dir build-rejected
 
+      # O DATASUS re-exporta DBCs sem mudar o conteúdo (tamanho e mtime
+      # mudam, as linhas não). Só dá para saber depois de decodificar: a
+      # impressão do conteúdo é comparada com o `output.fingerprint` do
+      # provenance publicado e, se bater, o parquet sai do diretório de
+      # upload. O provenance publicado continua descrevendo o objeto no S3.
+      - name: Pula partições com conteúdo idêntico ao publicado
+        id: unchanged
+        if: env.HAS_NEW == 'true'
+        run: |
+          eval "$("$HOME"/.local/bin/mise activate bash)"
+          pnpm skip-unchanged -- \
+            --from-verified build-refresh/_verified.json \
+            --build-dir build-refresh \
+            --unchanged-dir build-unchanged \
+            --bucket "${{ secrets.S3_BUCKET }}"
+
       - name: Emit provenance (SHA256 + schema + metadata)
         if: env.HAS_NEW == 'true'
         run: |
@@ -156,6 +172,8 @@ jobs:
           aws s3 sync build-refresh/ "s3://${{ secrets.S3_BUCKET }}/" \
             --exclude '*_archive-run.json' \
             --exclude '_verified.json' \
+            --exclude '_unchanged.json' \
+            --exclude '*.unchanged' \
             --exclude '*.ndjson' \
             --cache-control 'public, max-age=3600'
 
@@ -245,6 +263,10 @@ jobs:
             reprocessadas e conferidas contra o FTP (janela a partir de
             **${{ needs.detect.outputs.windowStart || needs.detect.outputs.latestCompetencia }}**,
             mais recente: **${{ needs.detect.outputs.latestCompetencia }}**).
+            Dessas, **${{ steps.unchanged.outputs.unchangedCount || 0 }}** tinham conteúdo
+            idêntico ao já publicado (DBC re-exportado pelo DATASUS sem alteração) e
+            não foram republicadas; **${{ steps.unchanged.outputs.changedCount || steps.verify.outputs.verifiedCount }}**
+            foram publicadas.
 
             Assets incluem `manifest.json`. Parquet e provenance por partição estão no CDN.
             Para validar byte-a-byte contra o FTP oficial, veja `docs/provenance.md`.

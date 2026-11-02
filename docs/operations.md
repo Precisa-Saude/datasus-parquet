@@ -65,14 +65,26 @@ inteira (12 × 27 = 324 partições), 8–10 h, uma vez por mês.
    `recordCount` dos cabeçalhos dos DBCs **lidos direto do FTP** (12 bytes,
    nunca do cache). Divergente, sem parquet ou ilegível vai para
    `build-rejected/` e não é publicado.
-4. Provenance → S3 sync (só `build-refresh/`) → rebuild do `manifest.json`
-   → guarda anti-regressão → invalidação do CloudFront (incluindo
-   `/sia-pa/*`, porque a janela reescreve objetos existentes).
-5. `--mark-processed --verified`: o state só recebe o que passou na
-   verificação; o resto segue pendente para o próximo refresh.
-6. Commit do state → GitHub Release (dispara o webhook do Zenodo e **emite
+4. `skip-unchanged`: calcula a impressão do conteúdo de cada parquet
+   verificado (`lib/content-fingerprint.ts`: md5 por linha, combinado sem
+   depender da ordem) e compara com o `output.fingerprint` do provenance
+   publicado no S3. Se bater, o parquet vai para `build-unchanged/` e fica
+   um marker `part.parquet.unchanged` no lugar — a partição foi
+   decodificada e conferida, mas não é republicada, então o
+   `Last-Modified` no CDN não muda e o datasus-viz não reagrega. O DATASUS
+   re-exporta DBCs sem mudar o conteúdo: em 2026-10-30, `PAAC2509.dbc`
+   encolheu de 4.932.873 para 4.472.719 bytes com as mesmas 173.845 linhas.
+   Provenance sem impressão (anterior a esta etapa) conta como alterado.
+5. Provenance (só das partições que serão publicadas) → S3 sync (só
+   `build-refresh/`) → rebuild do `manifest.json` → guarda anti-regressão
+   → invalidação do CloudFront (incluindo `/sia-pa/*`, porque a
+   publicação reescreve objetos existentes).
+6. `--mark-processed --verified`: o state só recebe o que passou na
+   verificação (parquet publicado, marker `.skipped` ou `.unchanged`); o
+   resto segue pendente para o próximo refresh.
+7. Commit do state → GitHub Release (dispara o webhook do Zenodo e **emite
    DOI**) → dispara o `refresh.yml` do datasus-viz.
-7. Se alguma partição foi rejeitada, o job termina em falha depois de
+8. Se alguma partição foi rejeitada, o job termina em falha depois de
    publicar as aprovadas.
 
 > O DOI é permanente. Não dispare "só pra testar".
