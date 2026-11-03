@@ -187,11 +187,18 @@ jobs:
           eval "$("$HOME"/.local/bin/mise activate bash)"
           pnpm build-manifest -- --s3-listing /tmp/s3-listing.txt
 
+      # Em node, não em jq: o runner self-hosted não tem jq e a primeira
+      # execução deste guard (2026-11-02, run 41468367482) morreu com
+      # `jq: command not found` depois de o S3 já ter recebido as 324
+      # partições — sem manifest, invalidação, state, release nem viz.
       - name: Verifica que o manifest novo não regride o publicado
         run: |
-          REMOTE=$(aws s3 cp "s3://${{ secrets.S3_BUCKET }}/manifest.json" - 2>/dev/null || echo '{}')
-          REMOTE_PARTS=$(echo "$REMOTE" | jq '[.datasets[].partitions] | add // 0')
-          LOCAL_PARTS=$(jq '[.datasets[].partitions] | add // 0' build/manifest.json)
+          eval "$("$HOME"/.local/bin/mise activate bash)"
+          aws s3 cp "s3://${{ secrets.S3_BUCKET }}/manifest.json" /tmp/manifest.remote.json 2>/dev/null \
+            || echo '{}' > /tmp/manifest.remote.json
+          count() { node -e 'const m=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));console.log(Object.values(m.datasets??{}).reduce((s,d)=>s+(d.partitions??0),0))' "$1"; }
+          REMOTE_PARTS=$(count /tmp/manifest.remote.json)
+          LOCAL_PARTS=$(count build/manifest.json)
           echo "remote=$REMOTE_PARTS local=$LOCAL_PARTS"
           if [ "$LOCAL_PARTS" -lt "$REMOTE_PARTS" ]; then
             echo "::error::manifest novo ($LOCAL_PARTS partições) regride o publicado ($REMOTE_PARTS) — abortando upload"
