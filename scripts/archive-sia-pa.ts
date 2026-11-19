@@ -10,7 +10,8 @@
  *     build/sia-pa/ano=YYYY/uf=XX/mes=MM/part.sources.json  (só local)
  *
  * O `part.sources.json` registra os DBCs decodificados (nome, caminho no
- * FTP, tamanho e mtime da listagem, mtime no cache), na ordem. O
+ * FTP, tamanho e mtime da listagem, mtime no cache), na ordem. É gravado
+ * antes do Parquet, para que nunca haja Parquet sem registro. O
  * `emit-provenance` exige esse registro; ele não vai para o S3.
  *
  * Partição por mês preserva o schema exato do DBF daquela competência
@@ -64,6 +65,7 @@ import { download, type SiaProducaoAmbulatorialRecord } from '@precisa-saude/dat
 import { Client } from 'basic-ftp';
 import duckdb from 'duckdb';
 
+import { failRecord, markFailed, writeRecordThenParquet } from './lib/archive-partition.js';
 import { datasusCacheDir } from './lib/cache-dir.js';
 import {
   fetchVerified,
@@ -404,16 +406,14 @@ async function writeMonthPartition(
   }
 
   if (lastError !== undefined) {
-    const msg = (lastError as Error).message;
     const kind = isTransportError(lastError) ? 'transporte' : 'decode';
-    const totalAttempts = transportAttempts + decodeAttempts;
-    writeFileSync(
+    const attempts = transportAttempts + decodeAttempts;
+    markFailed(
       failedMarker,
-      `${new Date().toISOString()} ${uf} ${year}-${month}\n${kind}\n${msg}\n`,
-    );
-    process.stderr.write(
-      `  ✗ FALHA ${uf} ${year}-${month} após ${totalAttempts} tentativas (${kind}): ${msg} ` +
-        `(marker: ${failedMarker})\n`,
+      `${uf} ${year}-${month}`,
+      kind,
+      `após ${attempts} tentativas (${kind})`,
+      lastError,
     );
     return { rows: 0 };
   }
@@ -423,37 +423,48 @@ async function writeMonthPartition(
     return { rows: 0 };
   }
 
-  // Antes do Parquet: se não der para montar o registro, a partição não
-  // fica com Parquet sem registro. O mtime do cache é o desta decodificação
-  // (`fetchVerified` acabou de conferir ou baixar cada arquivo).
+  // Registro antes do Parquet (ordem e motivo em `lib/archive-partition.ts`).
+  // O mtime do cache é o desta decodificação (`fetchVerified` acabou de
+  // conferir ou baixar cada arquivo). Falha ao montar ou gravar o registro
+  // é falha da partição, como as de decodificação: marker `.failed`,
+  // limpeza e segue o run.
   const cacheRoot = join(datasusCacheDir(), SIA_PA_DIR);
-  const sourcesRecord = serializeSourcesRecord(
-    buildSourcesRecord({
-      cacheMtime: (name) => statSync(join(cacheRoot, name)).mtime.toISOString(),
-      files,
-      ftpBase: SIA_PA_DIR,
-      ftpMtimes: listing.mtimes,
-      partition: { ano: year, mes: month, uf },
-    }),
-  );
-
-  await new Promise<void>((res, rej) => {
-    const db = new duckdb.Database(':memory:');
-    db.all(
-      `COPY (
-         SELECT * FROM read_json_auto('${ndjsonFile.replace(/'/g, "''")}',
-           format='newline_delimited', maximum_object_size=67108864)
-         ORDER BY TRY_CAST(PA_CMP AS VARCHAR), TRY_CAST(PA_CODUNI AS VARCHAR)
-       ) TO '${parquetFile.replace(/'/g, "''")}'
-       (FORMAT PARQUET, COMPRESSION ZSTD, ROW_GROUP_SIZE 100000)`,
-      (err) => {
-        db.close(() => (err ? rej(err) : res()));
-      },
-    );
+  const outcome = await writeRecordThenParquet({
+    buildRecord: () =>
+      serializeSourcesRecord(
+        buildSourcesRecord({
+          cacheMtime: (name) => statSync(join(cacheRoot, name)).mtime.toISOString(),
+          files,
+          ftpBase: SIA_PA_DIR,
+          ftpMtimes: listing.mtimes,
+          partition: { ano: year, mes: month, uf },
+        }),
+      ),
+    onRecordFailure: (err) =>
+      failRecord(
+        { label: `${uf} ${year}-${month}`, marker: failedMarker, ndjsonFile, sourcesRecordFile },
+        err,
+      ),
+    writeParquet: () =>
+      new Promise<void>((res, rej) => {
+        const db = new duckdb.Database(':memory:');
+        db.all(
+          `COPY (
+             SELECT * FROM read_json_auto('${ndjsonFile.replace(/'/g, "''")}',
+               format='newline_delimited', maximum_object_size=67108864)
+             ORDER BY TRY_CAST(PA_CMP AS VARCHAR), TRY_CAST(PA_CODUNI AS VARCHAR)
+           ) TO '${parquetFile.replace(/'/g, "''")}'
+           (FORMAT PARQUET, COMPRESSION ZSTD, ROW_GROUP_SIZE 100000)`,
+          (err) => {
+            db.close(() => (err ? rej(err) : res()));
+          },
+        );
+      }),
+    writeRecord: (text) => writeFileSync(sourcesRecordFile, text),
   });
+  if (outcome === 'falhou-registro') return { rows: 0 };
 
   rmSync(ndjsonFile);
-  writeFileSync(sourcesRecordFile, sourcesRecord);
   const sz = statSync(parquetFile).size;
   process.stderr.write(
     `  ✓ ano=${year}/uf=${uf}/mes=${String(month).padStart(2, '0')}/part.parquet ` +

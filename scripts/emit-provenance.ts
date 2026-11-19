@@ -217,6 +217,7 @@ async function main(): Promise<void> {
     let written = 0;
     const fromCache: string[] = [];
     const beforeRecord: string[] = [];
+    const legacy: string[] = [];
     process.stderr.write(
       `${datasetId}: ${parts.length} partições; git ${sha.slice(0, 7)}; decoder ${decoder.version}\n`,
     );
@@ -262,6 +263,7 @@ async function main(): Promise<void> {
           });
         },
         outPath,
+        parquetSha256: () => sha256OfFile(parquetFile),
         recordPath: recordFile,
         sourcesFor: (recordText) =>
           cfg.sourcesFor(sourceCache, cfg.ftpBase, p, recordText, {
@@ -271,7 +273,7 @@ async function main(): Promise<void> {
       if (result.kind === 'falhou') {
         failures.push(`${datasetId} ${label}: ${result.message}`);
       } else if (result.kind === 'anterior-ao-registro') {
-        beforeRecord.push(label);
+        (result.legacy ? legacy : beforeRecord).push(label);
       } else {
         written += 1;
         if (result.fromCache) fromCache.push(label);
@@ -282,8 +284,15 @@ async function main(): Promise<void> {
     if (beforeRecord.length > 0) {
       process.stderr.write(
         `⚠ ${beforeRecord.length} partição(ões) anterior(es) ao registro: sem ` +
-          `${SOURCES_RECORD_FILE}, provenance local mantido como estava (não reescrito, não ` +
-          `conferido): ${beforeRecord.join(', ')}\n`,
+          `${SOURCES_RECORD_FILE}, provenance local mantido (output.sha256 confere com o ` +
+          `Parquet): ${beforeRecord.join(', ')}\n`,
+      );
+    }
+    if (legacy.length > 0) {
+      process.stderr.write(
+        `⚠ ${legacy.length} partição(ões) mantida(s) com provenance no formato inválido de ` +
+          `antes de 19/11/2026 (source com 0 byte ou sem SHA-256 válido). Regere com ` +
+          `--allow-cache-fallback ou um novo archive: ${legacy.join(', ')}\n`,
       );
     }
     if (fromCache.length > 0) {

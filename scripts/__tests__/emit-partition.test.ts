@@ -12,9 +12,10 @@ import { join } from 'node:path';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { emitPartitionProvenance } from '../lib/emit-partition.js';
+import { assessKeptProvenance, emitPartitionProvenance } from '../lib/emit-partition.js';
 import {
   type CachedFile,
+  EMPTY_SHA256,
   type PartitionSources,
   siaPaPartitionSources,
   type SourceCache,
@@ -26,12 +27,26 @@ const MG = { ano: 2025, mes: 8, uf: 'MG' };
 const A: CachedFile = { bytes: 10, mtime: '2026-09-30T22:02:10.000Z', sha256: 'a'.repeat(64) };
 const B: CachedFile = { bytes: 20, mtime: '2026-09-30T22:03:10.000Z', sha256: 'b'.repeat(64) };
 
-/** Provenance publicado antes do registro existir (formato antigo, partição dividida). */
-const PROVENANCE_ANTIGO = `${JSON.stringify(
-  { dataset: 'sia-pa', source: { bytes: 0, file: 'PAMG2508.dbc', sha256: '' } },
-  null,
-  2,
-)}\n`;
+/** SHA-256 do `part.parquet` local nos testes. */
+const PARQUET_SHA = 'f'.repeat(64);
+
+function provenanceJson(outputSha: string, source: unknown): string {
+  return `${JSON.stringify({ dataset: 'sia-pa', output: { sha256: outputSha }, source }, null, 2)}\n`;
+}
+
+/** Provenance de antes do registro, de partição de DBC único, que confere com o Parquet. */
+const PROVENANCE_ANTIGO = provenanceJson(PARQUET_SHA, {
+  bytes: 2767043,
+  file: 'PAAC2401.dbc',
+  sha256: 'b'.repeat(64),
+});
+
+/** Formato inválido de antes de 19/11/2026 em partição dividida: canônico de 0 byte. */
+const PROVENANCE_LEGADO = provenanceJson(PARQUET_SHA, {
+  bytes: 0,
+  file: 'PAMG2508.dbc',
+  sha256: EMPTY_SHA256,
+});
 
 function cacheOf(files: Record<string, CachedFile>): SourceCache {
   return { read: (n) => files[n]!, size: (n) => files[n]?.bytes ?? null };
@@ -59,7 +74,7 @@ const RECORD: SourcesRecord = {
 };
 
 /** Diretórios de uma partição: entrada (Parquet + registro) e saída (provenance). */
-function setup(opts: { provenance?: boolean; record?: boolean }): {
+function setup(opts: { provenance?: string; record?: boolean }): {
   outPath: string;
   recordPath: string;
 } {
@@ -70,9 +85,9 @@ function setup(opts: { provenance?: boolean; record?: boolean }): {
   const recordPath = join(inDir, 'part.sources.json');
   const outPath = join(outDir, 'part.provenance.json');
   if (opts.record) writeFileSync(recordPath, serializeSourcesRecord(RECORD));
-  if (opts.provenance) {
+  if (opts.provenance !== undefined) {
     mkdirSync(outDir, { recursive: true });
-    writeFileSync(outPath, PROVENANCE_ANTIGO);
+    writeFileSync(outPath, opts.provenance);
     // mtime antigo e fixo: dá para ver se o arquivo foi tocado.
     utimesSync(outPath, new Date('2026-05-01T00:00:00Z'), new Date('2026-05-01T00:00:00Z'));
   }
@@ -81,9 +96,14 @@ function setup(opts: { provenance?: boolean; record?: boolean }): {
 
 function run(
   paths: { outPath: string; recordPath: string },
-  opts: { allowCacheFallback?: boolean; cache?: Record<string, CachedFile> } = {},
+  opts: {
+    allowCacheFallback?: boolean;
+    cache?: Record<string, CachedFile>;
+    parquetIlegivel?: boolean;
+  } = {},
 ): {
   buildBody: ReturnType<typeof vi.fn>;
+  parquetSha256: ReturnType<typeof vi.fn>;
   result: ReturnType<typeof emitPartitionProvenance>;
   sourcesFor: ReturnType<typeof vi.fn>;
 } {
@@ -95,29 +115,72 @@ function run(
   const buildBody = vi.fn((sources: PartitionSources) =>
     Promise.resolve({ dataset: 'sia-pa', ...sources }),
   );
+  const parquetSha256 = vi.fn(() => {
+    // Valor que não é Error, como um erro nativo repassado sem embrulho.
+    // eslint-disable-next-line no-throw-literal
+    if (opts.parquetIlegivel) throw 'EACCES: part.parquet';
+    return PARQUET_SHA;
+  });
   const result = emitPartitionProvenance({
     allowCacheFallback,
     buildBody,
     outPath: paths.outPath,
+    parquetSha256,
     recordPath: paths.recordPath,
     sourcesFor,
   });
-  return { buildBody, result, sourcesFor };
+  return { buildBody, parquetSha256, result, sourcesFor };
 }
 
 describe('emitPartitionProvenance', () => {
-  it('sem registro e com provenance local: deixa o arquivo intacto (bytes e mtime) e informa "anterior ao registro"', async () => {
-    const paths = setup({ provenance: true });
+  it('sem registro e com provenance local cujo output.sha256 confere com o Parquet: deixa o arquivo intacto (bytes e mtime) e informa "anterior ao registro"', async () => {
+    const paths = setup({ provenance: PROVENANCE_ANTIGO });
     const antes = statSync(paths.outPath).mtimeMs;
 
-    const { buildBody, result, sourcesFor } = run(paths);
+    const { buildBody, parquetSha256, result, sourcesFor } = run(paths);
 
-    expect(await result).toEqual({ kind: 'anterior-ao-registro' });
+    expect(await result).toEqual({ kind: 'anterior-ao-registro', legacy: false });
     expect(readFileSync(paths.outPath, 'utf8')).toBe(PROVENANCE_ANTIGO);
     expect(statSync(paths.outPath).mtimeMs).toBe(antes);
-    // Nem escolhe DBCs nem lê o Parquet.
+    expect(parquetSha256).toHaveBeenCalledOnce();
+    // Não escolhe DBCs nem monta corpo novo.
     expect(sourcesFor).not.toHaveBeenCalled();
     expect(buildBody).not.toHaveBeenCalled();
+  });
+
+  it('sem registro e com provenance local que não confere com o Parquet: trata como obsoleto, falha e apaga', async () => {
+    const paths = setup({ provenance: provenanceJson('e'.repeat(64), { bytes: 1 }) });
+    const r = await run(paths).result;
+
+    expect(r.kind).toBe('falhou');
+    expect(r.kind === 'falhou' && r.message).toMatch(
+      /provenance local sem part\.sources\.json não descreve o Parquet atual: output\.sha256 eeee.*, Parquet ffff/,
+    );
+    expect(existsSync(paths.outPath)).toBe(false);
+  });
+
+  it('sem registro e com provenance local ilegível: trata como obsoleto, falha e apaga', async () => {
+    const paths = setup({ provenance: '{' });
+    const r = await run(paths).result;
+
+    expect(r.kind === 'falhou' && r.message).toMatch(/não é JSON/);
+    expect(existsSync(paths.outPath)).toBe(false);
+  });
+
+  it('sem registro e com provenance local, mas Parquet ilegível: trata como obsoleto, falha e apaga', async () => {
+    const paths = setup({ provenance: PROVENANCE_ANTIGO });
+    const r = await run(paths, { parquetIlegivel: true }).result;
+
+    expect(r.kind === 'falhou' && r.message).toMatch(/ilegível \(EACCES: part\.parquet\)/);
+    expect(existsSync(paths.outPath)).toBe(false);
+  });
+
+  it('sem registro e com provenance local no formato inválido de antes de 19/11 que confere com o Parquet: mantém e marca como legado', async () => {
+    const paths = setup({ provenance: PROVENANCE_LEGADO });
+    const { result } = run(paths);
+
+    expect(await result).toEqual({ kind: 'anterior-ao-registro', legacy: true });
+    expect(readFileSync(paths.outPath, 'utf8')).toBe(PROVENANCE_LEGADO);
   });
 
   it('sem registro e sem provenance local: falha e não cria arquivo', async () => {
@@ -134,7 +197,7 @@ describe('emitPartitionProvenance', () => {
   });
 
   it('com registro: reescreve o provenance local a partir do registro', async () => {
-    const paths = setup({ provenance: true, record: true });
+    const paths = setup({ provenance: PROVENANCE_ANTIGO, record: true });
     const { result } = run(paths);
 
     expect(await result).toEqual({ fromCache: false, kind: 'escrito' });
@@ -153,7 +216,7 @@ describe('emitPartitionProvenance', () => {
   });
 
   it('com registro que não confere com o cache: falha e apaga o provenance local, que não descreve o Parquet novo', async () => {
-    const paths = setup({ provenance: true, record: true });
+    const paths = setup({ provenance: PROVENANCE_ANTIGO, record: true });
     const { result } = run(paths, { cache: { 'PAMG2508a.dbc': A } });
 
     const r = await result;
@@ -164,7 +227,7 @@ describe('emitPartitionProvenance', () => {
   });
 
   it('sem registro, com --allow-cache-fallback: regera o provenance local pelo cache', async () => {
-    const paths = setup({ provenance: true });
+    const paths = setup({ provenance: PROVENANCE_ANTIGO });
     const { result } = run(paths, { allowCacheFallback: true });
 
     expect(await result).toEqual({ fromCache: true, kind: 'escrito' });
@@ -172,11 +235,12 @@ describe('emitPartitionProvenance', () => {
   });
 
   it('erro que não é de procedência sobe sem apagar nada', async () => {
-    const paths = setup({ provenance: true, record: true });
+    const paths = setup({ provenance: PROVENANCE_ANTIGO, record: true });
     const r = emitPartitionProvenance({
       allowCacheFallback: false,
       buildBody: () => Promise.resolve({}),
       outPath: paths.outPath,
+      parquetSha256: () => PARQUET_SHA,
       recordPath: paths.recordPath,
       sourcesFor: () => {
         throw new TypeError('bug');
@@ -184,5 +248,34 @@ describe('emitPartitionProvenance', () => {
     });
     await expect(r).rejects.toThrow(TypeError);
     expect(readFileSync(paths.outPath, 'utf8')).toBe(PROVENANCE_ANTIGO);
+  });
+});
+
+describe('assessKeptProvenance', () => {
+  it.each([
+    ['não é JSON', '{', /não é JSON/],
+    ['JSON que não é objeto', 'null', /sem output\.sha256/],
+    ['sem output', JSON.stringify({ source: { bytes: 1 } }), /sem output\.sha256/],
+    ['output.sha256 não é texto', JSON.stringify({ output: { sha256: 5 } }), /sem output\.sha256/],
+  ])('rejeita provenance local %s', (_caso, text, motivo) => {
+    const r = assessKeptProvenance(text, PARQUET_SHA);
+    expect(r.ok).toBe(false);
+    expect(!r.ok && r.reason).toMatch(motivo);
+  });
+
+  const valido = { bytes: 10, file: 'PAAC2401.dbc', sha256: 'b'.repeat(64) };
+  it.each([
+    ['source válido', valido, false],
+    ['source nulo com sources (formato atual de partição dividida)', null, false],
+    ['source com 0 byte', { ...valido, bytes: 0 }, true],
+    ['source com hash vazio', { ...valido, sha256: '' }, true],
+    ['source com hash de arquivo vazio', { ...valido, sha256: EMPTY_SHA256 }, true],
+    ['source com hash que não é SHA-256', { ...valido, sha256: 'xyz' }, true],
+    ['source ausente', undefined, true],
+  ])('classifica %s', (_caso, source, legacy) => {
+    expect(assessKeptProvenance(provenanceJson(PARQUET_SHA, source), PARQUET_SHA)).toEqual({
+      legacy,
+      ok: true,
+    });
   });
 });

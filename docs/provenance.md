@@ -82,8 +82,8 @@ Regras:
   `emit-provenance` não consegue descrever os DBCs de uma partição (ver
   abaixo), ele falha (sai com erro, listando as partições) e não escreve o
   provenance dela, nem deixa o de um run anterior. A exceção é a partição
-  anterior ao registro com provenance local, descrita abaixo, que fica
-  intacta.
+  anterior ao registro com provenance local que confere com o Parquet,
+  descrita abaixo, que fica intacta.
 - Os arquivos listados são os que o `archive-sia-pa` decodificou, na ordem
   em que decodificou. O archive escolhe pela listagem do FTP
   (`resolvePartitionFiles` em `scripts/lib/dbc-source.ts`: o canônico se
@@ -100,9 +100,14 @@ rodou o pipeline (os workflows o excluem do `aws s3 sync`) e traz, para
 cada DBC decodificado: nome, caminho no FTP, tamanho e mtime na listagem
 do FTP (`ftpMtime`, `null` se a listagem não trouxer um legível) e mtime
 do arquivo no cache logo depois da decodificação (`cacheMtime`). O archive
-apaga o registro antes de reprocessar a partição e só o grava depois do
-Parquet; partição que ele pula por já existir fica com o registro que
-tinha.
+apaga o registro antes de reprocessar a partição e o grava **antes** do
+Parquet. Como ele só pula partição que já tem `part.parquet`, uma queda
+entre as duas escritas deixa no máximo um registro sem Parquet, e a
+partição é refeita no run seguinte; nunca fica Parquet sem registro. Falha
+ao montar ou gravar o registro (inclusive o `stat` do DBC no cache) é falha
+da partição: o archive grava o marker `.failed` (tipo `registro`), apaga o
+NDJSON e o registro parciais e segue para a próxima. Partição que ele pula
+por já existir fica com o registro que tinha.
 
 O `emit-provenance` tem dois modos.
 
@@ -127,11 +132,16 @@ Partição **sem registro**, neste modo:
 
 - com `part.provenance.json` já presente no diretório de saída: é uma
   partição anterior ao registro (o `build/` do runner do backfill
-  sobrevive entre runs, ver `docs/operations.md`). O provenance fica
-  como está — não é reescrito, apagado nem conferido — e a partição
-  aparece num aviso no fim, como "anterior ao registro". Se ela é
-  dividida e foi emitida antes de 19/11/2026, esse provenance é o do
-  formato antigo (ver a nota abaixo);
+  sobrevive entre runs, ver `docs/operations.md`). O `output.sha256` desse
+  provenance tem de ser o SHA-256 do `part.parquet` atual. Se for, o arquivo
+  fica como está (não é reescrito nem apagado) e a partição aparece num
+  aviso no fim, como "anterior ao registro". Se não for, ou se o provenance
+  ou o Parquet não puderem ser lidos, o provenance não descreve o Parquet
+  atual: é apagado e a partição falha, pedindo um novo archive ou o
+  `--allow-cache-fallback`. Provenance mantido no formato inválido de antes
+  de 19/11/2026 (`source` com 0 byte, sem SHA-256 válido ou com o SHA-256 de
+  arquivo vazio; ver a nota abaixo) também fica, para não travar o
+  backfill, mas aparece num aviso próprio pedindo a regeração;
 - sem provenance local: a emissão falha, nomeando a partição.
 
 O que este modo **não** confere: que o FTP ainda publica esses arquivos
