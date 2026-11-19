@@ -113,8 +113,10 @@ jobs:
           pnpm emit-provenance
 
       # Markers `.failed`/`.skipped` são só locais (o refresh de 14/09/2026
-      # publicou 90 deles). O filtro casa com o caminho relativo a `build/`,
-      # e o `_archive-run.json` fica em `sia-pa/` — daí o `*` na frente.
+      # publicou 90 deles), assim como o registro do archive
+      # (`part.sources.json`, lido pelo emit-provenance). O filtro casa com o
+      # caminho relativo a `build/`, e o `_archive-run.json` fica em `sia-pa/`
+      # — daí o `*` na frente.
       # Mesma lista do upload do refresh.yml, para as duas não divergirem.
       - name: Upload para S3
         run: |
@@ -126,6 +128,7 @@ jobs:
             --exclude '*.skipped' \
             --exclude '*.unchanged' \
             --exclude '*.ndjson' \
+            --exclude '*part.sources.json' \
             --cache-control 'public, max-age=3600'
 
       - name: Atualizar state (merge pending → dataset state)

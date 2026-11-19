@@ -35,7 +35,9 @@ Cada dataset ocupa um "slot" em três lugares:
 3. **`scripts/detect-new.ts`** — adicione uma entrada no mapa
    `DATASETS` com o path FTP + regex de nomes + parser (uf, ano, mês).
 4. **`scripts/emit-provenance.ts`** — adicione uma entrada no mapa
-   `DATASET_CONFIG` com o `ftpBase` e `sourceFileFor`.
+   `DATASET_CONFIG` com o `ftpBase` e `sourcesFor`. O archive do dataset
+   grava o `part.sources.json` de cada partição (ver
+   `scripts/lib/sources-record.ts` e `docs/provenance.md`).
 5. **`docs/schema/<dataset>.md`** — descrição das colunas, charset,
    referências, caveats. **Para SIH-RD, SIM, SINASC, SINAN e CNES-ST
    a spec já existe** em `docs/schema/`; refine e complete com base

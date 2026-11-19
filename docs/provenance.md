@@ -42,6 +42,163 @@ Para cada `<dataset>/ano=YYYY/uf=XX/mes=MM/part.parquet`, existe
 }
 ```
 
+### Partição publicada em mais de um DBC
+
+Alguns meses de UFs grandes (SP desde 2013, MG e RJ desde 2021, alguns de
+PR e RS) não têm o DBC canônico `PA{UF}{AA}{MM}.dbc`: o DBF excede o
+limite de 2 GB do formato e o DATASUS publica `PA{UF}{AA}{MM}a.dbc`,
+`…b.dbc` etc., com registros disjuntos. O Parquet da partição é a
+concatenação das variantes, nessa ordem. O provenance registra cada uma em
+`sources`, com os mesmos campos de `source`, e `source` fica `null`:
+
+```json
+{
+  "dataset": "sia-pa",
+  "partition": { "ano": 2025, "mes": 8, "uf": "MG" },
+  …
+  "source": null,
+  "sources": [
+    {
+      "bytes": 166934835,
+      "file": "PAMG2508a.dbc",
+      "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2508a.dbc",
+      "mtime": "2026-09-30T22:02:13.173Z",
+      "sha256": "aec600604746d43cebf50eafbb4d8a3b9661a2bf83cd66138156ee5a73dd7a8e"
+    },
+    { "bytes": 213060888, "file": "PAMG2508b.dbc", … },
+    { "bytes": 15204829, "file": "PAMG2508c.dbc", … }
+  ]
+}
+```
+
+Regras:
+
+- **Um DBC** → só `source`, sem `sources` (formato inalterado).
+- **Mais de um DBC** → `source: null` e `sources` com um item por arquivo.
+  `source` não aponta para nenhuma das variantes de propósito: nenhuma
+  delas, sozinha, é a fonte do Parquet. Quem lia `source.sha256` recebe
+  `null` em vez de um hash que não confere.
+- Nunca há `bytes: 0`, hash vazio ou `mtime` vazio. Quando o
+  `emit-provenance` não consegue descrever os DBCs de uma partição (ver
+  abaixo), ele falha (sai com erro, listando as partições) e não escreve o
+  provenance dela, nem deixa o de um run anterior. A exceção é a partição
+  anterior ao registro com provenance local que confere com o Parquet,
+  descrita abaixo, que fica intacta.
+- Os arquivos listados são os que o `archive-sia-pa` decodificou, na ordem
+  em que decodificou. O archive escolhe pela listagem do FTP
+  (`resolvePartitionFiles` em `scripts/lib/dbc-source.ts`: o canônico se
+  existir, senão as variantes `a`–`e` presentes, em ordem) e, quando a
+  partição é gravada, registra essa lista em `part.sources.json`, ao lado
+  do `part.parquet`.
+
+`mtime` é o do arquivo no cache local (quando foi baixado), não o do FTP.
+
+### De onde vem a lista de DBCs
+
+O `part.sources.json` é o registro do archive. Fica só no disco de quem
+rodou o pipeline (os workflows o excluem do `aws s3 sync`) e traz, para
+cada DBC decodificado: nome, caminho no FTP, tamanho e mtime na listagem
+do FTP (`ftpMtime`, `null` se a listagem não trouxer um legível) e mtime
+do arquivo no cache logo depois da decodificação (`cacheMtime`). O archive
+apaga o registro antes de reprocessar a partição e o grava **antes** do
+Parquet. Como ele só pula partição que já tem `part.parquet`, uma queda
+entre as duas escritas deixa no máximo um registro sem Parquet, e a
+partição é refeita no run seguinte; nunca fica Parquet sem registro. Falha
+ao montar ou gravar o registro (inclusive o `stat` do DBC no cache) é falha
+da partição: o archive grava o marker `.failed` (tipo `registro`), apaga o
+NDJSON e o registro parciais e segue para a próxima. Partição que ele pula
+por já existir fica com o registro que tinha.
+
+O `emit-provenance` tem dois modos.
+
+**Padrão: com registro.** Para cada arquivo do registro, na ordem dele:
+
+- confere que o arquivo está no cache, não está vazio, tem o tamanho
+  registrado (o da listagem do FTP, que o archive conferiu no download) e o
+  mesmo mtime de cache registrado (não foi baixado de novo depois da
+  decodificação);
+- calcula o SHA-256 a partir do cache e grava `bytes`, `mtime` e `sha256`
+  no provenance.
+
+Também confere que o registro é da partição e segue a regra do archive
+(nomes, ordem e diretório do FTP). Variantes no cache que não estão no
+registro são ignoradas. Registro inválido, ou arquivo ausente, vazio, de
+tamanho ou mtime diferente ou ilegível no cache, faz a emissão falhar e
+apaga o provenance local da partição, que não descreveria o Parquet novo.
+Os dois workflows (`refresh.yml` e `backfill.yml`) rodam o
+`emit-provenance` neste modo, no mesmo job e depois do archive.
+
+Partição **sem registro**, neste modo:
+
+- com `part.provenance.json` já presente no diretório de saída: é uma
+  partição anterior ao registro (o `build/` do runner do backfill
+  sobrevive entre runs, ver `docs/operations.md`). O `output.sha256` desse
+  provenance tem de ser o SHA-256 do `part.parquet` atual. Se for, o arquivo
+  fica como está (não é reescrito nem apagado) e a partição aparece num
+  aviso no fim, como "anterior ao registro". Se não for, ou se o provenance
+  ou o Parquet não puderem ser lidos, o provenance não descreve o Parquet
+  atual: é apagado e a partição falha, pedindo um novo archive ou o
+  `--allow-cache-fallback`. Provenance mantido no formato inválido de antes
+  de 19/11/2026 (`source` com 0 byte, sem SHA-256 válido ou com o SHA-256 de
+  arquivo vazio; ver a nota abaixo) também fica, para não travar o
+  backfill, mas aparece num aviso próprio pedindo a regeração;
+- sem provenance local: a emissão falha, nomeando a partição.
+
+O que este modo **não** confere: que o FTP ainda publica esses arquivos
+com esse conteúdo (isso é o Passo 1 abaixo, e o `verify-partitions` do
+refresh); e que os bytes no cache são os decodificados, além do tamanho e
+do mtime — o hash é calculado na emissão, não durante a decodificação.
+
+**`--allow-cache-fallback`: sem registro.** Para Parquet gerado antes de o
+registro existir (builds antigos, regeração de provenance de partição já
+publicada). Só vale para partição sem `part.sources.json`; quem tem
+registro continua no modo padrão. Com a opção, o provenance local de uma
+partição sem registro é regerado, não mantido. Nenhum workflow usa esta
+opção.
+
+```bash
+pnpm emit-provenance -- --allow-cache-fallback
+```
+
+Os DBCs são escolhidos pelo que está no cache, com a regra do archive
+aplicada aos arquivos não vazios. Os arquivos de 0 byte que tentativas
+antigas deixaram no cache (por exemplo `PAMG2508.dbc`) são ignorados. A
+emissão falha se não houver DBC não vazio, se as variantes não forem
+contíguas a partir de `a` (`a` e `c` sem `b`; `b` e `c` sem `a`) ou se
+houver uma variante sozinha sem o canônico. As demais checagens de
+leitura (arquivo legível, hash plausível) valem como no modo padrão.
+
+O que este modo **não** detecta:
+
+- uma variante final ausente do cache — com `a` e `b` presentes e `c`
+  removido, o provenance sai com `a` e `b` para um Parquet feito de `a`,
+  `b` e `c`;
+- um canônico não vazio no cache ao lado das variantes — ele vence, como
+  no archive, mesmo que o Parquet tenha sido feito das variantes;
+- um DBC no cache diferente do que foi decodificado (republicado e baixado
+  de novo depois do archive).
+
+O `emit-provenance` lista no fim as partições emitidas assim. Antes de
+publicar, confira cada uma contra a listagem do FTP — nomes e tamanhos
+têm de bater com `source`/`sources`:
+
+```bash
+curl -s 'ftp://ftp.datasus.gov.br/dissemin/publicos/SIASUS/200801_/Dados/' \
+  | grep -E ' PAMG2508[a-e]?\.dbc'
+# 09-17-26  05:27PM            166934835 PAMG2508a.dbc
+# 09-17-26  05:27PM            213060888 PAMG2508b.dbc
+# 09-17-26  05:27PM             15204829 PAMG2508c.dbc
+```
+
+> **Provenance publicado antes de 19/11/2026.** Nas partições divididas, o
+> provenance gerado antes desta regra traz `source.file` com o nome
+> canônico (que não existe no FTP), `source.bytes: 0` e `source.sha256`
+> igual ao hash de arquivo vazio (`e3b0c442…`) ou vazio. O Parquet dessas
+> partições está correto; só o provenance não confere com o FTP até ser
+> regerado — rodando o archive da partição de novo, ou com
+> `--allow-cache-fallback` e a conferência contra a listagem do FTP
+> descrita acima.
+
 `output.fingerprint` é a impressão do **conteúdo** (md5 do JSON de cada
 linha, combinado por soma e XOR, mais a contagem — `v1:<linhas>:<soma>:<xor>`).
 Ao contrário do `sha256`, não depende da ordem das linhas nem da versão
@@ -62,6 +219,20 @@ curl -o PAAC2401.dbc \
 # 2. Verifique o SHA256:
 shasum -a 256 PAAC2401.dbc
 # Deve bater com `source.sha256` do provenance.
+```
+
+Partição com `sources` (DBC dividido): baixe e confira cada arquivo da
+lista. Com `jq`:
+
+```bash
+PROV=part.provenance.json
+jq -r '.sources[] | "\(.sha256)  \(.file)"' "$PROV" > esperado.sha256
+jq -r '.sources[].ftpPath' "$PROV" | while read -r ftp_path; do
+  curl -sO "ftp://ftp.datasus.gov.br${ftp_path}"
+done
+shasum -a 256 -c esperado.sha256
+# Cada linha deve sair "OK". Confira também que a listagem do FTP não tem
+# variante a mais (por exemplo um `…d.dbc` que não está em `sources`).
 ```
 
 Se bate, o DBC usado pelo pipeline é idêntico ao que está no FTP

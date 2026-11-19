@@ -174,8 +174,9 @@ jobs:
           pnpm emit-provenance -- --build-dir build-refresh --out build-refresh
 
       # Só Parquet e provenance vão para o bucket público. Os markers locais
-      # (`.failed`, `.skipped`, `.unchanged`) e os JSONs de controle ficam no
-      # runner: o refresh de 14/09/2026 publicou 90 `part.parquet.failed`.
+      # (`.failed`, `.skipped`, `.unchanged`), os JSONs de controle e o
+      # registro do archive (`part.sources.json`, lido pelo emit-provenance)
+      # ficam no runner: o refresh de 14/09/2026 publicou 90 `part.parquet.failed`.
       - name: Upload das partições verificadas para o S3
         if: env.HAS_NEW == 'true'
         run: |
@@ -187,6 +188,7 @@ jobs:
             --exclude '*.skipped' \
             --exclude '*.unchanged' \
             --exclude '*.ndjson' \
+            --exclude '*part.sources.json' \
             --cache-control 'public, max-age=3600'
 
       - name: Lista partições no bucket

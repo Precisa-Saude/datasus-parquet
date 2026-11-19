@@ -231,6 +231,13 @@ progresso. A próxima rodada recomeça do zero.
 
 No runner self-hosted o `build/` sobrevive entre runs, e é por isso que o
 backfill em chunks funciona: cada chunk aproveita o que o anterior deixou.
+Partição de um chunk anterior ao `part.sources.json` (o registro dos DBCs
+que o archive grava desde 19/11/2026) não tem esse registro: se já tem
+`part.provenance.json` no `build/` cujo `output.sha256` confere com o
+Parquet, o `emit-provenance` a deixa como está e a lista num aviso como
+"anterior ao registro" (ou "formato inválido de antes de 19/11/2026", se
+for o caso); se não confere, ou se não tem provenance, a emissão falha
+antes do upload. Ver `docs/provenance.md`.
 O refresh, ao contrário, começa cada run com um `build-refresh/` vazio:
 como a janela reescreve partições que já existem, reaproveitar um parquet
 de um run anterior significaria publicar a versão velha.
