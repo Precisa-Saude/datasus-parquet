@@ -40,8 +40,8 @@ importers:
         specifier: ^1.0.0
         version: 1.6.0(typescript@5.7.3)
       '@precisa-saude/worktree-cli':
-        specifier: ^1.0.0
-        version: 1.6.0
+        specifier: ^3.5.2
+        version: 3.5.2
       '@types/node':
         specifier: ^22.10.0
         version: 22.19.17
@@ -532,8 +532,8 @@ packages:
     peerDependencies:
       typescript: '>=5.0.0'
 
-  '@precisa-saude/worktree-cli@1.6.0':
-    resolution: {integrity: sha512-fDx1YrP8z6rMs0PbrxyRZdEhVWto8+sm3ujh4pxb4OxgMzIPkeygI1obMSnb7BlVGjJ0IdzQzdu2puZRw7bxtg==}
+  '@precisa-saude/worktree-cli@3.5.2':
+    resolution: {integrity: sha512-PuIdWJHbPkLdvXIZ0SbLQA2eljvKxHW/U8wyYLfqX5v/E7RGOJIr8XO3dnojHR4rS6OWEMCxUPqqKxZ7hid/Xw==}
     engines: {node: '>=22.0.0'}
     hasBin: true
 
@@ -3188,7 +3188,7 @@ snapshots:
     dependencies:
       typescript: 5.7.3
 
-  '@precisa-saude/worktree-cli@1.6.0':
+  '@precisa-saude/worktree-cli@3.5.2':
     dependencies:
       chalk: 5.6.2
       commander: 12.1.0
