@@ -7,6 +7,11 @@
  * Saída:
  *
  *     build/sia-pa/ano=YYYY/uf=XX/mes=MM/part.parquet
+ *     build/sia-pa/ano=YYYY/uf=XX/mes=MM/part.sources.json  (só local)
+ *
+ * O `part.sources.json` registra os DBCs decodificados (nome, caminho no
+ * FTP, tamanho e mtime da listagem, mtime no cache), na ordem. O
+ * `emit-provenance` exige esse registro; ele não vai para o S3.
  *
  * Partição por mês preserva o schema exato do DBF daquela competência
  * — útil porque SIA-PA teve evoluções graduais de schema entre
@@ -35,6 +40,9 @@
  *   - Compressão zstd. Row-groups ordenados por `(PA_CMP, PA_CODUNI)`
  *     para pushdown por competência e estabelecimento.
  *   - Idempotente: pula partições já existentes. Deletar para re-emitir.
+ *     Partição pulada fica com o `part.sources.json` que já tinha; Parquet
+ *     gerado antes do registro existir não tem um, e o `emit-provenance`
+ *     recusa a partição (ver docs/provenance.md).
  */
 
 import {
@@ -48,7 +56,7 @@ import {
   writeFileSync,
   writeSync,
 } from 'node:fs';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { readDbcRecords } from '@precisa-saude/datasus-dbc';
@@ -56,25 +64,52 @@ import { download, type SiaProducaoAmbulatorialRecord } from '@precisa-saude/dat
 import { Client } from 'basic-ftp';
 import duckdb from 'duckdb';
 
-import { fetchVerified, resolvePartitionFiles, SizeMismatchError } from './lib/dbc-source.js';
+import { datasusCacheDir } from './lib/cache-dir.js';
+import {
+  fetchVerified,
+  type RemoteFile,
+  resolvePartitionFiles,
+  SizeMismatchError,
+} from './lib/dbc-source.js';
+import { parseDosMtime } from './lib/ftp-mtime.js';
 import {
   parsePendingTargets,
   sortTargets,
   type Target,
   type TargetOrder,
 } from './lib/refresh-targets.js';
+import {
+  buildSourcesRecord,
+  serializeSourcesRecord,
+  SOURCES_RECORD_FILE,
+} from './lib/sources-record.js';
 
 const FTP_HOST = 'ftp.datasus.gov.br';
 const SIA_PA_DIR = '/dissemin/publicos/SIASUS/200801_/Dados';
 
-/** Nome → tamanho em bytes de cada arquivo do diretório SIA-PA no FTP. */
-async function listRemoteSizes(dir: string): Promise<Map<string, number>> {
+/** Listagem do diretório SIA-PA no FTP, uma vez por run. */
+interface FtpListing {
+  /** Nome → mtime em ISO 8601, ou `null` quando ilegível (`lib/ftp-mtime.ts`). */
+  mtimes: ReadonlyMap<string, null | string>;
+  /** Nome → tamanho em bytes. */
+  sizes: ReadonlyMap<string, number>;
+}
+
+async function listRemote(dir: string): Promise<FtpListing> {
   const client = new Client();
   client.ftp.verbose = false;
   try {
     await client.access({ host: FTP_HOST, port: 21, secure: false });
-    const entries = await client.list(dir);
-    return new Map(entries.filter((e) => e.type === 1).map((e) => [e.name, e.size]));
+    const files = (await client.list(dir)).filter((e) => e.type === 1);
+    return {
+      mtimes: new Map(
+        files.map((e) => [
+          e.name,
+          (e.modifiedAt ?? parseDosMtime(e.rawModifiedAt))?.toISOString() ?? null,
+        ]),
+      ),
+      sizes: new Map(files.map((e) => [e.name, e.size])),
+    };
   } finally {
     client.close();
   }
@@ -119,18 +154,18 @@ function isTransportError(err: unknown): boolean {
  * `PA{UF}{YY}{MM}a.dbc`, `b.dbc`, etc. Os records são disjuntos entre
  * variantes e devem ser concatenados logicamente no consumo.
  *
- * Estratégia: resolve canônico ou variantes pela listagem do FTP e
- * baixa todos os arquivos, conferindo o tamanho de cada um, ANTES de
- * decodificar o primeiro. Assim uma variante divergente não deixa
- * registros de outra versão já gravados no NDJSON (caso MG 2026-06).
+ * Estratégia: recebe o canônico ou as variantes resolvidos pela listagem
+ * do FTP (`resolvePartitionFiles`) e baixa todos os arquivos, conferindo o
+ * tamanho de cada um, ANTES de decodificar o primeiro. Assim uma variante
+ * divergente não deixa registros de outra versão já gravados no NDJSON
+ * (caso MG 2026-06). A mesma lista vai para o `part.sources.json`.
  */
 async function* streamMonthWithVariants(
-  listing: ReadonlyMap<string, number>,
+  files: readonly RemoteFile[],
   uf: string,
   year: number,
   month: number,
 ): AsyncIterable<SiaProducaoAmbulatorialRecord> {
-  const files = resolvePartitionFiles(listing, uf, year, month);
   if (files.length === 0) {
     const mm = String(month).padStart(2, '0');
     throw new Error(`550 nenhum DBC encontrado para ${uf} ${year}-${mm} (canônico + a-e)`);
@@ -284,7 +319,7 @@ function bytesHuman(n: number): string {
 
 async function writeMonthPartition(
   cli: Cli,
-  listing: ReadonlyMap<string, number>,
+  listing: FtpListing,
   uf: string,
   year: number,
   month: number,
@@ -308,6 +343,12 @@ async function writeMonthPartition(
   mkdirSync(partitionDir, { recursive: true });
   const ndjsonFile = resolve(partitionDir, 'part.ndjson');
   const failedMarker = resolve(partitionDir, 'part.parquet.failed');
+  // Registro dos DBCs decodificados, para o `emit-provenance` (ver
+  // `lib/sources-record.ts`). Um que tenha sobrado de run anterior sai antes
+  // de tentar: só fica o desta decodificação, e só se ela der certo.
+  const sourcesRecordFile = resolve(partitionDir, SOURCES_RECORD_FILE);
+  rmSync(sourcesRecordFile, { force: true });
+  const files = resolvePartitionFiles(listing.sizes, uf, year, month);
 
   // Retry inline com classificação transport-vs-decode (ver isTransportError).
   // Transporte (ECONNRESET, ETIMEDOUT, etc.) ganha retries generosos com
@@ -327,7 +368,7 @@ async function writeMonthPartition(
     rows = 0;
     const fd = openSync(ndjsonFile, 'w');
     try {
-      for await (const record of streamMonthWithVariants(listing, uf, year, month)) {
+      for await (const record of streamMonthWithVariants(files, uf, year, month)) {
         writeSync(fd, `${JSON.stringify(record)}\n`);
         rows += 1;
       }
@@ -382,6 +423,20 @@ async function writeMonthPartition(
     return { rows: 0 };
   }
 
+  // Antes do Parquet: se não der para montar o registro, a partição não
+  // fica com Parquet sem registro. O mtime do cache é o desta decodificação
+  // (`fetchVerified` acabou de conferir ou baixar cada arquivo).
+  const cacheRoot = join(datasusCacheDir(), SIA_PA_DIR);
+  const sourcesRecord = serializeSourcesRecord(
+    buildSourcesRecord({
+      cacheMtime: (name) => statSync(join(cacheRoot, name)).mtime.toISOString(),
+      files,
+      ftpBase: SIA_PA_DIR,
+      ftpMtimes: listing.mtimes,
+      partition: { ano: year, mes: month, uf },
+    }),
+  );
+
   await new Promise<void>((res, rej) => {
     const db = new duckdb.Database(':memory:');
     db.all(
@@ -398,6 +453,7 @@ async function writeMonthPartition(
   });
 
   rmSync(ndjsonFile);
+  writeFileSync(sourcesRecordFile, sourcesRecord);
   const sz = statSync(parquetFile).size;
   process.stderr.write(
     `  ✓ ano=${year}/uf=${uf}/mes=${String(month).padStart(2, '0')}/part.parquet ` +
@@ -419,8 +475,8 @@ async function main(): Promise<void> {
   // Uma listagem por run. Se o DATASUS republicar no meio de uma rodada
   // longa, o tamanho diverge da listagem, o retry de transporte esgota e a
   // partição vira `.failed` — re-rodar pega a listagem nova.
-  const listing = await listRemoteSizes(SIA_PA_DIR);
-  process.stderr.write(`  listagem do FTP: ${listing.size} arquivos em ${SIA_PA_DIR}\n`);
+  const listing = await listRemote(SIA_PA_DIR);
+  process.stderr.write(`  listagem do FTP: ${listing.sizes.size} arquivos em ${SIA_PA_DIR}\n`);
 
   let totalRows = 0;
   let skipped = 0;
