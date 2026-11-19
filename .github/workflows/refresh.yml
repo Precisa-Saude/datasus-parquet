@@ -173,6 +173,9 @@ jobs:
           eval "$("$HOME"/.local/bin/mise activate bash)"
           pnpm emit-provenance -- --build-dir build-refresh --out build-refresh
 
+      # Só Parquet e provenance vão para o bucket público. Os markers locais
+      # (`.failed`, `.skipped`, `.unchanged`) e os JSONs de controle ficam no
+      # runner: o refresh de 14/09/2026 publicou 90 `part.parquet.failed`.
       - name: Upload das partições verificadas para o S3
         if: env.HAS_NEW == 'true'
         run: |
@@ -180,6 +183,8 @@ jobs:
             --exclude '*_archive-run.json' \
             --exclude '_verified.json' \
             --exclude '_unchanged.json' \
+            --exclude '*.failed' \
+            --exclude '*.skipped' \
             --exclude '*.unchanged' \
             --exclude '*.ndjson' \
             --cache-control 'public, max-age=3600'
