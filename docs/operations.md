@@ -3,20 +3,21 @@
 Dois workflows publicam Parquet. **Escolher o errado custa horas**, então
 comece por aqui.
 
-|                            | `refresh.yml`                                                  | `backfill.yml`                                                                    |
-| -------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| Para que serve             | publicação mensal do DATASUS: janela revisável inteira + delta | recuperar volume grande: meses/anos atrasados, re-arquivar competência corrompida |
-| Gatilho                    | cron segunda 06:00 UTC + `workflow_dispatch`                   | só `workflow_dispatch`                                                            |
-| Onde roda                  | detect no GitHub; archive no **`rafael-desktop-archive`**      | **`rafael-desktop-archive`** (self-hosted, label `archive`)                       |
-| Teto de tempo              | **1440 min (24h)** no archive                                  | **1440 min (24h)**                                                                |
-| Escopo                     | janela de 13 competências × 27 UFs quando há publicação nova   | você escolhe `ufs` × `years` × `months`                                           |
-| Resiliência                | watchdog + verificação contra o FTP antes do upload            | watchdog reinicia partição travada                                                |
-| Reconstrói `manifest.json` | sim, com guarda anti-regressão                                 | **não**                                                                           |
+|                            | `refresh.yml`                                                    | `backfill.yml`                                                                    |
+| -------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Para que serve             | publicação mensal do DATASUS: delta + reescritas do state legado | recuperar volume grande: meses/anos atrasados, re-arquivar competência corrompida |
+| Gatilho                    | cron segunda 06:00 UTC + `workflow_dispatch`                     | só `workflow_dispatch`                                                            |
+| Onde roda                  | detect no GitHub; archive no **`rafael-desktop-archive`**        | **`rafael-desktop-archive`** (self-hosted, label `archive`)                       |
+| Teto de tempo              | **1440 min (24h)** no archive                                    | **1440 min (24h)**                                                                |
+| Escopo                     | delta + mtimes novos em entradas legadas desde 2026-11-01        | você escolhe `ufs` × `years` × `months`                                           |
+| Resiliência                | watchdog + verificação contra o FTP antes do upload              | watchdog reinicia partição travada                                                |
+| Reconstrói `manifest.json` | sim, com guarda anti-regressão                                   | **não**                                                                           |
 
 ## Regra prática
 
 - **Publicação mensal do DATASUS** → `refresh.yml` (automático, segunda).
-  Reprocessa a janela revisável inteira sem acompanhamento.
+  Reprocessa o delta, inclusive reescritas posteriores ao marco nas entradas
+  legadas, sem acompanhamento.
 - **Recuperar o que está fora da janela** (anos antigos, partição que a
   auditoria apontou) → `backfill.yml`, em chunks.
 
@@ -37,14 +38,26 @@ anterior a essa janela mudou de tamanho desde o backfill.
 O `detect-new` compara cada partição do FTP com o `state/sia-pa.json` por
 **tamanho e mtime**:
 
-- sem nenhum delta → nada pendente, o run é no-op;
+- sem delta → nada pendente, o run é no-op;
 - com delta → só as partições novas ou alteradas entram. Cada entrada do
   `pending.json` traz o `reason`: `novo` ou `alterado`.
 
 O mtime vem de `rawModifiedAt` da listagem DOS (`lib/ftp-mtime.ts`): o
 servidor não anuncia MLSD e, até 2026-11, o state guardava 1970 em todas as
-entradas. Essas entradas antigas são comparadas só por tamanho até serem
-reprocessadas; a partir daí o mtime real entra no state.
+entradas. Essas entradas antigas eram comparadas só por tamanho. Como as
+12 competências ativas já receberam mtimes reais, o refresh usa
+`--legacy-since 2026-11-01T00:00:00Z` para detectar, nas entradas históricas
+ainda com epoch, reexportações com mtime posterior a esse marco mesmo que o
+tamanho não mude. O marco antecede a correção do parser em 02/11 e dá folga
+para o fuso desconhecido do FTP. Depois da verificação, `--mark-processed`
+registra o mtime real e a próxima sondagem volta a ser no-op.
+
+Isso protege mudanças futuras, **não comprova o conteúdo histórico**: uma
+reescrita anterior ao marco, de mesmo tamanho, continua invisível. Se houver
+evidência dela, recupere a partição via `backfill.yml` em chunks. O
+`audit.yml` compara contagem de linhas, não conteúdo, e por si só não
+detecta substituições com a mesma contagem. Se o FTP deixar de informar
+mtime legível, a detecção dessas reescritas volta a depender do tamanho.
 
 A janela fixa (`--window N`, `reason: janela`) continua disponível como
 fallback caso o state volte a ficar errado, mas o `refresh.yml` não a usa.

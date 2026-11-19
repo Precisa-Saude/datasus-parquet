@@ -8,9 +8,10 @@ name: refresh
 #
 # Cada publicação mensal do DATASUS reescreve a competência nova e as 11
 # anteriores (padrão das datas no FTP), então o delta de uma publicação é
-# ~12 × 27 partições, 8–10 h. Sem delta nenhum contra o state, o run é no-op.
-# A janela fixa (`--window N`) continua disponível no detect-new como
-# fallback, mas não é usada aqui: o mtime da listagem passou a ser lido.
+# ~12 × 27 partições, 8–10 h. Sem delta, o run é no-op. Para o state legado
+# (mtime desconhecido), reprocessa apenas arquivos com mtime posterior ao
+# marco de observação; não faz backfill do histórico inteiro.
+# A janela fixa (`--window N`) continua disponível como fallback.
 #
 # Por que o runner self-hosted: no runner do GitHub o teto é 3 h e o upload
 # só acontece no fim; em 14/09 e 21/09/2026 a fila estourou o teto sem
@@ -65,8 +66,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - id: detect
-        # Só delta (tamanho + mtime) contra o state; sem janela fixa.
-        run: pnpm detect-new
+        # Inclui reescritas recentes do mesmo tamanho em partições legadas.
+        run: pnpm detect-new -- --legacy-since 2026-11-01T00:00:00Z
       - name: Resumo da detecção
         run: |
           {

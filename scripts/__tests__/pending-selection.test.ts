@@ -97,6 +97,34 @@ describe('selectPending', () => {
     expect(hasChanged({ sourceMtime: EPOCH, sourceSize: 41 }, remote)).toBe(true);
   });
 
+  it('detecta reescrita antiga do mesmo tamanho após o marco, sem reprocessar o histórico inteiro', () => {
+    const changed = { ...g('AC', 2024, 6, 40), mtime: '2026-11-18T21:51:00.000Z' };
+    const untouched = { ...g('AC', 2025, 8, 30), mtime: '2026-10-30T21:51:00.000Z' };
+    const known = stateOf([
+      ['AC', '2024-06', 40],
+      ['AC', '2025-08', 30],
+    ]);
+    const result = selectPending([changed, untouched], known, 0, '2026-11-01T00:00:00Z');
+    expect(result.selected.map(({ group, reason }) => [group.year, group.month, reason])).toEqual([
+      [2024, 6, 'alterado'],
+    ]);
+    expect(result.windowStart).toBeNull();
+  });
+
+  it('não repete a rechecagem após registrar mtime real nem quando o FTP não informa mtime', () => {
+    const remote = { ...g('AC', 2024, 6, 40), mtime: '2026-11-18T21:51:00.000Z' };
+    const known = () => ({ sourceMtime: remote.mtime, sourceSize: 40 });
+    expect(selectPending([remote], known, 0, '2026-11-01T00:00:00Z').selected).toEqual([]);
+    expect(
+      selectPending(
+        [g('AC', 2024, 6, 40)],
+        () => ({ sourceMtime: EPOCH, sourceSize: 40 }),
+        0,
+        '2026-11-01T00:00:00Z',
+      ).selected,
+    ).toEqual([]);
+  });
+
   it('FTP sem mtime legível também compara só por tamanho', () => {
     const known = () => ({ sourceMtime: '2026-10-30T21:51:00.000Z', sourceSize: 40 });
     expect(selectPending([g('AC', 2026, 7, 40)], known, 0).selected).toEqual([]);
