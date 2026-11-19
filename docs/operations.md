@@ -96,7 +96,25 @@ inteira (12 × 27 = 324 partições), 8–10 h, uma vez por mês.
    verificação (parquet publicado, marker `.skipped` ou `.unchanged`); o
    resto segue pendente para o próximo refresh.
 7. Commit do state → GitHub Release (dispara o webhook do Zenodo e **emite
-   DOI**) → dispara o `refresh.yml` do datasus-viz.
+   DOI**) → dispara o `refresh.yml` do datasus-viz. Release, DOI e disparo
+   do viz só acontecem quando as duas condições valem:
+   - **competência nova**: a competência mais recente entre as pendentes é
+     posterior à mais recente que o state conhecia antes do run
+     (`newCompetencia`, calculado pelo `detect-new` com
+     `lib/pending-selection.ts#hasNewCompetencia`). O DATASUS publica as 27
+     UFs de um mês no mesmo dia, então não há mês parcial;
+   - **conteúdo novo**: ao menos uma partição verificada não era idêntica ao
+     publicado (`changedCount` do `skip-unchanged` maior que zero).
+
+   Um run que só reprocessa meses antigos (reescrita do DATASUS, entrada
+   legada pega pelo `--legacy-since`) ou em que tudo era re-exportação
+   idêntica publica os dados, o manifest e o state como sempre, mas **não**
+   cria release: a tag `dataset-<competência>` seria de um mês antigo,
+   viraria a Latest e cunharia um DOI permanente, ou sobrescreveria a
+   release que já tem essa tag. Essas partições entram na release da
+   próxima competência nova. O resumo do job de detecção mostra se o run
+   tem competência nova.
+
 8. Se alguma partição foi rejeitada, o job termina em falha depois de
    publicar as aprovadas.
 

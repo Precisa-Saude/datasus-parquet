@@ -57,6 +57,35 @@ export function hasChanged(known: KnownEntry, remote: RemoteGroup): boolean {
   return new Date(known.sourceMtime).getTime() !== new Date(remote.mtime).getTime();
 }
 
+/** Maior competência (`AAAA-MM`) da lista, ou `null` se vazia. */
+export function newestCompetencia(competencias: Iterable<string>): null | string {
+  let newest: null | string = null;
+  for (const c of competencias) if (newest === null || c > newest) newest = c;
+  return newest;
+}
+
+/**
+ * `true` quando a competência mais recente entre as pendentes é
+ * estritamente posterior a `previousNewest`, a mais recente que o state
+ * conhecia antes do run (`null` = state vazio).
+ *
+ * Decide se o refresh publica release (tag `dataset-<competência>`, DOI
+ * Zenodo) e dispara o datasus-viz. Um run que só reprocessa meses antigos
+ * (reescrita do DATASUS, entrada legada pega pelo `--legacy-since`) não
+ * pode virar release: a tag seria de um mês antigo, ocuparia a Latest e
+ * cunharia um DOI permanente; se a tag já existisse, a release original
+ * seria sobrescrita. O DATASUS publica as 27 UFs de um mês no mesmo dia,
+ * então não há mês parcial a tratar.
+ */
+export function hasNewCompetencia(
+  pending: Iterable<string>,
+  previousNewest: null | string,
+): boolean {
+  const newest = newestCompetencia(pending);
+  if (newest === null) return false;
+  return previousNewest === null || newest > previousNewest;
+}
+
 export function selectPending<G extends RemoteGroup>(
   groups: readonly G[],
   known: (uf: string, competencia: string) => KnownEntry | undefined,

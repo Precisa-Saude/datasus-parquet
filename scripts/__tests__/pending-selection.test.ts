@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import {
   hasChanged,
+  hasNewCompetencia,
   type KnownEntry,
+  newestCompetencia,
   type RemoteGroup,
   selectPending,
 } from '../lib/pending-selection.js';
@@ -141,5 +143,38 @@ describe('selectPending', () => {
   it('lista vazia não tem competência mais recente', () => {
     const r = selectPending([], () => undefined, 13);
     expect(r).toEqual({ latest: null, selected: [], windowStart: null });
+  });
+});
+
+describe('newestCompetencia', () => {
+  it('devolve a maior competência, sem depender da ordem', () => {
+    expect(newestCompetencia(['2025-03', '2026-08', '2008-01'])).toBe('2026-08');
+  });
+
+  it('lista vazia não tem competência mais recente', () => {
+    expect(newestCompetencia([])).toBeNull();
+  });
+});
+
+describe('hasNewCompetencia', () => {
+  it('competência posterior à mais recente do state é nova', () => {
+    expect(hasNewCompetencia(['2025-03', '2026-09'], '2026-08')).toBe(true);
+  });
+
+  it('só competências antigas (reescrita do DATASUS, legado) não são novas', () => {
+    expect(hasNewCompetencia(['2025-03', '2026-06'], '2026-08')).toBe(false);
+  });
+
+  it('a mesma competência mais recente do state não é nova', () => {
+    expect(hasNewCompetencia(['2026-07', '2026-08'], '2026-08')).toBe(false);
+  });
+
+  it('com state vazio, qualquer competência pendente é nova', () => {
+    expect(hasNewCompetencia(['2008-01'], null)).toBe(true);
+  });
+
+  it('sem pendentes não há competência nova', () => {
+    expect(hasNewCompetencia([], '2026-08')).toBe(false);
+    expect(hasNewCompetencia([], null)).toBe(false);
   });
 });
