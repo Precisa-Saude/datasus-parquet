@@ -112,10 +112,15 @@ jobs:
           eval "$($HOME/.local/bin/mise activate bash)"
           pnpm emit-provenance
 
+      # Markers `.failed`/`.skipped` são só locais (o refresh de 14/09/2026
+      # publicou 90 deles). O filtro casa com o caminho relativo a `build/`,
+      # e o `_archive-run.json` fica em `sia-pa/` — daí o `*` na frente.
       - name: Upload para S3
         run: |
           aws s3 sync build/ "s3://${{ secrets.S3_BUCKET }}/" \
-            --exclude '_archive-run.json' \
+            --exclude '*_archive-run.json' \
+            --exclude '*.failed' \
+            --exclude '*.skipped' \
             --exclude '**/*.ndjson' \
             --cache-control 'public, max-age=3600'
 
