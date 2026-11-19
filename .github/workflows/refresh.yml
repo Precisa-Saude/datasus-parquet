@@ -265,8 +265,8 @@ jobs:
           git pull --rebase origin main
           git push origin HEAD:main
 
-      # Release, token do viz e disparo do viz só rodam com
-      # `releaseCompetencia` preenchida (PRE-607). O skip-unchanged a calcula
+      # Release e DOI só rodam com `releaseCompetencia` preenchida (PRE-607);
+      # o datasus-viz, mais abaixo, segue qualquer partição publicada. O skip-unchanged a calcula
       # com `releaseCompetencia` de `lib/pending-selection.ts`: a competência
       # mais recente entre as partições que este run publicou (verificadas
       # contra o FTP e com conteúdo diferente do publicado), desde que seja
@@ -314,7 +314,7 @@ jobs:
 
       - name: Token do release-bot para o datasus-viz
         id: app-token-viz
-        if: env.HAS_NEW == 'true' && steps.unchanged.outputs.releaseCompetencia != ''
+        if: env.HAS_NEW == 'true' && fromJSON(steps.unchanged.outputs.changedCount || '0') > 0
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
@@ -324,9 +324,12 @@ jobs:
           permission-actions: write
 
       # O datasus-viz reagrega só as partições cujo Last-Modified mudou e, no
-      # mesmo workflow, regenera os artefatos de atipicidade.
+      # mesmo workflow, regenera os artefatos de atipicidade. Ele roda sempre
+      # que alguma partição foi publicada, com ou sem release: uma correção de
+      # mês antigo também precisa chegar ao datasus-viz, e o disparo não deixa
+      # artefato permanente como o DOI.
       - name: Dispara o refresh do datasus-viz
-        if: env.HAS_NEW == 'true' && steps.unchanged.outputs.releaseCompetencia != ''
+        if: env.HAS_NEW == 'true' && fromJSON(steps.unchanged.outputs.changedCount || '0') > 0
         env:
           GH_TOKEN: ${{ steps.app-token-viz.outputs.token }}
         run: gh workflow run refresh.yml -R "${{ github.repository_owner }}/datasus-viz"

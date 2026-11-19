@@ -96,8 +96,11 @@ inteira (12 × 27 = 324 partições), 8–10 h, uma vez por mês.
    verificação (parquet publicado, marker `.skipped` ou `.unchanged`); o
    resto segue pendente para o próximo refresh.
 7. Commit do state → GitHub Release (dispara o webhook do Zenodo e **emite
-   DOI**) → dispara o `refresh.yml` do datasus-viz. Release, DOI e disparo
-   do viz só acontecem quando o run **publica** uma competência nova: entre
+   DOI**) → dispara o `refresh.yml` do datasus-viz. O disparo do viz
+   acontece sempre que alguma partição foi publicada (`changedCount > 0`),
+   com ou sem release: correção de mês antigo também precisa chegar ao
+   site. Release e DOI só acontecem quando o run **publica** uma
+   competência nova: entre
    as partições que passaram na verificação e tinham conteúdo diferente do
    publicado (as que de fato subiram ao S3), a competência mais recente
    precisa ser posterior à mais recente que o state conhecia antes do run.
