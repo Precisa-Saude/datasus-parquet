@@ -4,41 +4,72 @@ Os arquivos Parquet são servidos publicamente via CloudFront
 (`dfdu08vi8wsus.cloudfront.net`) com CORS permissivo. Consumidores
 leem diretamente por HTTPS sem credenciais.
 
-> Acesso anônimo ao bucket S3 (`s3://datasus-parquet/...`,
-> `aws s3 ... --no-sign-request`) está **deprecado** e será desligado
-> em breve — o bucket passa a aceitar requests apenas via CloudFront,
-> com rate-limit por IP. Use as URLs HTTPS abaixo.
+> O bucket S3 de origem é privado e só aceita leitura vinda do
+> CloudFront. Caminhos `s3://` e `aws s3 ... --no-sign-request` não
+> funcionam; use as URLs HTTPS abaixo.
+
+## Listar os arquivos: `manifest.json`
+
+HTTP não lista diretório, então um curinga como `ano=*/uf=AC/mes=*` não
+funciona numa URL. Para ler várias partições, monte a lista a partir do
+`manifest.json`, que traz as competências e UFs publicadas:
+
+```
+https://dfdu08vi8wsus.cloudfront.net/manifest.json
+```
+
+```json
+{
+  "datasets": {
+    "sia-pa": {
+      "competencias": ["2008-01", "2008-02", "..."],
+      "ufs": ["AC", "AL", "..."],
+      "partitions": 6048,
+      "bytes": 57260712457
+    }
+  }
+}
+```
+
+Cada partição fica em
+`sia-pa/ano=YYYY/uf=XX/mes=MM/part.parquet`.
 
 ## DuckDB (recomendado)
 
-Zero setup — DuckDB lê Parquet via HTTPS com Range Requests, puxando
-só os row-groups que o filtro precisa.
+Zero setup: o DuckDB lê Parquet via HTTPS com Range Requests, puxando
+só as colunas e os row-groups que a consulta precisa.
 
-### CLI
+### Uma partição
 
-```bash
-duckdb
-
-D SELECT PA_CMP, COUNT(*) as n
-  FROM read_parquet('https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=2024/uf=SP/mes=01/part.parquet')
-  GROUP BY PA_CMP;
+```sql
+SELECT PA_CMP, COUNT(*) AS n
+FROM read_parquet('https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=2024/uf=SP/mes=01/part.parquet')
+GROUP BY PA_CMP;
 ```
 
 ### Série histórica com schema evolution
 
 ```sql
-SELECT PA_CMP, PA_UFMUN, COUNT(*) AS n
-FROM read_parquet(
-  'https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=*/uf=AC/mes=*/part.parquet',
-  union_by_name = true
-)
-WHERE PA_CMP LIKE '2024%'
-GROUP BY PA_CMP, PA_UFMUN
-ORDER BY n DESC;
+SET VARIABLE arquivos = (
+  SELECT list(format('https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano={}/uf=AC/mes={}/part.parquet',
+                     c[1:4], c[6:7]))
+  FROM (SELECT unnest(datasets."sia-pa".competencias) AS c
+        FROM read_json('https://dfdu08vi8wsus.cloudfront.net/manifest.json'))
+);
+
+SELECT ano, COUNT(*) AS linhas
+FROM read_parquet(getvariable('arquivos'), hive_partitioning = true, union_by_name = true)
+GROUP BY ano
+ORDER BY ano;
 ```
 
+`hive_partitioning=true` expõe `ano`, `uf` e `mes` como colunas.
 `union_by_name=true` aceita que o schema varie entre partições e
 unifica por nome de coluna (colunas ausentes ficam NULL).
+
+Para restringir o período, filtre as competências antes de montar a
+lista (`WHERE c >= '2024-01'`): assim os outros arquivos nem são
+abertos.
 
 ### Com filtro pushdown eficiente
 
@@ -51,17 +82,49 @@ WHERE PA_CMP = '202401'
 GROUP BY PA_CODUNI;
 ```
 
-## Python — Polars
+## Python com DuckDB
 
 ```python
+import duckdb
+
+con = duckdb.connect()
+con.sql("""
+SET VARIABLE arquivos = (
+  SELECT list(format('https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano={}/uf=AC/mes={}/part.parquet',
+                     c[1:4], c[6:7]))
+  FROM (SELECT unnest(datasets."sia-pa".competencias) AS c
+        FROM read_json('https://dfdu08vi8wsus.cloudfront.net/manifest.json'))
+  WHERE c >= '2024-01'
+)
+""")
+df = con.sql("""
+SELECT mes, COUNT(*) AS linhas
+FROM read_parquet(getvariable('arquivos'), hive_partitioning = true, union_by_name = true)
+WHERE ano = 2024
+GROUP BY mes ORDER BY mes
+""").df()
+```
+
+## Python com Polars
+
+```python
+import json
+import urllib.request
+
 import polars as pl
 
-# Lazy evaluation + streaming
+BASE = "https://dfdu08vi8wsus.cloudfront.net"
+with urllib.request.urlopen(f"{BASE}/manifest.json") as r:
+    competencias = json.load(r)["datasets"]["sia-pa"]["competencias"]
+
+urls = [
+    f"{BASE}/sia-pa/ano={c[:4]}/uf=SP/mes={c[5:]}/part.parquet"
+    for c in competencias
+    if c.startswith("2024")
+]
+
 df = (
-    pl.scan_parquet(
-        "s3://datasus-parquet/sia-pa/ano=2024/uf=SP/mes=*/part.parquet",
-        storage_options={"region": "sa-east-1", "anonymous": True},
-    )
+    pl.scan_parquet(urls, hive_partitioning=True)
     .filter(pl.col("PA_CMP") == "202401")
     .group_by("PA_CODUNI")
     .agg(pl.len())
@@ -69,55 +132,56 @@ df = (
 )
 ```
 
-## Python — Pandas via pyarrow
-
-```python
-import pyarrow.dataset as ds
-
-dataset = ds.dataset(
-    "s3://datasus-parquet/sia-pa/ano=2024/uf=SP/",
-    format="parquet",
-    filesystem=ds.fs.S3FileSystem(region="sa-east-1", anonymous=True),
-)
-df = dataset.to_table(filter=ds.field("PA_CMP") == "202401").to_pandas()
-```
-
-## R — arrow
+## R com DuckDB
 
 ```r
-library(arrow)
-library(dplyr)
+library(DBI)
 
-bucket <- s3_bucket(
-  "datasus-parquet",
-  anonymous = TRUE,
-  region = "sa-east-1"
-)
-
-ds <- open_dataset(bucket$path("sia-pa/ano=2024"), format = "parquet")
-
-ds |>
-  filter(PA_CMP == "202401") |>
-  group_by(PA_CODUNI) |>
-  summarise(n = n()) |>
-  collect()
+con <- dbConnect(duckdb::duckdb())
+dbExecute(con, "
+SET VARIABLE arquivos = (
+  SELECT list(format('https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano={}/uf=AC/mes={}/part.parquet',
+                     c[1:4], c[6:7]))
+  FROM (SELECT unnest(datasets.\"sia-pa\".competencias) AS c
+        FROM read_json('https://dfdu08vi8wsus.cloudfront.net/manifest.json'))
+  WHERE c >= '2024-01'
+)")
+dbGetQuery(con, "
+SELECT PA_CODUNI, COUNT(*) AS n
+FROM read_parquet(getvariable('arquivos'), hive_partitioning = true, union_by_name = true)
+WHERE PA_CMP = '202401'
+GROUP BY PA_CODUNI")
 ```
 
 ## Baixar um snapshot localmente
 
-Se preferir trabalhar offline:
+Se preferir trabalhar offline, baixe as partições com `curl` a partir
+do manifest (precisa de `jq`). O exemplo baixa 2024 de todas as UFs:
 
 ```bash
-aws s3 sync \
-  s3://datasus-parquet/sia-pa/ano=2024/ \
-  ./sia-pa-2024/ \
-  --no-sign-request
+BASE=https://dfdu08vi8wsus.cloudfront.net
+manifest=$(curl -sf "$BASE/manifest.json")
+for c in $(jq -r '.datasets["sia-pa"].competencias[] | select(startswith("2024"))' <<<"$manifest"); do
+  for uf in $(jq -r '.datasets["sia-pa"].ufs[]' <<<"$manifest"); do
+    p="sia-pa/ano=${c:0:4}/uf=$uf/mes=${c:5:2}/part.parquet"
+    curl -sf --create-dirs -o "$p" "$BASE/$p"
+  done
+done
 
-duckdb -c "SELECT COUNT(*) FROM read_parquet('./sia-pa-2024/**/*.parquet');"
+duckdb -c "SELECT COUNT(*) FROM read_parquet('sia-pa/**/*.parquet');"
 ```
+
+Os arquivos baixados são os mesmos bytes publicados, então o SHA256
+confere com o `part.provenance.json` de cada partição.
 
 ## Limites a ter em mente
 
+- **Limite de requisições por IP**: o CloudFront tem um rate-limit por
+  IP. Uma consulta sobre muitas partições faz centenas de Range
+  Requests e pode estourar o limite; a partir daí toda requisição
+  responde `403` por alguns minutos, inclusive o `manifest.json`.
+  Restrinja o período e as UFs na lista de arquivos, ou baixe um
+  snapshot local para análises longas.
 - **Bandwidth**: CloudFront absorve cache hits, mas queries
   sem filtro que escaneiam grandes volumes vão puxar muitos GB.
   Para análises intensas, baixe snapshot local (acima).
@@ -133,8 +197,8 @@ duckdb -c "SELECT COUNT(*) FROM read_parquet('./sia-pa-2024/**/*.parquet');"
 - [Polars](https://pola.rs/)
 - [PyArrow](https://arrow.apache.org/docs/python/)
 - [arrow-R](https://arrow.apache.org/docs/r/)
-- [ClickHouse](https://clickhouse.com/) (via S3 table function)
-- [Apache Spark](https://spark.apache.org/) (via S3 connector)
+- [ClickHouse](https://clickhouse.com/) (via função de tabela `url`)
+- [Apache Spark](https://spark.apache.org/)
 - [Pandas + fsspec](https://pandas.pydata.org/docs/user_guide/io.html#reading-remote-files)
 
 ## Suporte

@@ -14,7 +14,7 @@ campos específicos além do núcleo comum (Ficha de Notificação). Cada
 ## Partições
 
 ```
-s3://datasus-parquet/sinan/agravo=XXX/ano=YYYY/part.parquet
+https://dfdu08vi8wsus.cloudfront.net/sinan/agravo=XXX/ano=YYYY/part.parquet
 ```
 
 Grão = (agravo, ano) — SINAN **não particiona por UF**. O arquivo FTP

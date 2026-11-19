@@ -13,7 +13,7 @@ atual). Estrutura do DBF evolui lentamente — adições ocasionais de campos
 ## Partições
 
 ```
-s3://datasus-parquet/cnes-st/ano=YYYY/uf=XX/mes=MM/part.parquet
+https://dfdu08vi8wsus.cloudfront.net/cnes-st/ano=YYYY/uf=XX/mes=MM/part.parquet
 ```
 
 Grão = (UF, ano, mês) — `ST{UF}{YYMM}.dbc` no FTP (mensal, "snapshot"
