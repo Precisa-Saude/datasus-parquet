@@ -16,6 +16,7 @@
  *   pnpm detect-new
  *   pnpm detect-new -- --dataset sia-pa
  *   pnpm detect-new -- --window 13        (refresh: janela revisável, issue #46)
+ *   pnpm detect-new -- --legacy-since 2026-11-01T00:00:00Z
  *   pnpm detect-new -- --mark-processed   (pós-archive, atualiza state)
  *   pnpm detect-new -- --mark-processed --verified build/_verified.json
  */
@@ -60,6 +61,8 @@ interface Cli {
    */
   buildDir: string;
   datasets: string[];
+  /** Marco a partir do qual um mtime remoto torna suspeita uma entrada legada. */
+  legacySince: null | string;
   markProcessed: boolean;
   outPending: string;
   stateDir: string;
@@ -132,9 +135,18 @@ function parseArgs(argv: string[]): Cli {
   };
   const repoRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
   const datasetsArg = get('--dataset', Object.keys(DATASETS).join(','));
+  const legacySince = get('--legacy-since', '');
+  if (
+    legacySince &&
+    (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(legacySince) ||
+      Number.isNaN(Date.parse(legacySince)))
+  ) {
+    throw new Error('--legacy-since requer data ISO UTC (AAAA-MM-DDTHH:MM:SSZ)');
+  }
   return {
     buildDir: resolve(repoRoot, get('--build-dir', 'build')),
     datasets: datasetsArg.split(',').map((s) => s.trim()),
+    legacySince: legacySince || null,
     markProcessed: argv.includes('--mark-processed'),
     outPending: resolve(repoRoot, get('--out', 'state/pending.json')),
     stateDir: resolve(repoRoot, get('--state-dir', 'state')),
@@ -185,6 +197,7 @@ function computeDelta(
   remote: Array<{ mtime: Date; name: string; size: number }>,
   state: State,
   windowSize: number,
+  legacySince: null | string,
 ): { latest: null | string; pending: PendingEntry[]; windowStart: null | string } {
   // Agrupa variantes por (uf, year, month) antes de comparar com state.
   const groups = new Map<
@@ -228,6 +241,7 @@ function computeDelta(
     prepared,
     (uf, competencia) => state.processed[uf]?.[competencia],
     windowSize,
+    legacySince,
   );
 
   const out: PendingEntry[] = selected.map(({ group, reason }) => ({
@@ -369,6 +383,7 @@ async function main(): Promise<void> {
       remote,
       state,
       cli.windowSize,
+      cli.legacySince,
     );
     const porMotivo = pending.reduce<Record<string, number>>((acc, p) => {
       acc[p.reason] = (acc[p.reason] ?? 0) + 1;

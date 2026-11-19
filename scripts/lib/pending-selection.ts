@@ -5,8 +5,8 @@
  *   - delta contra o state: partição nova ou com tamanho/mtime diferente.
  *     O mtime só conta quando os dois lados o conhecem: entradas do state
  *     gravadas antes do parser de listagem DOS (`lib/ftp-mtime.ts`) têm
- *     epoch e são comparadas só por tamanho — senão o primeiro run depois
- *     da correção reprocessaria o dataset inteiro;
+ *     epoch e são comparadas só por tamanho, exceto quando o mtime remoto
+ *     é posterior ao marco de observação do state legado;
  *   - janela revisável (opcional, `--window N`): quando há qualquer delta,
  *     a competência mais recente e as anteriores dentro da janela entram
  *     inteiras, mesmo as que o state considera em dia. Era a rede de
@@ -61,6 +61,7 @@ export function selectPending<G extends RemoteGroup>(
   groups: readonly G[],
   known: (uf: string, competencia: string) => KnownEntry | undefined,
   windowSize: number,
+  legacySince: null | string = null,
 ): SelectionResult<G> {
   const delta = new Map<G, PendingReason>();
   let latest: null | string = null;
@@ -71,6 +72,13 @@ export function selectPending<G extends RemoteGroup>(
     if (!k) {
       delta.set(g, 'novo');
     } else if (hasChanged(k, g)) {
+      delta.set(g, 'alterado');
+    } else if (
+      legacySince !== null &&
+      isUnknownMtime(k.sourceMtime) &&
+      !isUnknownMtime(g.mtime) &&
+      new Date(g.mtime).getTime() >= new Date(legacySince).getTime()
+    ) {
       delta.set(g, 'alterado');
     }
   }
