@@ -39,42 +39,33 @@ trabalham com esses subdatasets são bem-vindas — veja
 SELECT *
 FROM read_parquet('https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=2024/uf=SP/mes=01/part.parquet');
 
--- Série histórica de uma UF (schema evolution automática):
-SELECT PA_CMP, COUNT(*)
-FROM read_parquet(
-  'https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=*/uf=AC/mes=*/part.parquet',
-  union_by_name = true
-)
-GROUP BY PA_CMP
-ORDER BY PA_CMP;
+-- Série histórica de uma UF (schema evolution automática). HTTP não
+-- lista diretório, então `ano=*` não funciona numa URL: a lista de
+-- arquivos sai das competências publicadas no manifest.json.
+SET VARIABLE arquivos = (
+  SELECT list(format('https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano={}/uf=AC/mes={}/part.parquet',
+                     c[1:4], c[6:7]))
+  FROM (SELECT unnest(datasets."sia-pa".competencias) AS c
+        FROM read_json('https://dfdu08vi8wsus.cloudfront.net/manifest.json'))
+);
+SELECT ano, COUNT(*) AS linhas
+FROM read_parquet(getvariable('arquivos'), hive_partitioning = true, union_by_name = true)
+GROUP BY ano
+ORDER BY ano;
 ```
 
-### Python (Polars / Pandas via pyarrow)
+### Python e R
 
-```python
-import polars as pl
-df = pl.scan_parquet(
-    "s3://datasus-parquet/sia-pa/ano=2024/uf=SP/mes=*/part.parquet",
-    storage_options={"region": "sa-east-1"},
-).collect()
-```
-
-### R (arrow)
-
-```r
-library(arrow)
-ds <- open_dataset(
-  "s3://datasus-parquet/sia-pa/ano=2024/uf=SP",
-  format = "parquet"
-)
-```
+O bucket S3 é privado; todo acesso público passa pelo CloudFront.
+Exemplos em Python (DuckDB e Polars) e R estão em
+[`docs/usage.md`](docs/usage.md).
 
 ---
 
 ## Layout dos dados
 
 ```
-s3://datasus-parquet/
+https://dfdu08vi8wsus.cloudfront.net/
   sia-pa/
     ano=YYYY/uf=XX/mes=MM/part.parquet
     provenance/ano=YYYY/uf=XX/mes=MM/part.provenance.json

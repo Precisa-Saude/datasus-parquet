@@ -13,7 +13,7 @@ Estrutura estável desde 2011.
 ## Partições
 
 ```
-s3://datasus-parquet/sinasc/ano=YYYY/uf=XX/part.parquet
+https://dfdu08vi8wsus.cloudfront.net/sinasc/ano=YYYY/uf=XX/part.parquet
 ```
 
 Grão = (UF, ano) — `DN{UF}{YYYY}.dbc` no FTP (anual, não mensal).

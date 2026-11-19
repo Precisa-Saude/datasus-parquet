@@ -14,7 +14,7 @@ revisões: DO 2010 e DO 2011+ atual.
 ## Partições
 
 ```
-s3://datasus-parquet/sim/ano=YYYY/uf=XX/part.parquet
+https://dfdu08vi8wsus.cloudfront.net/sim/ano=YYYY/uf=XX/part.parquet
 ```
 
 Grão = (UF, ano) — `DO{UF}{YYYY}.dbc` no FTP (anual, não mensal).

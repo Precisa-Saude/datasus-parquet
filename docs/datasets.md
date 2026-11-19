@@ -16,7 +16,7 @@ estão publicados, tamanho total, schema resumido.
 - **Nomes**: `PA{UF}{YYMM}.dbc` (ex.: `PAAC2401.dbc` = Acre, jan/2024)
 - **Cobertura publicada**: desde 2008 (quando o schema atual estabilizou).
   Dados de 2000–2007 seguem schema PAM/PAR antigo e não estão incluídos.
-- **Saída**: `s3://datasus-parquet/sia-pa/ano=YYYY/uf=XX/mes=MM/part.parquet`
+- **Saída**: `https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=YYYY/uf=XX/mes=MM/part.parquet`
 - **Schema**: ver [`schema/sia-pa.md`](schema/sia-pa.md)
 - **Caveats**:
   - **Split files suportados**: SP (desde 2013), MG e RJ (desde 2021)
@@ -39,7 +39,7 @@ template).
 
 - **Fonte**: `ftp.datasus.gov.br/dissemin/publicos/SIHSUS/200801_/Dados/`
 - **Nomes**: `RD{UF}{YYMM}.dbc`
-- **Saída**: `s3://datasus-parquet/sih-rd/ano=YYYY/uf=XX/mes=MM/part.parquet`
+- **Saída**: `https://dfdu08vi8wsus.cloudfront.net/sih-rd/ano=YYYY/uf=XX/mes=MM/part.parquet`
 - **Schema**: ver [`schema/sih-rd.md`](schema/sih-rd.md)
 - **Use case**: mortalidade hospitalar, procedimentos cirúrgicos,
   internações por CID-10
@@ -48,7 +48,7 @@ template).
 
 - **Fonte**: `ftp.datasus.gov.br/dissemin/publicos/SIM/CID10/DORES/`
 - **Nomes**: `DO{UF}{YYYY}.dbc` (anual, não mensal)
-- **Saída**: `s3://datasus-parquet/sim/ano=YYYY/uf=XX/part.parquet`
+- **Saída**: `https://dfdu08vi8wsus.cloudfront.net/sim/ano=YYYY/uf=XX/part.parquet`
 - **Schema**: ver [`schema/sim.md`](schema/sim.md)
 - **Use case**: causas de óbito, expectativa de vida, epidemiologia
 
@@ -56,7 +56,7 @@ template).
 
 - **Fonte**: `ftp.datasus.gov.br/dissemin/publicos/SINASC/NOV/DNRES/`
 - **Nomes**: `DN{UF}{YYYY}.dbc` (anual)
-- **Saída**: `s3://datasus-parquet/sinasc/ano=YYYY/uf=XX/part.parquet`
+- **Saída**: `https://dfdu08vi8wsus.cloudfront.net/sinasc/ano=YYYY/uf=XX/part.parquet`
 - **Schema**: ver [`schema/sinasc.md`](schema/sinasc.md)
 - **Use case**: natalidade, prematuridade, peso ao nascer
 
@@ -64,7 +64,7 @@ template).
 
 - **Fonte**: `ftp.datasus.gov.br/dissemin/publicos/SINAN/DADOS/FINAIS/`
 - **Nomes**: `{AGRAVO}BR{YY}.dbc` (ex.: `DENGBR23.dbc`, `ZIKABR23.dbc`)
-- **Saída**: `s3://datasus-parquet/sinan/agravo=XXX/ano=YYYY/part.parquet`
+- **Saída**: `https://dfdu08vi8wsus.cloudfront.net/sinan/agravo=XXX/ano=YYYY/part.parquet`
 - **Schema**: ver [`schema/sinan.md`](schema/sinan.md)
 - **Use case**: epidemia, vigilância, surtos (dengue, zika, chikungunya,
   hanseníase, tuberculose, etc.)
@@ -75,7 +75,7 @@ template).
 
 - **Fonte**: `ftp.datasus.gov.br/dissemin/publicos/CNES/200508_/Dados/ST/`
 - **Nomes**: `ST{UF}{YYMM}.dbc`
-- **Saída**: `s3://datasus-parquet/cnes-st/ano=YYYY/uf=XX/mes=MM/part.parquet`
+- **Saída**: `https://dfdu08vi8wsus.cloudfront.net/cnes-st/ano=YYYY/uf=XX/mes=MM/part.parquet`
 - **Schema**: ver [`schema/cnes-st.md`](schema/cnes-st.md)
 - **Use case**: inventário de estabelecimentos de saúde, capacidade
   instalada, tipo de atendimento

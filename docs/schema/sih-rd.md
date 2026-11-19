@@ -14,7 +14,7 @@ partição.
 ## Partições
 
 ```
-s3://datasus-parquet/sih-rd/ano=YYYY/uf=XX/mes=MM/part.parquet
+https://dfdu08vi8wsus.cloudfront.net/sih-rd/ano=YYYY/uf=XX/mes=MM/part.parquet
 ```
 
 Grão = (UF, ano, mês) — `RD{UF}{YYMM}.dbc` no FTP, mesmo esquema do SIA-PA.
