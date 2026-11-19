@@ -9,8 +9,8 @@
  *
  * Escrito pra rodar em GH Actions:
  *   - exit 0 sempre que a sondagem roda com sucesso
- *   - escreve `hasNew`, `pendingCount`, `latestCompetencia` em
- *     $GITHUB_OUTPUT quando definido
+ *   - escreve `hasNew`, `pendingCount`, `latestCompetencia` e
+ *     `previousNewest` em $GITHUB_OUTPUT quando definido
  *
  * Uso local:
  *   pnpm detect-new
@@ -28,7 +28,7 @@ import { fileURLToPath } from 'node:url';
 import { Client } from 'basic-ftp';
 
 import { parseDosMtime, UNKNOWN_MTIME } from './lib/ftp-mtime.js';
-import { type PendingReason, selectPending } from './lib/pending-selection.js';
+import { newestCompetencia, type PendingReason, selectPending } from './lib/pending-selection.js';
 import { partitionArtifactPaths } from './lib/refresh-targets.js';
 import { parseSiaPaFileName, SIA_PA_REGEX } from './lib/sia-pa-parser.js';
 import { partitionKey, verifiedKeys } from './lib/verification.js';
@@ -364,6 +364,8 @@ async function main(): Promise<void> {
   }
 
   const allPending: PendingEntry[] = [];
+  // Competências que o state já conhecia antes deste run, de todos os datasets.
+  const knownBefore: string[] = [];
   for (const datasetId of cli.datasets) {
     const cfg = DATASETS[datasetId];
     if (!cfg) {
@@ -372,6 +374,7 @@ async function main(): Promise<void> {
     }
     const statePath = stateFilePath(cli.stateDir, datasetId);
     const state = loadState(statePath);
+    for (const byComp of Object.values(state.processed)) knownBefore.push(...Object.keys(byComp));
     process.stderr.write(
       `Sondando ${FTP_HOST}${cfg.dir} (${datasetId})… state conhece ${Object.keys(state.processed).length} UFs\n`,
     );
@@ -397,16 +400,13 @@ async function main(): Promise<void> {
     allPending.push(...pending);
   }
 
-  const latestCompetencia =
-    allPending.length === 0
-      ? null
-      : allPending.reduce(
-          (latest, p) => {
-            const c = `${p.year}-${String(p.month).padStart(2, '0')}`;
-            return !latest || c > latest ? c : latest;
-          },
-          null as null | string,
-        );
+  const pendingCompetencias = allPending.map(
+    (p) => `${p.year}-${String(p.month).padStart(2, '0')}`,
+  );
+  const latestCompetencia = newestCompetencia(pendingCompetencias);
+  // O skip-unchanged compara com ela as competências efetivamente publicadas
+  // para decidir a release, o DOI e o disparo do datasus-viz (PRE-607).
+  const previousNewest = newestCompetencia(knownBefore);
 
   const out: PendingFile = {
     detectedAt: new Date().toISOString(),
@@ -420,9 +420,12 @@ async function main(): Promise<void> {
   setGhOutput('hasNew', allPending.length > 0 ? 'true' : 'false');
   setGhOutput('pendingCount', String(allPending.length));
   if (latestCompetencia) setGhOutput('latestCompetencia', latestCompetencia);
+  // Vazio quando o state está vazio.
+  setGhOutput('previousNewest', previousNewest ?? '');
 
   process.stderr.write(
-    `Total: ${allPending.length} pendentes${latestCompetencia ? ` (mais recente: ${latestCompetencia})` : ''}\n`,
+    `Total: ${allPending.length} pendentes${latestCompetencia ? ` (mais recente: ${latestCompetencia})` : ''}` +
+      ` — state ia até ${previousNewest ?? '— (vazio)'}\n`,
   );
 }
 

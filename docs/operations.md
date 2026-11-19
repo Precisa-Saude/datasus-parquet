@@ -96,7 +96,37 @@ inteira (12 × 27 = 324 partições), 8–10 h, uma vez por mês.
    verificação (parquet publicado, marker `.skipped` ou `.unchanged`); o
    resto segue pendente para o próximo refresh.
 7. Commit do state → GitHub Release (dispara o webhook do Zenodo e **emite
-   DOI**) → dispara o `refresh.yml` do datasus-viz.
+   DOI**) → dispara o `refresh.yml` do datasus-viz. O disparo do viz
+   acontece sempre que alguma partição foi publicada (`changedCount > 0`),
+   com ou sem release: correção de mês antigo também precisa chegar ao
+   site. Release e DOI só acontecem quando o run **publica** uma
+   competência nova: entre
+   as partições que passaram na verificação e tinham conteúdo diferente do
+   publicado (as que de fato subiram ao S3), a competência mais recente
+   precisa ser posterior à mais recente que o state conhecia antes do run.
+   O `detect-new` emite essa competência do state (`previousNewest`, vazia
+   com state vazio) e o `skip-unchanged` calcula `releaseCompetencia` com
+   `lib/pending-selection.ts#releaseCompetencia`. É ela que vira a tag e o
+   nome da release (`dataset-<releaseCompetencia>`).
+
+   Olhar as pendentes não basta: se todas as partições do mês novo forem
+   rejeitadas na verificação ou idênticas ao publicado e só um mês antigo
+   mudar, a release e o DOI permanente seriam de um mês cujos dados não
+   subiram. Um run assim, ou um que só reprocessa meses antigos (reescrita
+   do DATASUS, entrada legada pega pelo `--legacy-since`), ou em que tudo
+   era re-exportação idêntica, publica os dados, o manifest e o state como
+   sempre, mas **não** cria release: a tag `dataset-<competência>` seria de
+   um mês antigo, viraria a Latest e cunharia um DOI permanente, ou
+   sobrescreveria a release que já tem essa tag. Essas partições entram na
+   release da próxima competência nova publicada. O resumo do
+   `skip-unchanged` mostra se o run gera release e de qual competência.
+
+   Limites aceitos:
+   - as partições restantes de um mês que já ganhou release (por exemplo,
+     rejeitadas num run e aprovadas no seguinte) não geram release nova;
+   - se o passo da release falhar, ele não é refeito automaticamente: o
+     state já foi gravado, então o run seguinte não vê o mês como novo.
+
 8. Se alguma partição foi rejeitada, o job termina em falha depois de
    publicar as aprovadas.
 

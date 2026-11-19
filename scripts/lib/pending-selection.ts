@@ -57,6 +57,39 @@ export function hasChanged(known: KnownEntry, remote: RemoteGroup): boolean {
   return new Date(known.sourceMtime).getTime() !== new Date(remote.mtime).getTime();
 }
 
+/** Maior competência (`AAAA-MM`) da lista, ou `null` se vazia. */
+export function newestCompetencia(competencias: Iterable<string>): null | string {
+  let newest: null | string = null;
+  for (const c of competencias) if (newest === null || c > newest) newest = c;
+  return newest;
+}
+
+/**
+ * Competência da release do run: a mais recente entre as partições que o
+ * run de fato publicou (`published`: verificadas contra o FTP e com
+ * conteúdo diferente do já publicado), se for estritamente posterior a
+ * `previousNewest`, a mais recente que o state conhecia antes do run
+ * (`null` = state vazio). Caso contrário, `null`: sem release.
+ *
+ * Decide se o refresh cria a release (tag `dataset-<competência>`, DOI
+ * Zenodo) e dispara o datasus-viz (PRE-607). Precisa olhar o que foi
+ * publicado, não o que estava pendente: se todas as partições do mês novo
+ * forem rejeitadas na verificação ou idênticas ao publicado e só um mês
+ * antigo mudar, a release e o DOI permanente seriam de um mês cujos dados
+ * não subiram. Um run que só republica meses antigos (reescrita do
+ * DATASUS, entrada legada pega pelo `--legacy-since`) também não vira
+ * release: a tag seria de um mês antigo, ocuparia a Latest e cunharia um
+ * DOI, ou sobrescreveria a release que já tem essa tag.
+ */
+export function releaseCompetencia(
+  published: Iterable<string>,
+  previousNewest: null | string,
+): null | string {
+  const newest = newestCompetencia(published);
+  if (newest === null) return null;
+  return previousNewest === null || newest > previousNewest ? newest : null;
+}
+
 export function selectPending<G extends RemoteGroup>(
   groups: readonly G[],
   known: (uf: string, competencia: string) => KnownEntry | undefined,

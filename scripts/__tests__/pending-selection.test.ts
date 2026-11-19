@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import {
   hasChanged,
   type KnownEntry,
+  newestCompetencia,
+  releaseCompetencia,
   type RemoteGroup,
   selectPending,
 } from '../lib/pending-selection.js';
@@ -141,5 +143,41 @@ describe('selectPending', () => {
   it('lista vazia não tem competência mais recente', () => {
     const r = selectPending([], () => undefined, 13);
     expect(r).toEqual({ latest: null, selected: [], windowStart: null });
+  });
+});
+
+describe('newestCompetencia', () => {
+  it('devolve a maior competência, sem depender da ordem', () => {
+    expect(newestCompetencia(['2025-03', '2026-08', '2008-01'])).toBe('2026-08');
+  });
+
+  it('lista vazia não tem competência mais recente', () => {
+    expect(newestCompetencia([])).toBeNull();
+  });
+});
+
+describe('releaseCompetencia', () => {
+  it('competência nova entre as partições publicadas vira a release', () => {
+    expect(releaseCompetencia(['2025-10', '2026-09', '2026-03'], '2026-08')).toBe('2026-09');
+  });
+
+  it('competência nova só entre rejeitadas ou idênticas não gera release, mesmo com mês antigo publicado', () => {
+    // State ia até 2026-08; o run tinha 2026-09 pendente, mas todas as
+    // partições de 2026-09 foram rejeitadas na verificação ou eram idênticas
+    // ao publicado. Só 2026-07 mudou: é o que chega aqui.
+    expect(releaseCompetencia(['2026-07'], '2026-08')).toBeNull();
+  });
+
+  it('a mesma competência mais recente do state não gera release', () => {
+    expect(releaseCompetencia(['2026-07', '2026-08'], '2026-08')).toBeNull();
+  });
+
+  it('com state vazio, a competência mais recente publicada vira a release', () => {
+    expect(releaseCompetencia(['2008-01', '2008-03', '2008-02'], null)).toBe('2008-03');
+  });
+
+  it('sem partições publicadas não há release', () => {
+    expect(releaseCompetencia([], '2026-08')).toBeNull();
+    expect(releaseCompetencia([], null)).toBeNull();
   });
 });
