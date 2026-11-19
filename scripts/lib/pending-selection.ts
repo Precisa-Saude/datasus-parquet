@@ -65,25 +65,29 @@ export function newestCompetencia(competencias: Iterable<string>): null | string
 }
 
 /**
- * `true` quando a competência mais recente entre as pendentes é
- * estritamente posterior a `previousNewest`, a mais recente que o state
- * conhecia antes do run (`null` = state vazio).
+ * Competência da release do run: a mais recente entre as partições que o
+ * run de fato publicou (`published`: verificadas contra o FTP e com
+ * conteúdo diferente do já publicado), se for estritamente posterior a
+ * `previousNewest`, a mais recente que o state conhecia antes do run
+ * (`null` = state vazio). Caso contrário, `null`: sem release.
  *
- * Decide se o refresh publica release (tag `dataset-<competência>`, DOI
- * Zenodo) e dispara o datasus-viz. Um run que só reprocessa meses antigos
- * (reescrita do DATASUS, entrada legada pega pelo `--legacy-since`) não
- * pode virar release: a tag seria de um mês antigo, ocuparia a Latest e
- * cunharia um DOI permanente; se a tag já existisse, a release original
- * seria sobrescrita. O DATASUS publica as 27 UFs de um mês no mesmo dia,
- * então não há mês parcial a tratar.
+ * Decide se o refresh cria a release (tag `dataset-<competência>`, DOI
+ * Zenodo) e dispara o datasus-viz (PRE-607). Precisa olhar o que foi
+ * publicado, não o que estava pendente: se todas as partições do mês novo
+ * forem rejeitadas na verificação ou idênticas ao publicado e só um mês
+ * antigo mudar, a release e o DOI permanente seriam de um mês cujos dados
+ * não subiram. Um run que só republica meses antigos (reescrita do
+ * DATASUS, entrada legada pega pelo `--legacy-since`) também não vira
+ * release: a tag seria de um mês antigo, ocuparia a Latest e cunharia um
+ * DOI, ou sobrescreveria a release que já tem essa tag.
  */
-export function hasNewCompetencia(
-  pending: Iterable<string>,
+export function releaseCompetencia(
+  published: Iterable<string>,
   previousNewest: null | string,
-): boolean {
-  const newest = newestCompetencia(pending);
-  if (newest === null) return false;
-  return previousNewest === null || newest > previousNewest;
+): null | string {
+  const newest = newestCompetencia(published);
+  if (newest === null) return null;
+  return previousNewest === null || newest > previousNewest ? newest : null;
 }
 
 export function selectPending<G extends RemoteGroup>(

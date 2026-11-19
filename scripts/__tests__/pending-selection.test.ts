@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import {
   hasChanged,
-  hasNewCompetencia,
   type KnownEntry,
   newestCompetencia,
+  releaseCompetencia,
   type RemoteGroup,
   selectPending,
 } from '../lib/pending-selection.js';
@@ -156,25 +156,28 @@ describe('newestCompetencia', () => {
   });
 });
 
-describe('hasNewCompetencia', () => {
-  it('competência posterior à mais recente do state é nova', () => {
-    expect(hasNewCompetencia(['2025-03', '2026-09'], '2026-08')).toBe(true);
+describe('releaseCompetencia', () => {
+  it('competência nova entre as partições publicadas vira a release', () => {
+    expect(releaseCompetencia(['2025-10', '2026-09', '2026-03'], '2026-08')).toBe('2026-09');
   });
 
-  it('só competências antigas (reescrita do DATASUS, legado) não são novas', () => {
-    expect(hasNewCompetencia(['2025-03', '2026-06'], '2026-08')).toBe(false);
+  it('competência nova só entre rejeitadas ou idênticas não gera release, mesmo com mês antigo publicado', () => {
+    // State ia até 2026-08; o run tinha 2026-09 pendente, mas todas as
+    // partições de 2026-09 foram rejeitadas na verificação ou eram idênticas
+    // ao publicado. Só 2026-07 mudou: é o que chega aqui.
+    expect(releaseCompetencia(['2026-07'], '2026-08')).toBeNull();
   });
 
-  it('a mesma competência mais recente do state não é nova', () => {
-    expect(hasNewCompetencia(['2026-07', '2026-08'], '2026-08')).toBe(false);
+  it('a mesma competência mais recente do state não gera release', () => {
+    expect(releaseCompetencia(['2026-07', '2026-08'], '2026-08')).toBeNull();
   });
 
-  it('com state vazio, qualquer competência pendente é nova', () => {
-    expect(hasNewCompetencia(['2008-01'], null)).toBe(true);
+  it('com state vazio, a competência mais recente publicada vira a release', () => {
+    expect(releaseCompetencia(['2008-01', '2008-03', '2008-02'], null)).toBe('2008-03');
   });
 
-  it('sem pendentes não há competência nova', () => {
-    expect(hasNewCompetencia([], '2026-08')).toBe(false);
-    expect(hasNewCompetencia([], null)).toBe(false);
+  it('sem partições publicadas não há release', () => {
+    expect(releaseCompetencia([], '2026-08')).toBeNull();
+    expect(releaseCompetencia([], null)).toBeNull();
   });
 });

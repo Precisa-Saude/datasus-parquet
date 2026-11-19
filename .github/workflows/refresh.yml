@@ -4,8 +4,8 @@ name: refresh
 # cujo tamanho ou mtime mudou (todas as UFs), confere cada partição contra o
 # FTP, sincroniza com o S3, invalida o CloudFront, atualiza o state, publica
 # a GitHub Release (webhook Zenodo → DOI) e dispara o refresh do datasus-viz.
-# Desenho em #46. Release, DOI e datasus-viz só quando o run traz competência
-# nova e ao menos uma partição com conteúdo novo (PRE-607).
+# Desenho em #46. Release, DOI e datasus-viz só quando o run publica conteúdo
+# novo de uma competência posterior à mais recente do state (PRE-607).
 #
 # Cada publicação mensal do DATASUS reescreve a competência nova e as 11
 # anteriores (padrão das datas no FTP), então o delta de uma publicação é
@@ -57,7 +57,7 @@ jobs:
       hasNew: ${{ steps.detect.outputs.hasNew }}
       pendingCount: ${{ steps.detect.outputs.pendingCount }}
       latestCompetencia: ${{ steps.detect.outputs.latestCompetencia }}
-      newCompetencia: ${{ steps.detect.outputs.newCompetencia }}
+      previousNewest: ${{ steps.detect.outputs.previousNewest }}
       windowStart: ${{ steps.detect.outputs.windowStart }}
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -77,7 +77,7 @@ jobs:
             echo ""
             echo "- Pendentes: ${{ steps.detect.outputs.pendingCount || 0 }}"
             echo "- Competência mais recente: ${{ steps.detect.outputs.latestCompetencia || '—' }}"
-            echo "- Competência nova (release, DOI, datasus-viz): ${{ steps.detect.outputs.newCompetencia == 'true' && 'sim' || 'não' }}"
+            echo "- Competência mais recente no state antes do run: ${{ steps.detect.outputs.previousNewest || '— (state vazio)' }}"
             echo "- Janela reprocessada a partir de: ${{ steps.detect.outputs.windowStart || '— (sem publicação nova)' }}"
             echo ""
             jq -r '.pending | group_by(.reason) | map("- \(.[0].reason): \(length)") | .[]' state/pending.json
@@ -153,6 +153,8 @@ jobs:
       # impressão do conteúdo é comparada com o `output.fingerprint` do
       # provenance publicado e, se bater, o parquet sai do diretório de
       # upload. O provenance publicado continua descrevendo o objeto no S3.
+      # Também decide `releaseCompetencia` a partir das partições alteradas e
+      # da competência mais recente do state antes do run (ver a release).
       - name: Pula partições com conteúdo idêntico ao publicado
         id: unchanged
         if: env.HAS_NEW == 'true'
@@ -162,7 +164,8 @@ jobs:
             --from-verified build-refresh/_verified.json \
             --build-dir build-refresh \
             --unchanged-dir build-unchanged \
-            --bucket "${{ secrets.S3_BUCKET }}"
+            --bucket "${{ secrets.S3_BUCKET }}" \
+            --previous-newest "${{ needs.detect.outputs.previousNewest }}"
 
       - name: Emit provenance (SHA256 + schema + metadata)
         if: env.HAS_NEW == 'true'
@@ -262,36 +265,39 @@ jobs:
           git pull --rebase origin main
           git push origin HEAD:main
 
-      # Release, token do viz e disparo do viz exigem as duas condições
-      # (PRE-607):
-      #   - competência nova (`newCompetencia`, calculado no detect-new por
-      #     `hasNewCompetencia`): sem ela a tag `dataset-<competência>` seria
-      #     de um mês antigo, viraria a Latest e cunharia DOI, ou
-      #     sobrescreveria a release que já tem essa tag;
-      #   - ao menos uma partição com conteúdo novo (`changedCount` do
-      #     skip-unchanged): se tudo era re-exportação idêntica, nada subiu ao
-      #     S3 e não há o que versionar nem reagregar.
-      # Com HAS_NEW == 'true', o skip-unchanged sempre roda antes destes
-      # passos (mesma condição, sem continue-on-error, e todo passo exige
-      # sucesso dos anteriores), então `changedCount` existe. Se faltar mesmo
-      # assim, `|| '0'` trata como zero e não publica: o DOI é permanente.
-      # `changedCount > 0` implica `verifiedCount > 0`, que deixou de ser
-      # checado à parte.
+      # Release, token do viz e disparo do viz só rodam com
+      # `releaseCompetencia` preenchida (PRE-607). O skip-unchanged a calcula
+      # com `releaseCompetencia` de `lib/pending-selection.ts`: a competência
+      # mais recente entre as partições que este run publicou (verificadas
+      # contra o FTP e com conteúdo diferente do publicado), desde que seja
+      # posterior à mais recente do state antes do run (`previousNewest` do
+      # detect). Olhar as pendentes não basta: se todas as partições do mês
+      # novo forem rejeitadas ou idênticas e só um mês antigo mudar, a release
+      # e o DOI permanente seriam de um mês cujos dados não subiram. Sem
+      # competência nova publicada, os dados, o manifest e o state saem como
+      # sempre, mas sem tag `dataset-<mês antigo>` virando a Latest, sem DOI e
+      # sem sobrescrever a release que já tem essa tag.
+      # Limites aceitos: as partições restantes de um mês que já ganhou release
+      # (rejeitadas num run, aprovadas no seguinte) não geram release nova; e
+      # um passo de release que falhe não é refeito automaticamente (o state
+      # já foi gravado, então o run seguinte não vê o mês como novo).
+      # Com HAS_NEW == 'true', o skip-unchanged sempre roda antes destes passos
+      # (mesma condição, sem continue-on-error, e todo passo exige sucesso dos
+      # anteriores). Se a saída faltar mesmo assim, ela vale '' e não publica.
+      # A comparação de competências fica no script: expressões do Actions
+      # convertem strings em número ao comparar com `>`.
       - name: Criar GitHub Release (dispara webhook Zenodo → DOI)
-        if: >-
-          env.HAS_NEW == 'true' &&
-          needs.detect.outputs.newCompetencia == 'true' &&
-          fromJSON(steps.unchanged.outputs.changedCount || '0') > 0
+        if: env.HAS_NEW == 'true' && steps.unchanged.outputs.releaseCompetencia != ''
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           token: ${{ steps.app-token-push.outputs.token }}
-          tag_name: dataset-${{ needs.detect.outputs.latestCompetencia }}
-          name: Dataset ${{ needs.detect.outputs.latestCompetencia }}
+          tag_name: dataset-${{ steps.unchanged.outputs.releaseCompetencia }}
+          name: Dataset ${{ steps.unchanged.outputs.releaseCompetencia }}
           body: |
             Refresh automático: **${{ steps.verify.outputs.verifiedCount }}** partições
             reprocessadas e conferidas contra o FTP (janela a partir de
             **${{ needs.detect.outputs.windowStart || needs.detect.outputs.latestCompetencia }}**,
-            mais recente: **${{ needs.detect.outputs.latestCompetencia }}**).
+            mais recente: **${{ steps.unchanged.outputs.releaseCompetencia }}**).
             Dessas, **${{ steps.unchanged.outputs.unchangedCount || 0 }}** tinham conteúdo
             idêntico ao já publicado (DBC re-exportado pelo DATASUS sem alteração) e
             não foram republicadas; **${{ steps.unchanged.outputs.changedCount || steps.verify.outputs.verifiedCount }}**
@@ -308,10 +314,7 @@ jobs:
 
       - name: Token do release-bot para o datasus-viz
         id: app-token-viz
-        if: >-
-          env.HAS_NEW == 'true' &&
-          needs.detect.outputs.newCompetencia == 'true' &&
-          fromJSON(steps.unchanged.outputs.changedCount || '0') > 0
+        if: env.HAS_NEW == 'true' && steps.unchanged.outputs.releaseCompetencia != ''
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
@@ -323,10 +326,7 @@ jobs:
       # O datasus-viz reagrega só as partições cujo Last-Modified mudou e, no
       # mesmo workflow, regenera os artefatos de atipicidade.
       - name: Dispara o refresh do datasus-viz
-        if: >-
-          env.HAS_NEW == 'true' &&
-          needs.detect.outputs.newCompetencia == 'true' &&
-          fromJSON(steps.unchanged.outputs.changedCount || '0') > 0
+        if: env.HAS_NEW == 'true' && steps.unchanged.outputs.releaseCompetencia != ''
         env:
           GH_TOKEN: ${{ steps.app-token-viz.outputs.token }}
         run: gh workflow run refresh.yml -R "${{ github.repository_owner }}/datasus-viz"

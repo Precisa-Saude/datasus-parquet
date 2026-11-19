@@ -20,10 +20,17 @@
  * Provenance sem impressão (anterior a esta versão) ou ausente → a
  * partição conta como alterada e é publicada normalmente.
  *
+ * Também decide a competência da release (`releaseCompetencia` em
+ * $GITHUB_OUTPUT): a mais recente entre as partições alteradas, as que o
+ * run de fato publica, se for posterior a `--previous-newest` (a mais
+ * recente do state antes do run, saída `previousNewest` do detect-new;
+ * vazio = state vazio). Senão sai vazia e o refresh não cria release, não
+ * cunha DOI nem dispara o datasus-viz (PRE-607).
+ *
  * Uso:
  *   pnpm skip-unchanged -- --from-verified build-refresh/_verified.json \
  *     --build-dir build-refresh --unchanged-dir build-unchanged \
- *     --bucket <S3_BUCKET>
+ *     --bucket <S3_BUCKET> --previous-newest 2026-08
  */
 import { execFile } from 'node:child_process';
 import {
@@ -47,7 +54,9 @@ import {
   unchangedMarkdown,
   type UnchangedRow,
 } from './lib/content-fingerprint.js';
+import { releaseCompetencia } from './lib/pending-selection.js';
 import { partitionArtifactPaths } from './lib/refresh-targets.js';
+import { competencia } from './lib/revision-window.js';
 import { type VerifiedFile } from './lib/verification.js';
 import { fingerprintParquet } from './parquet-fingerprint.js';
 
@@ -92,13 +101,21 @@ async function main(): Promise<void> {
   const unchangedDir = resolve(repoRoot, get(argv, '--unchanged-dir', 'build-unchanged'));
   const bucket = get(argv, '--bucket', process.env['S3_BUCKET'] ?? '');
   const dataset = get(argv, '--dataset', 'sia-pa');
+  // Obrigatório, mas vazio é válido (state vazio): exigir a flag evita que
+  // um workflow que esqueça de passá-la trate o state como vazio e crie
+  // release com DOI permanente.
+  if (!argv.includes('--previous-newest')) {
+    throw new Error('--previous-newest é obrigatório (vazio se o state estiver vazio)');
+  }
+  const previousNewest = get(argv, '--previous-newest', '') || null;
   if (!bucket) throw new Error('--bucket (ou S3_BUCKET) é obrigatório');
   if (!existsSync(verifiedPath)) throw new Error(`_verified.json não encontrado: ${verifiedPath}`);
 
   const verified = (JSON.parse(readFileSync(verifiedPath, 'utf8')) as VerifiedFile).verified;
   const db = new duckdb.Database(':memory:');
   const unchanged: UnchangedRow[] = [];
-  let changed = 0;
+  // Competências das partições alteradas, as que este run publica.
+  const changedCompetencias: string[] = [];
   let semImpressaoPublicada = 0;
 
   await mapLimit(verified, 4, async (v) => {
@@ -110,7 +127,7 @@ async function main(): Promise<void> {
     const published = publishedFingerprint(raw);
     if (published === null) semImpressaoPublicada += 1;
     if (!isUnchanged(local, published)) {
-      changed += 1;
+      changedCompetencias.push(competencia(v.year, v.month));
       return;
     }
     const publishedAt = (JSON.parse(raw ?? '{}') as { generatedAt?: string }).generatedAt ?? null;
@@ -132,17 +149,24 @@ async function main(): Promise<void> {
     `${JSON.stringify({ generatedAt: new Date().toISOString(), unchanged }, null, 2)}\n`,
   );
 
+  const changed = changedCompetencias.length;
+  const release = releaseCompetencia(changedCompetencias, previousNewest);
+  const releaseLine = release
+    ? `release \`dataset-${release}\` (state ia até ${previousNewest ?? '— (vazio)'})`
+    : `sem release: nenhuma partição publicada é de competência posterior a ${previousNewest ?? '— (state vazio)'}`;
+
   writeGh(
     process.env['GITHUB_OUTPUT'],
-    `unchangedCount=${unchanged.length}\nchangedCount=${changed}\n`,
+    `unchangedCount=${unchanged.length}\nchangedCount=${changed}\nreleaseCompetencia=${release ?? ''}\n`,
   );
   writeGh(
     process.env['GITHUB_STEP_SUMMARY'],
-    `## Conteúdo idêntico ao publicado\n\n- ${unchanged.length} partições puladas (decodificadas, não republicadas)\n- ${changed} partições com conteúdo novo\n- ${semImpressaoPublicada} sem impressão publicada (provenance antigo ou ausente)\n\n${unchangedMarkdown(unchanged)}\n`,
+    `## Conteúdo idêntico ao publicado\n\n- ${unchanged.length} partições puladas (decodificadas, não republicadas)\n- ${changed} partições com conteúdo novo\n- ${semImpressaoPublicada} sem impressão publicada (provenance antigo ou ausente)\n- Release, DOI e datasus-viz: ${releaseLine}\n\n${unchangedMarkdown(unchanged)}\n`,
   );
   process.stderr.write(
     `✓ ${unchanged.length} partições idênticas ao publicado (movidas para ${unchangedDir}), ` +
-      `${changed} com conteúdo novo, ${semImpressaoPublicada} sem impressão publicada → ${outPath}\n`,
+      `${changed} com conteúdo novo, ${semImpressaoPublicada} sem impressão publicada → ${outPath}\n` +
+      `  ${releaseLine}\n`,
   );
 }
 

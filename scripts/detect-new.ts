@@ -10,7 +10,7 @@
  * Escrito pra rodar em GH Actions:
  *   - exit 0 sempre que a sondagem roda com sucesso
  *   - escreve `hasNew`, `pendingCount`, `latestCompetencia` e
- *     `newCompetencia` em $GITHUB_OUTPUT quando definido
+ *     `previousNewest` em $GITHUB_OUTPUT quando definido
  *
  * Uso local:
  *   pnpm detect-new
@@ -28,12 +28,7 @@ import { fileURLToPath } from 'node:url';
 import { Client } from 'basic-ftp';
 
 import { parseDosMtime, UNKNOWN_MTIME } from './lib/ftp-mtime.js';
-import {
-  hasNewCompetencia,
-  newestCompetencia,
-  type PendingReason,
-  selectPending,
-} from './lib/pending-selection.js';
+import { newestCompetencia, type PendingReason, selectPending } from './lib/pending-selection.js';
 import { partitionArtifactPaths } from './lib/refresh-targets.js';
 import { parseSiaPaFileName, SIA_PA_REGEX } from './lib/sia-pa-parser.js';
 import { partitionKey, verifiedKeys } from './lib/verification.js';
@@ -409,10 +404,9 @@ async function main(): Promise<void> {
     (p) => `${p.year}-${String(p.month).padStart(2, '0')}`,
   );
   const latestCompetencia = newestCompetencia(pendingCompetencias);
+  // O skip-unchanged compara com ela as competências efetivamente publicadas
+  // para decidir a release, o DOI e o disparo do datasus-viz (PRE-607).
   const previousNewest = newestCompetencia(knownBefore);
-  // Sem competência nova o refresh publica os dados, mas não cria release,
-  // não cunha DOI nem dispara o datasus-viz (PRE-607).
-  const newCompetencia = hasNewCompetencia(pendingCompetencias, previousNewest);
 
   const out: PendingFile = {
     detectedAt: new Date().toISOString(),
@@ -426,11 +420,12 @@ async function main(): Promise<void> {
   setGhOutput('hasNew', allPending.length > 0 ? 'true' : 'false');
   setGhOutput('pendingCount', String(allPending.length));
   if (latestCompetencia) setGhOutput('latestCompetencia', latestCompetencia);
-  setGhOutput('newCompetencia', newCompetencia ? 'true' : 'false');
+  // Vazio quando o state está vazio.
+  setGhOutput('previousNewest', previousNewest ?? '');
 
   process.stderr.write(
     `Total: ${allPending.length} pendentes${latestCompetencia ? ` (mais recente: ${latestCompetencia})` : ''}` +
-      ` — competência nova: ${newCompetencia ? 'sim' : 'não'} (state ia até ${previousNewest ?? '—'})\n`,
+      ` — state ia até ${previousNewest ?? '— (vazio)'}\n`,
   );
 }
 
