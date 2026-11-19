@@ -87,8 +87,10 @@ original do FTP DATASUS. Para validar:
 
 1. Baixe o `PA{UF}{YYMM}.dbc` direto de
    `ftp://ftp.datasus.gov.br/dissemin/publicos/SIASUS/200801_/Dados/`
-2. `sha256sum PA{UF}{YYMM}.dbc` → compare com `sources[].sha256` do
-   provenance
+2. `sha256sum PA{UF}{YYMM}.dbc` → compare com `source.sha256` do
+   provenance. Partição que o DATASUS publica em vários DBCs
+   (`PA{UF}{YYMM}a.dbc`, `b.dbc`…) tem `source: null` e um item por
+   arquivo em `sources[]`: confira cada um
 3. Se bate, clone este repo no `gitSha` indicado no provenance, rode
    `pnpm archive-sia-pa --ufs XX --years YYYY` e compare o Parquet
    emitido byte-a-byte com o publicado

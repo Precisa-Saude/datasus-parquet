@@ -42,6 +42,60 @@ Para cada `<dataset>/ano=YYYY/uf=XX/mes=MM/part.parquet`, existe
 }
 ```
 
+### Partição publicada em mais de um DBC
+
+Alguns meses de UFs grandes (SP desde 2013, MG e RJ desde 2021, alguns de
+PR e RS) não têm o DBC canônico `PA{UF}{AA}{MM}.dbc`: o DBF excede o
+limite de 2 GB do formato e o DATASUS publica `PA{UF}{AA}{MM}a.dbc`,
+`…b.dbc` etc., com registros disjuntos. O Parquet da partição é a
+concatenação das variantes, nessa ordem. O provenance registra cada uma em
+`sources`, com os mesmos campos de `source`, e `source` fica `null`:
+
+```json
+{
+  "dataset": "sia-pa",
+  "partition": { "ano": 2025, "mes": 8, "uf": "MG" },
+  …
+  "source": null,
+  "sources": [
+    {
+      "bytes": 166934835,
+      "file": "PAMG2508a.dbc",
+      "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2508a.dbc",
+      "mtime": "2026-09-30T22:02:13.173Z",
+      "sha256": "aec600604746d43cebf50eafbb4d8a3b9661a2bf83cd66138156ee5a73dd7a8e"
+    },
+    { "bytes": 213060888, "file": "PAMG2508b.dbc", … },
+    { "bytes": 15204829, "file": "PAMG2508c.dbc", … }
+  ]
+}
+```
+
+Regras:
+
+- **Um DBC** → só `source`, sem `sources` (formato inalterado).
+- **Mais de um DBC** → `source: null` e `sources` com um item por arquivo.
+  `source` não aponta para nenhuma das variantes de propósito: nenhuma
+  delas, sozinha, é a fonte do Parquet. Quem lia `source.sha256` recebe
+  `null` em vez de um hash que não confere.
+- Nunca há `bytes: 0`, hash vazio ou `mtime` vazio. Se um DBC da partição
+  não está no cache, tem 0 byte ou não pode ser lido, o `emit-provenance`
+  falha (sai com erro, listando as partições) e não escreve o provenance
+  dela. Os arquivos de 0 byte que tentativas antigas deixaram no cache
+  (por exemplo `PAMG2508.dbc`) são ignorados na escolha dos arquivos.
+- Os arquivos são escolhidos pela mesma regra do `archive-sia-pa`
+  (`resolvePartitionFiles` em `scripts/lib/dbc-source.ts`): o canônico se
+  existir, senão as variantes `a`–`e` presentes, em ordem.
+
+`mtime` é o do arquivo no cache local (quando foi baixado), não o do FTP.
+
+> **Provenance publicado antes de 19/11/2026.** Nas partições divididas, o
+> provenance gerado antes desta regra traz `source.file` com o nome
+> canônico (que não existe no FTP), `source.bytes: 0` e `source.sha256`
+> igual ao hash de arquivo vazio (`e3b0c442…`) ou vazio. O Parquet dessas
+> partições está correto; só o provenance não confere com o FTP até ser
+> regerado.
+
 `output.fingerprint` é a impressão do **conteúdo** (md5 do JSON de cada
 linha, combinado por soma e XOR, mais a contagem — `v1:<linhas>:<soma>:<xor>`).
 Ao contrário do `sha256`, não depende da ordem das linhas nem da versão
@@ -62,6 +116,20 @@ curl -o PAAC2401.dbc \
 # 2. Verifique o SHA256:
 shasum -a 256 PAAC2401.dbc
 # Deve bater com `source.sha256` do provenance.
+```
+
+Partição com `sources` (DBC dividido): baixe e confira cada arquivo da
+lista. Com `jq`:
+
+```bash
+PROV=part.provenance.json
+jq -r '.sources[] | "\(.sha256)  \(.file)"' "$PROV" > esperado.sha256
+jq -r '.sources[].ftpPath' "$PROV" | while read -r ftp_path; do
+  curl -sO "ftp://ftp.datasus.gov.br${ftp_path}"
+done
+shasum -a 256 -c esperado.sha256
+# Cada linha deve sair "OK". Confira também que a listagem do FTP não tem
+# variante a mais (por exemplo um `…d.dbc` que não está em `sources`).
 ```
 
 Se bate, o DBC usado pelo pipeline é idêntico ao que está no FTP

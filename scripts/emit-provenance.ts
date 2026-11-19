@@ -6,7 +6,9 @@
  *   - Impressão do conteúdo (linhas, independente da ordem e dos bytes
  *     do Parquet) — o `skip-unchanged` compara com ela para não
  *     republicar partição que o DATASUS re-exportou sem mudar
- *   - SHA256 do DBC-fonte (lido do cache `@precisa-saude/datasus`)
+ *   - SHA256 e tamanho de cada DBC-fonte (lidos do cache do SDK). Partição
+ *     que o DATASUS publica dividida (`…a.dbc`, `…b.dbc`) lista todos em
+ *     `sources`; DBC ausente ou ilegível no cache derruba a emissão
  *   - Schema exato do Parquet (colunas + tipos, do footer)
  *   - Row count
  *   - gitSha do commit deste repo
@@ -17,7 +19,15 @@
  */
 
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -25,6 +35,14 @@ import { fileURLToPath } from 'node:url';
 import duckdb from 'duckdb';
 
 import { gitSha } from './lib/git-sha.js';
+import {
+  buildProvenance,
+  type PartitionSources,
+  serializeProvenance,
+  siaPaPartitionSources,
+  type SourceCache,
+  SourceProvenanceError,
+} from './lib/provenance.js';
 import { fingerprintParquet } from './parquet-fingerprint.js';
 
 const DATASET_CONFIG: Record<
@@ -32,14 +50,20 @@ const DATASET_CONFIG: Record<
   {
     buildSubdir: string;
     ftpBase: string;
-    sourceFileFor: (uf: string, year: number, month: number) => string;
+    /** DBCs-fonte da partição, pela mesma regra que o archive usa. */
+    sourcesFor: (
+      cache: SourceCache,
+      ftpBase: string,
+      uf: string,
+      year: number,
+      month: number,
+    ) => PartitionSources;
   }
 > = {
   'sia-pa': {
     buildSubdir: 'sia-pa',
     ftpBase: '/dissemin/publicos/SIASUS/200801_/Dados',
-    sourceFileFor: (uf, year, month) =>
-      `PA${uf}${String(year).slice(2)}${String(month).padStart(2, '0')}.dbc`,
+    sourcesFor: siaPaPartitionSources,
   },
 };
 
@@ -76,6 +100,26 @@ function defaultCacheDir(): string {
 
 function sha256OfFile(path: string): string {
   return createHash('sha256').update(readFileSync(path)).digest('hex');
+}
+
+/** Cache de DBCs do SDK, num diretório do FTP espelhado em disco. */
+function diskSourceCache(dir: string): SourceCache {
+  return {
+    read: (name) => {
+      // Tamanho e hash do mesmo buffer: não podem divergir entre si.
+      const path = join(dir, name);
+      const bytes = readFileSync(path);
+      return {
+        bytes: bytes.byteLength,
+        mtime: statSync(path).mtime.toISOString(),
+        sha256: createHash('sha256').update(bytes).digest('hex'),
+      };
+    },
+    size: (name) => {
+      const path = join(dir, name);
+      return existsSync(path) ? statSync(path).size : null;
+    },
+  };
 }
 
 interface PackageInfo {
@@ -156,6 +200,7 @@ async function main(): Promise<void> {
   const decoder = readPackageVersion(repoRoot, '@precisa-saude/datasus-dbc');
   const sdk = readPackageVersion(repoRoot, '@precisa-saude/datasus');
   const fingerprintDb = new duckdb.Database(':memory:');
+  const failures: string[] = [];
 
   for (const datasetId of cli.datasets) {
     const cfg = DATASET_CONFIG[datasetId];
@@ -166,6 +211,8 @@ async function main(): Promise<void> {
     const inRoot = resolve(cli.buildDir, cfg.buildSubdir);
     const outRoot = resolve(cli.outDir, cfg.buildSubdir, 'provenance');
     const parts = discoverMonthPartitions(inRoot);
+    const sourceCache = diskSourceCache(join(cacheDir, cfg.ftpBase));
+    let written = 0;
     process.stderr.write(
       `${datasetId}: ${parts.length} partições; git ${sha.slice(0, 7)}; decoder ${decoder.version}\n`,
     );
@@ -173,33 +220,30 @@ async function main(): Promise<void> {
     for (const p of parts) {
       const mesStr = String(p.mes).padStart(2, '0');
       const parquetFile = join(inRoot, `ano=${p.ano}/uf=${p.uf}/mes=${mesStr}/part.parquet`);
-      const sourceFile = cfg.sourceFileFor(p.uf, p.ano, p.mes);
-      const cachedSource = join(cacheDir, cfg.ftpBase, sourceFile);
+      const outDir = join(outRoot, `ano=${p.ano}/uf=${p.uf}/mes=${mesStr}`);
+      const outPath = join(outDir, 'part.provenance.json');
+
+      // Antes de ler o Parquet: sem DBC-fonte verificável a partição não
+      // ganha provenance (nem fica o de um run anterior no `build/`), e a
+      // falha é reportada no fim (ver abaixo).
+      let sources: PartitionSources;
+      try {
+        sources = cfg.sourcesFor(sourceCache, cfg.ftpBase, p.uf, p.ano, p.mes);
+      } catch (err) {
+        if (!(err instanceof SourceProvenanceError)) throw err;
+        rmSync(outPath, { force: true });
+        failures.push(`${datasetId} ${p.uf} ${p.ano}-${mesStr}: ${err.message}`);
+        continue;
+      }
 
       const { rows, schema } = await parquetSchema(parquetFile);
       const parquetSha = sha256OfFile(parquetFile);
       const fingerprint = await fingerprintParquet(fingerprintDb, parquetFile);
-      const source = existsSync(cachedSource)
-        ? {
-            bytes: statSync(cachedSource).size,
-            file: sourceFile,
-            ftpPath: `${cfg.ftpBase}/${sourceFile}`,
-            mtime: statSync(cachedSource).mtime.toISOString(),
-            sha256: sha256OfFile(cachedSource),
-          }
-        : {
-            bytes: 0,
-            file: sourceFile,
-            ftpPath: `${cfg.ftpBase}/${sourceFile}`,
-            mtime: '',
-            sha256: '',
-          };
 
-      const body = {
+      const body = buildProvenance({
         dataset: datasetId,
         generatedAt: new Date().toISOString(),
         output: {
-          columns: schema.length,
           file: `ano=${p.ano}/uf=${p.uf}/mes=${mesStr}/part.parquet`,
           fingerprint,
           rows,
@@ -211,19 +255,27 @@ async function main(): Promise<void> {
           archiveScript: `scripts/archive-${datasetId}.ts@${sha}`,
           datasusSdk: `${sdk.name}@${sdk.version}`,
           decoder: `${decoder.name}@${decoder.version}`,
-          notes: 'Conversão 1:1 DBC→Parquet, sem filtro, sem enriquecimento.',
         },
-        source,
-      };
+        sources,
+      });
 
-      const outPath = join(outRoot, `ano=${p.ano}/uf=${p.uf}/mes=${mesStr}/part.provenance.json`);
-      mkdirSync(join(outRoot, `ano=${p.ano}/uf=${p.uf}/mes=${mesStr}`), { recursive: true });
-      writeFileSync(outPath, `${JSON.stringify(body, null, 2)}\n`);
+      mkdirSync(outDir, { recursive: true });
+      writeFileSync(outPath, serializeProvenance(body));
+      written += 1;
     }
 
-    process.stderr.write(`✓ provenance: ${parts.length} arquivos em ${outRoot}\n`);
+    process.stderr.write(`✓ provenance: ${written}/${parts.length} arquivos em ${outRoot}\n`);
   }
   await new Promise<void>((res) => fingerprintDb.close(() => res()));
+
+  // Falha alta, depois de tentar todas as partições para listar todas as
+  // faltas de uma vez: provenance com `bytes: 0` não pode ser publicado.
+  if (failures.length > 0) {
+    throw new Error(
+      `${failures.length} partição(ões) sem DBC-fonte verificável no cache — nenhum provenance ` +
+        `foi escrito para elas:\n  ${failures.join('\n  ')}`,
+    );
+  }
 }
 
 main().catch((err: unknown) => {
