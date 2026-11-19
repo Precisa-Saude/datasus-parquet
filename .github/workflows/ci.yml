@@ -68,12 +68,13 @@ jobs:
       models: read
     needs: [lint, typecheck, format, test]
     if: github.event_name == 'pull_request'
-    uses: Precisa-Saude/tooling/.github/workflows/review.yml@7b42c968c2da27c702d05ae1cd282557581a918d # v3.0.0
+    uses: Precisa-Saude/tooling/.github/workflows/review.yml@5c10f72e4f4bfe0b06884b68d871b49d4f4b54fb # v3.5.1
     with:
       pr_number: ${{ github.event.pull_request.number }}
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
