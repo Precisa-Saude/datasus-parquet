@@ -20,6 +20,11 @@ name: refresh
 # do run (`build-refresh/`), para que sobras de backfills anteriores no
 # `build/` do runner nunca sejam sincronizadas por engano.
 #
+# Depois da publicação, o job `provenance-catchup` escreve provenance para
+# partições já publicadas sem um (ou com o formato inválido de antes de
+# 19/11/2026), dentro de um orçamento de download de DBC (input
+# `provenanceBudgetGb`). Ver docs/operations.md.
+#
 # Cadência: segunda-feira 06:00 UTC.
 #
 # Secrets: S3_BUCKET, CLOUDFRONT_DISTRIBUTION_ID (opcional), RELEASE_APP_ID e
@@ -40,6 +45,10 @@ on:
         description: 'Reconstrói o manifest.json mesmo sem competência nova (usar após backfill)'
         type: boolean
         default: false
+      provenanceBudgetGb:
+        description: 'Proveniência retroativa: GB de DBC baixados do FTP por run (0 = só o cache)'
+        type: number
+        default: 20
 
 permissions:
   contents: write
@@ -346,3 +355,69 @@ jobs:
         run: |
           echo "::error::${{ steps.verify.outputs.rejectedCount }} partições divergiram do FTP e não foram publicadas — veja o resumo da verificação. Elas seguem pendentes para o próximo refresh."
           exit 1
+
+  # Proveniência retroativa (docs/operations.md): provenance para partições
+  # publicadas sem um, ou com o do formato inválido de antes de 19/11/2026,
+  # sem decodificar DBC e sem tocar em Parquet. Job próprio, depois da
+  # publicação, porque o `archive` só roda com delta e a retroativa tem de
+  # andar também nas semanas sem publicação do DATASUS. Não muda nada do que
+  # decide release, DOI e datasus-viz (`releaseCompetencia` e `changedCount`
+  # são saídas do skip-unchanged no job `archive`), nem Parquet, manifest ou
+  # state; só escreve `sia-pa/provenance/…/part.provenance.json` (a guarda
+  # fica no script). Fica fora toda partição do `pending.json` do run, então
+  # roda mesmo que o `archive` tenha falhado. Falha deste job (alguma
+  # partição com erro) não desfaz nem bloqueia a publicação, que já terminou.
+  provenance-catchup:
+    needs: [detect, archive]
+    if: >-
+      always() &&
+      needs.detect.result == 'success' &&
+      needs.archive.result != 'cancelled' &&
+      inputs.dryRun != true &&
+      (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+    runs-on: [self-hosted, linux, archive]
+    timeout-minutes: 720
+    env:
+      AWS_REGION: sa-east-1
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Install deps (mise gerencia node/pnpm no runner)
+        run: |
+          eval "$("$HOME"/.local/bin/mise activate bash)"
+          pnpm install --frozen-lockfile
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: pending
+          path: state/
+
+      - name: Prepara diretório da proveniência retroativa
+        run: rm -rf build-catchup
+
+      # Orçamento em GB de DBC baixados do FTP; o que já está no cache do
+      # runner não conta. Para antes da partição que o estouraria. No cron o
+      # input vem vazio e vale 20; o padrão fica no shell porque `|| 20` na
+      # expressão trocaria um 0 pedido no dispatch por 20.
+      - name: Proveniência retroativa
+        id: catchup
+        env:
+          BUDGET_GB: ${{ inputs.provenanceBudgetGb }}
+        run: |
+          eval "$("$HOME"/.local/bin/mise activate bash)"
+          pnpm provenance-catchup -- \
+            --bucket "${{ secrets.S3_BUCKET }}" \
+            --budget-gb "${BUDGET_GB:-20}" \
+            --pending state/pending.json \
+            --build-dir build \
+            --work-dir build-catchup
+
+      # Substituir provenance legado reescreve objetos que o CDN pode ter em cache.
+      - name: Invalida o provenance no CloudFront
+        if: always() && steps.catchup.outputs.uploadedCount != '' && steps.catchup.outputs.uploadedCount != '0' && env.DIST_ID != ''
+        env:
+          DIST_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "$DIST_ID" \
+            --paths '/sia-pa/provenance/*'

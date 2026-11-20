@@ -12,7 +12,11 @@ import { join } from 'node:path';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { assessKeptProvenance, emitPartitionProvenance } from '../lib/emit-partition.js';
+import {
+  assessKeptProvenance,
+  emitPartitionProvenance,
+  isLegacyProvenanceSource,
+} from '../lib/emit-partition.js';
 import {
   type CachedFile,
   EMPTY_SHA256,
@@ -277,5 +281,17 @@ describe('assessKeptProvenance', () => {
       legacy,
       ok: true,
     });
+  });
+});
+
+describe('isLegacyProvenanceSource', () => {
+  it('é o mesmo critério do provenance mantido: `source` de 0 byte, sem SHA-256 válido ou de arquivo vazio', () => {
+    const valido = { bytes: 10, file: 'PAAC2401.dbc', sha256: 'b'.repeat(64) };
+    expect(isLegacyProvenanceSource(valido)).toBe(false);
+    expect(isLegacyProvenanceSource(null)).toBe(false);
+    expect(isLegacyProvenanceSource({ ...valido, bytes: 0 })).toBe(true);
+    expect(isLegacyProvenanceSource({ ...valido, sha256: '' })).toBe(true);
+    expect(isLegacyProvenanceSource({ ...valido, sha256: EMPTY_SHA256 })).toBe(true);
+    expect(isLegacyProvenanceSource(undefined)).toBe(true);
   });
 });

@@ -145,7 +145,9 @@ registro são ignoradas. Registro inválido, ou arquivo ausente, vazio, de
 tamanho ou mtime diferente ou ilegível no cache, faz a emissão falhar e
 apaga o provenance local da partição, que não descreveria o Parquet novo.
 Os dois workflows (`refresh.yml` e `backfill.yml`) rodam o
-`emit-provenance` neste modo, no mesmo job e depois do archive.
+`emit-provenance` neste modo, no mesmo job e depois do archive. Partições
+publicadas antes disso, sem provenance válido, são cobertas pela
+proveniência retroativa (seção "Provenance reconstruído" abaixo).
 
 Partição **sem registro**, neste modo:
 
@@ -214,9 +216,83 @@ curl -s 'ftp://ftp.datasus.gov.br/dissemin/publicos/SIASUS/200801_/Dados/' \
 > canônico (que não existe no FTP), `source.bytes: 0` e `source.sha256`
 > igual ao hash de arquivo vazio (`e3b0c442…`) ou vazio. O Parquet dessas
 > partições está correto; só o provenance não confere com o FTP até ser
-> regerado — rodando o archive da partição de novo, ou com
+> regerado — rodando o archive da partição de novo, com
 > `--allow-cache-fallback` e a conferência contra a listagem do FTP
-> descrita acima.
+> descrita acima, ou pela proveniência retroativa (abaixo).
+
+### Provenance reconstruído depois da publicação (`reconstructed`)
+
+Partições publicadas sem provenance, ou com o do formato inválido acima,
+recebem provenance da **proveniência retroativa** (`pnpm
+provenance-catchup`, job próprio do `refresh.yml`; operação em
+`docs/operations.md`). Ela não decodifica DBC nem reescreve o Parquet: lê o
+Parquet publicado e os DBCs que o FTP publica hoje e só escreve o
+`part.provenance.json`.
+
+O arquivo tem o formato atual (um DBC → `source`; vários → `source: null` e
+`sources`), com os mesmos campos e a mesma ordem do `emit-provenance`, mais
+um campo no fim, `reconstructed`:
+
+```json
+{
+  "dataset": "sia-pa",
+  …
+  "source": { "file": "PAAC0801.dbc", "bytes": 575335, "sha256": "5930128e…", … },
+  "reconstructed": {
+    "certification": {
+      "dbcRecordCount": 23878,
+      "ftpNewestMtime": "2025-03-01T00:00:00.000Z",
+      "minAgeHours": 24,
+      "parquetLastModified": "2026-04-25T12:32:18.000Z",
+      "stateSourceSize": 575335
+    },
+    "notes": "Provenance reconstruído depois da publicação, …",
+    "previous": null,
+    "reason": "ausente"
+  }
+}
+```
+
+- `reason`: `ausente` (a partição não tinha provenance) ou `legado` (tinha o
+  do formato inválido de antes de 19/11/2026).
+- `previous`: do provenance legado substituído, `generatedAt`,
+  `output.sha256` e `pipeline` (o `archiveScript` com o commit do archive
+  que gerou o Parquet e a versão do decoder daquela época); `null` quando
+  não havia provenance. Se `previous.outputSha256` é igual ao
+  `output.sha256` novo, aquele `pipeline` descreve este Parquet.
+- `pipeline` (no corpo) descreve o código **da reconstrução**: o commit e as
+  versões do SDK e do decoder instalados quando ela rodou, não os do archive
+  que gerou o Parquet. Para o Passo 3 abaixo, use o commit de
+  `previous.pipeline.archiveScript` quando houver; sem ele, compare pela
+  impressão do conteúdo (`output.fingerprint`), não pelo SHA-256.
+- `source.mtime`/`sources[].mtime` é o mtime do DBC no cache de quem
+  reconstruiu, como no provenance normal.
+
+**O que a certificação garante.** O provenance só é escrito quando, para a
+partição:
+
+1. todo DBC dela na listagem do FTP (canônico e variantes, agrupados como no
+   `detect-new`) tem mtime pelo menos 24 h anterior ao `Last-Modified` do
+   Parquet no S3 (`certification.ftpNewestMtime` e `parquetLastModified`; as
+   24 h cobrem o fuso desconhecido do FTP);
+2. a soma dos tamanhos desses DBCs é o `sourceSize` do `state/sia-pa.json`
+   (`stateSourceSize`), o que o refresh registrou ao publicar;
+3. a soma dos `recordCount` dos cabeçalhos dos DBCs descritos é igual ao
+   número de linhas do Parquet (`dbcRecordCount`).
+
+Os arquivos descritos são os que o archive escolheria pela listagem
+(`resolvePartitionFiles`), e o SHA-256 de cada um é calculado dos bytes
+baixados (ou do cache, se tiver o tamanho da listagem). Falhou um dos três
+itens, a partição é pulada e listada com o motivo (`fonte reescrita depois
+do archive`, `tamanho diferente do state`, `linhas diferentes do cabeçalho
+dos DBCs`, …); nada é escrito.
+
+**O que ela não garante.** Que os bytes do DBC de hoje sejam os bytes que o
+archive decodificou: o archive pode ter rodado dias antes do upload do
+Parquet, e uma republicação do DATASUS nesse intervalo, de mesmo tamanho e
+mesma contagem de linhas, passaria. O provenance normal (com
+`part.sources.json`) não tem essa lacuna. Para eliminá-la numa partição,
+rode o archive dela de novo; o provenance novo substitui o reconstruído.
 
 `output.fingerprint` é a impressão do **conteúdo** (md5 do JSON de cada
 linha, combinado por soma e XOR, mais a contagem — `v1:<linhas>:<soma>:<xor>`).

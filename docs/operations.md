@@ -129,8 +129,98 @@ inteira (12 × 27 = 324 partições), 8–10 h, uma vez por mês.
 
 8. Se alguma partição foi rejeitada, o job termina em falha depois de
    publicar as aprovadas.
+9. Proveniência retroativa, em job próprio depois do `archive` (seção
+   abaixo). Roda em todo cron e `workflow_dispatch`, com ou sem delta.
 
 > O DOI é permanente. Não dispare "só pra testar".
+
+## Proveniência retroativa — provenance de partição já publicada
+
+Em 19/11/2026, 1.135 partições SIA-PA publicadas não tinham
+`part.provenance.json` (2008: 324; 2009–2013: 36 por ano; 2022: 320; 2023: 311) e 243 partições divididas tinham o do formato inválido de antes de
+19/11/2026 (`source.bytes: 0`, SHA-256 vazio ou de arquivo vazio). O
+`pnpm provenance-catchup` escreve o provenance delas **sem decodificar DBC
+e sem tocar no Parquet**: baixa (ou lê do cache) os DBCs só para o SHA-256 e
+o cabeçalho, e descreve o Parquet publicado como o `emit-provenance` faria.
+O formato, o marcador `reconstructed` e o que a certificação garante estão
+em [`docs/provenance.md`](provenance.md#provenance-reconstruído-depois-da-publicação-reconstructed).
+
+Por run, do mais antigo ao mais novo (ano, mês, UF):
+
+1. **Seleção.** Partições com `part.parquet` no bucket e sem provenance, ou
+   com provenance legado (o mesmo classificador do `emit-provenance`). Ficam
+   de fora: provenance no formato atual (inclusive o já reconstruído, então
+   repetir o run não refaz nada), provenance ilegível (listado no resumo, não
+   tocado) e toda partição do `pending.json` do run — o archive está
+   (re)arquivando essas.
+2. **Certificação da fonte**, sem baixar nada: cada DBC da partição na
+   listagem do FTP tem mtime pelo menos 24 h antes do `Last-Modified` do
+   Parquet no S3, e a soma dos tamanhos é o `sourceSize` do
+   `state/sia-pa.json`. Senão, pulada com o motivo — `fonte reescrita depois
+do archive` (as 43 partições divididas que o DATASUS reescreveu depois do
+   archive caem aqui; o refresh normal as rearquiva) ou `tamanho diferente
+do state`. Também `mtime do FTP ilegível`, `ausente no FTP` e `sem
+entrada no state`.
+3. **Orçamento.** Antes de cada partição, soma o que ela baixaria (DBC fora
+   do cache do runner, ou no cache com tamanho diferente da listagem). Se
+   passar do orçamento, o run para ali e lista as restantes; nunca passa do
+   orçamento de propósito. O padrão é 20 GB de DBC por run (GB = 10⁹ bytes);
+   o download do Parquet do S3 não conta.
+4. **DBCs e Parquet.** DBC do cache se tiver o tamanho da listagem; senão
+   `fetchVerified` (o download do archive, conferindo o tamanho). Parquet do
+   `build/` local se tamanho e ETag conferirem com o S3 (ETag de upload
+   multipart recalculado com partes de 8 MiB, o padrão do aws CLI; ver
+   `lib/s3-objects.ts`); senão baixado do S3 e conferido do mesmo jeito.
+   Linhas do Parquet diferentes da soma dos `recordCount` dos cabeçalhos →
+   pulada (`linhas diferentes do cabeçalho dos DBCs`).
+5. **Upload** só de `sia-pa/provenance/…/part.provenance.json` (o script
+   recusa qualquer outra chave), seguido de invalidação de
+   `/sia-pa/provenance/*` no CloudFront se algo subiu.
+
+O resumo do job (`$GITHUB_STEP_SUMMARY`) mostra emitidas, puladas com
+motivo, falhas e restantes; o log também.
+
+**Release, DOI e datasus-viz.** A retroativa não interfere: a release e o
+DOI dependem de `releaseCompetencia` e o disparo do datasus-viz de
+`changedCount`, ambos saídas do `skip-unchanged` no job `archive`. A
+retroativa roda em outro job, depois, e não toca em Parquet, manifest nem
+state.
+
+**Falhas.** Uma partição com erro (rede, S3, Parquet que mudou no S3 entre
+a listagem e o download) não para as outras. No fim, se houve alguma falha,
+o job `provenance-catchup` termina em falha, para aparecer; a publicação do
+job `archive` já terminou e não é afetada. Pulada e restante por orçamento
+não são falha: as 43 reescritas aparecem como puladas toda semana até o
+refresh rearquivá-las.
+
+### Rodar à mão
+
+Com orçamento diferente, pelo workflow (roda também o detect e, se houver
+delta, o archive):
+
+```bash
+gh workflow run refresh.yml --repo Precisa-Saude/datasus-parquet -F provenanceBudgetGb=50
+```
+
+`provenanceBudgetGb=0` processa só o que já está no cache do runner.
+
+Localmente, primeiro um `pending.json` atual (o que o DATASUS reescreveu e
+ainda não foi rearquivado fica de fora), depois um dry-run, que lê o bucket
+e o FTP mas só escreve em `build-catchup/`:
+
+```bash
+pnpm detect-new -- --legacy-since 2026-11-01T00:00:00Z --out /tmp/pending.json
+pnpm provenance-catchup -- --bucket <S3_BUCKET> --pending /tmp/pending.json \
+  --budget-gb 2 --dry-run
+ls build-catchup/sia-pa/provenance/
+```
+
+Sem `--dry-run` o provenance sobe ao bucket. Outras opções: `--build-dir`
+(onde procurar Parquet local, padrão `build`), `--work-dir` (padrão
+`build-catchup`), `--state` (padrão `state/sia-pa.json`). Para testes sem S3
+nem FTP, `--local-bucket <dir>` usa um diretório com a mesma estrutura de
+chaves no lugar do bucket e `--ftp-listing <json>` uma listagem salva
+(`[{ "name", "size", "mtime" }]`).
 
 ## `audit.yml` — auditoria mensal
 
