@@ -35,12 +35,30 @@ Para cada `<dataset>/ano=YYYY/uf=XX/mes=MM/part.parquet`, existe
   "pipeline": {
     "archiveScript": "scripts/archive-sia-pa.ts@<gitSha>",
     "decoder": "@precisa-saude/datasus-dbc@X.Y.Z",
-    "datasusSdk": "@precisa-saude/datasus@X.Y.Z",
+    "datasusSdk": "@precisa-saude/datasus-sdk@X.Y.Z",
     "notes": "Conversão 1:1 DBC→Parquet, sem filtro, sem enriquecimento."
   },
   "generatedAt": "2026-04-24T12:00:00Z"
 }
 ```
+
+`pipeline.decoder` e `pipeline.datasusSdk` são o nome e a versão dos
+pacotes instalados no momento da emissão, lidos de
+`node_modules/<pacote>/package.json` (`scripts/lib/package-version.ts`).
+Se um dos dois não estiver instalado, ou o `package.json` for ilegível ou
+não tiver versão, o `emit-provenance` falha antes de escrever qualquer
+provenance — não grava versão desconhecida.
+
+> **`datasusSdk` em provenance emitido antes de 19/11/2026.** O SDK mudou
+> de nome de `@precisa-saude/datasus` para `@precisa-saude/datasus-sdk`
+> em 24/04/2026 (commit `3d1867f`), mas o `emit-provenance` continuou
+> procurando o nome antigo até 19/11/2026. O provenance emitido nesse
+> intervalo saiu com `"datasusSdk": "@precisa-saude/datasus@unknown"`, que
+> não diz qual versão do SDK baixou os DBCs. O restante do
+> provenance não é afetado: os hashes dos DBCs e do Parquet continuam
+> conferíveis. Para saber a versão do SDK usada, abra o `pnpm-lock.yaml` no
+> commit de `pipeline.archiveScript` (`…@<gitSha>`). O campo só é corrigido
+> quando o provenance da partição é emitido de novo.
 
 ### Partição publicada em mais de um DBC
 

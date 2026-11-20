@@ -15,7 +15,8 @@
  *   - Schema exato do Parquet (colunas + tipos, do footer)
  *   - Row count
  *   - gitSha do commit deste repo
- *   - Versões do decoder e do SDK
+ *   - Nome e versão instalados do decoder e do SDK
+ *     (`lib/package-version.ts`; pacote ausente derruba a emissão)
  *
  * Permite a qualquer pesquisador validar byte-a-byte contra o FTP
  * oficial. Ver docs/provenance.md.
@@ -41,6 +42,7 @@ import duckdb from 'duckdb';
 import { datasusCacheDir } from './lib/cache-dir.js';
 import { emitPartitionProvenance } from './lib/emit-partition.js';
 import { gitSha } from './lib/git-sha.js';
+import { pipelinePackages } from './lib/package-version.js';
 import {
   buildProvenance,
   type MonthPartition,
@@ -124,20 +126,6 @@ function diskSourceCache(dir: string): SourceCache {
   };
 }
 
-interface PackageInfo {
-  name: string;
-  version: string;
-}
-
-function readPackageVersion(repoRoot: string, dep: string): PackageInfo {
-  const p = resolve(repoRoot, 'node_modules', dep, 'package.json');
-  if (existsSync(p)) {
-    const pkg = JSON.parse(readFileSync(p, 'utf8')) as PackageInfo;
-    return { name: pkg.name, version: pkg.version };
-  }
-  return { name: dep, version: 'unknown' };
-}
-
 async function parquetSchema(
   path: string,
 ): Promise<{ rows: number; schema: Array<{ name: string; type: string }> }> {
@@ -199,8 +187,9 @@ async function main(): Promise<void> {
   const repoRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
   const cacheDir = datasusCacheDir();
   const sha = gitSha(repoRoot);
-  const decoder = readPackageVersion(repoRoot, '@precisa-saude/datasus-dbc');
-  const sdk = readPackageVersion(repoRoot, '@precisa-saude/datasus');
+  // Antes de qualquer partição: pacote ausente derruba a emissão inteira,
+  // sem deixar provenance com versão desconhecida (`lib/package-version.ts`).
+  const packages = pipelinePackages(repoRoot);
   const fingerprintDb = new duckdb.Database(':memory:');
   const failures: string[] = [];
 
@@ -219,7 +208,8 @@ async function main(): Promise<void> {
     const beforeRecord: string[] = [];
     const legacy: string[] = [];
     process.stderr.write(
-      `${datasetId}: ${parts.length} partições; git ${sha.slice(0, 7)}; decoder ${decoder.version}\n`,
+      `${datasetId}: ${parts.length} partições; git ${sha.slice(0, 7)}; ` +
+        `${packages.decoder}; ${packages.datasusSdk}\n`,
     );
 
     for (const p of parts) {
@@ -256,8 +246,8 @@ async function main(): Promise<void> {
             partition: { ano: p.ano, mes: p.mes, uf: p.uf },
             pipeline: {
               archiveScript: `scripts/archive-${datasetId}.ts@${sha}`,
-              datasusSdk: `${sdk.name}@${sdk.version}`,
-              decoder: `${decoder.name}@${decoder.version}`,
+              datasusSdk: packages.datasusSdk,
+              decoder: packages.decoder,
             },
             sources,
           });

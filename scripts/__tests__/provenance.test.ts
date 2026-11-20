@@ -647,9 +647,12 @@ describe('siaPaPartitionSources', () => {
 });
 
 /**
- * Saída real do `emit-provenance` antes desta mudança (origin/main
+ * Saída real do `emit-provenance` antes de `sources` existir (origin/main
  * 767808b), para AC 2024-01 com o `PAAC2401.dbc` do cache local. A
- * partição de arquivo único tem de continuar saindo byte-a-byte igual.
+ * partição de arquivo único tem de continuar saindo byte-a-byte igual,
+ * exceto `pipeline.datasusSdk`: até 19/11/2026 saía
+ * `@precisa-saude/datasus@unknown` (a busca da versão usava o nome antigo
+ * do pacote); agora é o SDK instalado (`lib/package-version.ts`).
  */
 const PROVENANCE_ARQUIVO_UNICO_ANTES = `{
   "dataset": "sia-pa",
@@ -690,7 +693,7 @@ const PROVENANCE_ARQUIVO_UNICO_ANTES = `{
   },
   "pipeline": {
     "archiveScript": "scripts/archive-sia-pa.ts@767808b94ad7ea87ae2551e84c3c19aa79d82bd0",
-    "datasusSdk": "@precisa-saude/datasus@unknown",
+    "datasusSdk": "@precisa-saude/datasus-sdk@2.1.1",
     "decoder": "@precisa-saude/datasus-dbc@2.0.4",
     "notes": "Conversão 1:1 DBC→Parquet, sem filtro, sem enriquecimento."
   },
@@ -723,7 +726,7 @@ const baseInput = {
   partition: { ano: 2024, mes: 1, uf: 'AC' },
   pipeline: {
     archiveScript: 'scripts/archive-sia-pa.ts@767808b94ad7ea87ae2551e84c3c19aa79d82bd0',
-    datasusSdk: '@precisa-saude/datasus@unknown',
+    datasusSdk: '@precisa-saude/datasus-sdk@2.1.1',
     decoder: '@precisa-saude/datasus-dbc@2.0.4',
   },
 };
@@ -735,7 +738,7 @@ const PAAC2401: CachedFile = {
 };
 
 describe('buildProvenance + serializeProvenance', () => {
-  it('partição de arquivo único com registro do archive sai byte-a-byte igual à de antes da mudança', () => {
+  it('partição de arquivo único com registro do archive sai byte-a-byte igual à de antes de `sources` (com o SDK corrigido)', () => {
     const record = registro(baseInput.partition, [
       { bytes: PAAC2401.bytes, cacheMtime: PAAC2401.mtime, file: 'PAAC2401.dbc' },
     ]);
