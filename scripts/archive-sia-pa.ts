@@ -72,6 +72,7 @@ import {
   type RemoteFile,
   resolvePartitionFiles,
   SizeMismatchError,
+  VARIANT_RANGE,
 } from './lib/dbc-source.js';
 import { parseDosMtime } from './lib/ftp-mtime.js';
 import {
@@ -170,7 +171,9 @@ async function* streamMonthWithVariants(
 ): AsyncIterable<SiaProducaoAmbulatorialRecord> {
   if (files.length === 0) {
     const mm = String(month).padStart(2, '0');
-    throw new Error(`550 nenhum DBC encontrado para ${uf} ${year}-${mm} (canônico + a-e)`);
+    throw new Error(
+      `550 nenhum DBC encontrado para ${uf} ${year}-${mm} (canônico + ${VARIANT_RANGE})`,
+    );
   }
   const verified: Uint8Array[] = [];
   for (const file of files) {

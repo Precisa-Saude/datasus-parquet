@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { resolvePartitionFiles } from '../lib/dbc-source.js';
 import {
   buildProvenance,
   type CachedFile,
@@ -13,7 +14,12 @@ import {
   SourceProvenanceError,
   sourcesFromRecord,
 } from '../lib/provenance.js';
-import { type RecordedSource, type SourcesRecord } from '../lib/sources-record.js';
+import {
+  buildSourcesRecord,
+  type RecordedSource,
+  serializeSourcesRecord,
+  type SourcesRecord,
+} from '../lib/sources-record.js';
 
 const DIR = '/dissemin/publicos/SIASUS/200801_/Dados';
 
@@ -41,15 +47,110 @@ const vazio = (mtime = '2026-09-30T22:02:05.930Z'): CachedFile => ({
 });
 
 describe('siaPaCandidateNames', () => {
-  it('lista o canônico e as variantes a–e, nessa ordem', () => {
+  it('lista o canônico e as variantes `a`–`z`, nessa ordem', () => {
     expect(siaPaCandidateNames('MG', 2025, 8)).toEqual([
       'PAMG2508.dbc',
-      'PAMG2508a.dbc',
-      'PAMG2508b.dbc',
-      'PAMG2508c.dbc',
-      'PAMG2508d.dbc',
-      'PAMG2508e.dbc',
+      ...[...'abcdefghijklmnopqrstuvwxyz'].map((l) => `PAMG2508${l}.dbc`),
     ]);
+  });
+});
+
+/** Seis variantes, `a`–`f`, de SP 2026-08 (o `f` é hipotético; ver dbc-source.test.ts). */
+const SEIS = [...'abcdef'].map((l, i) => ({
+  bytes: 1000 + i,
+  file: `PASP2608${l}.dbc`,
+  mtime: `2026-11-19T10:0${i}:00.000Z`,
+  sha256: sha(l),
+}));
+const SP_2608 = { ano: 2026, mes: 8, uf: 'SP' };
+const cacheSeis = (): ReturnType<typeof fakeCache> =>
+  fakeCache(
+    Object.fromEntries(
+      SEIS.map(({ bytes, file, mtime, sha256 }) => [file, { bytes, mtime, sha256 }]),
+    ),
+  );
+
+describe('partição dividida em seis DBCs (`a`–`f`)', () => {
+  it('listagem → registro do archive → provenance com os seis, em ordem', () => {
+    // Listagem fora de ordem, como pode vir do FTP.
+    const listing = new Map(
+      SEIS.map((s) => [s.file, s.bytes]).reverse() as Array<[string, number]>,
+    );
+    const files = resolvePartitionFiles(listing, 'SP', 2026, 8);
+    const record = buildSourcesRecord({
+      cacheMtime: (name) => SEIS.find((s) => s.file === name)?.mtime ?? '',
+      files,
+      ftpBase: DIR,
+      ftpMtimes: new Map(),
+      partition: SP_2608,
+    });
+    expect(record.files.map((f) => f.file)).toEqual(SEIS.map((s) => s.file));
+
+    const { fromCache, sources } = siaPaPartitionSources(
+      cacheSeis(),
+      DIR,
+      SP_2608,
+      serializeSourcesRecord(record),
+      { allowCacheFallback: false },
+    );
+    expect(fromCache).toBe(false);
+    const body = buildProvenance({
+      ...baseInput,
+      output: { ...baseInput.output, file: 'ano=2026/uf=SP/mes=08/part.parquet' },
+      partition: SP_2608,
+      sources,
+    });
+    const parsed = JSON.parse(serializeProvenance(body)) as {
+      source: null;
+      sources: Array<{ bytes: number; file: string; ftpPath: string; sha256: string }>;
+    };
+    expect(parsed.source).toBeNull();
+    expect(parsed.sources).toEqual(
+      SEIS.map((s) => ({
+        bytes: s.bytes,
+        file: s.file,
+        ftpPath: `${DIR}/${s.file}`,
+        mtime: s.mtime,
+        sha256: s.sha256,
+      })),
+    );
+  });
+
+  it('registro com `f` antes de `e` é recusado, como qualquer ordem errada', () => {
+    const foraDeOrdem = registro(
+      SP_2608,
+      [...SEIS.slice(0, 4), SEIS[5]!, SEIS[4]!].map((s) => ({
+        bytes: s.bytes,
+        cacheMtime: s.mtime,
+        file: s.file,
+      })),
+    );
+    expect(() =>
+      siaPaPartitionSources(cacheSeis(), DIR, SP_2608, JSON.stringify(foraDeOrdem), {
+        allowCacheFallback: false,
+      }),
+    ).toThrow(/não corresponde à regra do archive para SP 2026-08/);
+  });
+
+  it('sem registro, com o fallback, escolhe os seis do cache, em ordem', () => {
+    const result = siaPaSourcesFromCache(cacheSeis(), DIR, 'SP', 2026, 8);
+    expect('sources' in result && result.sources.map((s) => s.file)).toEqual(
+      SEIS.map((s) => s.file),
+    );
+  });
+
+  it('sem registro, com o fallback, lacuna antes de `f` (a–d, f sem e) falha', () => {
+    const semE = fakeCache(
+      Object.fromEntries(
+        SEIS.filter((s) => !s.file.endsWith('e.dbc')).map(({ bytes, file, mtime, sha256 }) => [
+          file,
+          { bytes, mtime, sha256 },
+        ]),
+      ),
+    );
+    expect(() => siaPaSourcesFromCache(semE, DIR, 'SP', 2026, 8)).toThrow(
+      /variantes não contíguas a partir de `a` no cache para SP 2026-08: .*PASP2608f\.dbc \(falta PASP2608e\.dbc\)/,
+    );
   });
 });
 

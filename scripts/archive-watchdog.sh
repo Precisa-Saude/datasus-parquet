@@ -137,7 +137,9 @@ while true; do
     UF=$(echo "$STALLED" | grep -oE 'uf=[A-Z]+' | cut -d= -f2)
     MES=$(echo "$STALLED" | grep -oE 'mes=[0-9]+' | cut -d= -f2)
     YY=${ANO:2:2}
-    # Canônico ou variantes a–e: limpa todos os arquivos da partição.
+    # Canônico e variantes (uma letra, `a`–`z`; VARIANT_SUFFIXES em
+    # scripts/lib/dbc-source.ts): o glob `?` pega qualquer uma, então limpa
+    # todos os arquivos da partição.
     DBC="$CACHE_DIR/PA${UF}${YY}${MES}"
 
     n=$(retry_count "$DBC")

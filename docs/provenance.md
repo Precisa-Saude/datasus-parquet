@@ -87,7 +87,8 @@ Regras:
 - Os arquivos listados são os que o `archive-sia-pa` decodificou, na ordem
   em que decodificou. O archive escolhe pela listagem do FTP
   (`resolvePartitionFiles` em `scripts/lib/dbc-source.ts`: o canônico se
-  existir, senão as variantes `a`–`e` presentes, em ordem) e, quando a
+  existir, senão as variantes presentes, em ordem — qualquer letra
+  minúscula de `a` a `z`; SP 2026-08 já vai até `e`) e, quando a
   partição é gravada, registra essa lista em `part.sources.json`, ao lado
   do `part.parquet`.
 
@@ -184,7 +185,7 @@ têm de bater com `source`/`sources`:
 
 ```bash
 curl -s 'ftp://ftp.datasus.gov.br/dissemin/publicos/SIASUS/200801_/Dados/' \
-  | grep -E ' PAMG2508[a-e]?\.dbc'
+  | grep -E ' PAMG2508[a-z]?\.dbc'
 # 09-17-26  05:27PM            166934835 PAMG2508a.dbc
 # 09-17-26  05:27PM            213060888 PAMG2508b.dbc
 # 09-17-26  05:27PM             15204829 PAMG2508c.dbc

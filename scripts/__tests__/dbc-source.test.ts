@@ -7,9 +7,32 @@ import {
   resolvePartitionFiles,
   siaPaBaseName,
   SizeMismatchError,
+  VARIANT_RANGE,
+  VARIANT_SUFFIXES,
 } from '../lib/dbc-source.js';
 
 const DIR = '/dissemin/publicos/SIASUS/200801_/Dados';
+
+/**
+ * SP 2026-08 na listagem do FTP de 19/11/2026: cinco variantes, `a`–`e`.
+ * O `f` não existe no FTP; é a sexta variante que o DATASUS pode publicar
+ * quando o mês crescer mais.
+ */
+const SP_2608_A_E: Array<[string, number]> = [
+  ['PASP2608a.dbc', 142415543],
+  ['PASP2608b.dbc', 143198291],
+  ['PASP2608c.dbc', 166896052],
+  ['PASP2608d.dbc', 198744482],
+  ['PASP2608e.dbc', 24123300],
+];
+const SP_2608_F: [string, number] = ['PASP2608f.dbc', 1234567];
+
+describe('VARIANT_SUFFIXES', () => {
+  it('são as letras minúsculas de `a` a `z`, em ordem', () => {
+    expect(VARIANT_SUFFIXES).toEqual([...'abcdefghijklmnopqrstuvwxyz']);
+    expect(VARIANT_RANGE).toBe('a-z');
+  });
+});
 
 describe('siaPaBaseName', () => {
   it('monta PA{UF}{AA}{MM} com zero à esquerda', () => {
@@ -40,6 +63,32 @@ describe('resolvePartitionFiles', () => {
       { name: 'PAMG2606b.dbc', size: 205609860 },
       { name: 'PAMG2606c.dbc', size: 32602968 },
     ]);
+  });
+
+  it('usa as cinco variantes `a`–`e` de SP 2026-08, como hoje', () => {
+    const listing = new Map([...SP_2608_A_E].reverse());
+    expect(resolvePartitionFiles(listing, 'SP', 2026, 8)).toEqual(
+      SP_2608_A_E.map(([name, size]) => ({ name, size })),
+    );
+  });
+
+  it('usa a sexta variante `f`, depois de `e`, quando o FTP a publica', () => {
+    const listing = new Map([SP_2608_F, ...SP_2608_A_E]);
+    expect(resolvePartitionFiles(listing, 'SP', 2026, 8)).toEqual(
+      [...SP_2608_A_E, SP_2608_F].map(([name, size]) => ({ name, size })),
+    );
+  });
+
+  it('vai até `z` e ignora sufixo que não é letra minúscula', () => {
+    const letters = [...'abcdefghijklmnopqrstuvwxyz'];
+    const listing = new Map<string, number>([
+      ['PASP2608A.dbc', 1],
+      ['PASP26081.dbc', 1],
+      ...letters.map((l, i): [string, number] => [`PASP2608${l}.dbc`, i + 1]),
+    ]);
+    expect(resolvePartitionFiles(listing, 'SP', 2026, 8).map((f) => f.name)).toEqual(
+      letters.map((l) => `PASP2608${l}.dbc`),
+    );
   });
 
   it('não confunde meses vizinhos nem outras UFs', () => {

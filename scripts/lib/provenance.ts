@@ -23,7 +23,12 @@
  * DBC ausente ou ilegível derruba a emissão: nunca se grava `bytes: 0`.
  */
 
-import { resolvePartitionFiles, siaPaBaseName, VARIANT_SUFFIXES } from './dbc-source.js';
+import {
+  resolvePartitionFiles,
+  siaPaBaseName,
+  VARIANT_RANGE,
+  VARIANT_SUFFIXES,
+} from './dbc-source.js';
 import {
   type RecordedSource,
   SOURCES_RECORD_FILE,
@@ -88,7 +93,7 @@ function errorMessage(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
 }
 
-/** Nomes que podem compor a partição: o canônico e as variantes `a`–`e`. */
+/** Nomes que podem compor a partição: o canônico e as variantes (`VARIANT_SUFFIXES`). */
 export function siaPaCandidateNames(uf: string, year: number, month: number): string[] {
   const base = siaPaBaseName(uf, year, month);
   return [`${base}.dbc`, ...VARIANT_SUFFIXES.map((suffix) => `${base}${suffix}.dbc`)];
@@ -282,7 +287,7 @@ export function siaPaSourcesFromCache(
   if (first === undefined) {
     const ignored = empty.length > 0 ? `; arquivos de 0 byte ignorados: ${empty.join(', ')}` : '';
     throw new SourceProvenanceError(
-      `nenhum DBC-fonte em cache para ${label} (canônico + a-e)${ignored}`,
+      `nenhum DBC-fonte em cache para ${label} (canônico + ${VARIANT_RANGE})${ignored}`,
     );
   }
 
