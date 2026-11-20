@@ -249,7 +249,8 @@ pelo caminho, sem conferir se ainda bate com o FTP. Por isso o
 `archive-sia-pa` lista o diretório do FTP uma vez no início do run e, para
 cada partição:
 
-- resolve canônico ou variantes `a`–`e` pela listagem (sem sondar 550);
+- resolve canônico ou variantes (`a`–`z`, em ordem; SP 2026-08 já tem
+  `a`–`e`) pela listagem (sem sondar 550);
 - baixa todos os arquivos da partição e confere o tamanho de cada um contra
   a listagem **antes** de decodificar o primeiro;
 - se o tamanho divergir (cópia antiga de um arquivo republicado ou download

@@ -2,14 +2,20 @@
  * Parser puro do nome de arquivo SIA-PA do FTP DATASUS.
  *
  * Formato: `PA{UF}{YY}{MM}{variant?}.dbc` (ex.: `PAAC2401.dbc`,
- * `PASP2403a.dbc`). `variant` é `''` para o canônico ou uma letra para
- * arquivos split (SP, MG, RJ quando o DBC excede o limite do formato).
+ * `PASP2403a.dbc`). `variant` é `''` para o canônico ou uma letra
+ * (`VARIANT_RANGE`, a mesma faixa do archive) para arquivos split (SP, MG,
+ * RJ quando o DBC excede o limite do formato).
  *
  * Extraído de `scripts/detect-new.ts` pra permitir teste unitário sem
  * depender de IO (FTP/filesystem).
  */
 
-export const SIA_PA_REGEX = /^PA([A-Z]{2})(\d{2})(\d{2})([a-z]?)\.dbc$/i;
+import { VARIANT_RANGE } from './dbc-source.js';
+
+export const SIA_PA_REGEX = new RegExp(
+  `^PA([A-Z]{2})(\\d{2})(\\d{2})([${VARIANT_RANGE}]?)\\.dbc$`,
+  'i',
+);
 
 export interface SiaPaFileName {
   month: number;

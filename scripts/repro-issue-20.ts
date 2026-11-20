@@ -22,8 +22,11 @@
 import { readDbcRecords } from '@precisa-saude/datasus-dbc';
 import { download } from '@precisa-saude/datasus-sdk';
 
+import { VARIANT_SUFFIXES } from './lib/dbc-source.js';
+
 const SIA_PA_DIR = '/dissemin/publicos/SIASUS/200801_/Dados';
-const VARIANT_SUFFIXES = ['', 'a', 'b', 'c', 'd', 'e'];
+/** Canônico primeiro; depois as variantes, até a primeira ausente (550). */
+const SUFFIXES = ['', ...VARIANT_SUFFIXES];
 
 interface Sample {
   month: number;
@@ -127,7 +130,7 @@ async function reproSample(s: Sample): Promise<void> {
   log(`SAMPLE ${s.uf} ${s.year}-${mm} (${s.note})`);
   log('='.repeat(72));
 
-  for (const suffix of VARIANT_SUFFIXES) {
+  for (const suffix of SUFFIXES) {
     const file = `PA${s.uf}${yy}${mm}${suffix}.dbc`;
     const path = `${SIA_PA_DIR}/${file}`;
     log(`-- variant '${suffix || 'canonical'}': ${file}`);
@@ -148,7 +151,7 @@ async function reproSample(s: Sample): Promise<void> {
       if (isNotFound(err)) {
         log(`  variant absent (550) — ok, end of variants`);
         if (suffix === '') {
-          // canonical absent: continue probing variants a-e
+          // canonical absent: continue probing variants (VARIANT_SUFFIXES)
           continue;
         }
         break;

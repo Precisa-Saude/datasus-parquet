@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { VARIANT_SUFFIXES } from '../lib/dbc-source.js';
 import { parseSiaPaFileName, SIA_PA_REGEX } from '../lib/sia-pa-parser.js';
 
 describe('parseSiaPaFileName', () => {
@@ -25,6 +26,23 @@ describe('parseSiaPaFileName', () => {
       variant: 'b',
       year: 2023,
     });
+  });
+
+  it('aceita toda variante da definição compartilhada (`a`–`z`), inclusive além de `e`', () => {
+    expect(VARIANT_SUFFIXES).toHaveLength(26);
+    for (const suffix of VARIANT_SUFFIXES) {
+      expect(parseSiaPaFileName(`PASP2608${suffix}.dbc`)).toEqual({
+        month: 8,
+        uf: 'SP',
+        variant: suffix,
+        year: 2026,
+      });
+    }
+  });
+
+  it('rejeita sufixo de mais de uma letra ou que não é letra', () => {
+    expect(parseSiaPaFileName('PASP2608ab.dbc')).toBeNull();
+    expect(parseSiaPaFileName('PASP26081.dbc')).toBeNull();
   });
 
   it('accepts lowercase and normalizes UF to uppercase', () => {

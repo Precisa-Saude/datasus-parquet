@@ -16,7 +16,24 @@ export interface RemoteFile {
   size: number;
 }
 
-export const VARIANT_SUFFIXES = ['a', 'b', 'c', 'd', 'e'] as const;
+const FIRST_VARIANT = 'a';
+const LAST_VARIANT = 'z';
+
+/**
+ * Sufixos das variantes de uma partição dividida, na ordem em que são
+ * concatenadas: uma letra minúscula, de `a` a `z`. Definição única, usada
+ * pela listagem do archive, pelo parser de nomes do FTP (`detect-new`,
+ * `audit-partitions`) e pelo provenance. O DATASUS não documenta um limite:
+ * SP 2026-08 já chega a `e`, e uma letra fixa a menos deixaria a variante
+ * seguinte de fora do Parquet sem erro.
+ */
+export const VARIANT_SUFFIXES: readonly string[] = Array.from(
+  { length: LAST_VARIANT.charCodeAt(0) - FIRST_VARIANT.charCodeAt(0) + 1 },
+  (_, i) => String.fromCharCode(FIRST_VARIANT.charCodeAt(0) + i),
+);
+
+/** Faixa das variantes (`a-z`), para classe de caractere de regex e mensagens. */
+export const VARIANT_RANGE = `${FIRST_VARIANT}-${LAST_VARIANT}`;
 
 /** `PA{UF}{AA}{MM}` — prefixo comum ao arquivo canônico e às variantes. */
 export function siaPaBaseName(uf: string, year: number, month: number): string {
@@ -27,8 +44,9 @@ export function siaPaBaseName(uf: string, year: number, month: number): string {
 
 /**
  * Arquivos que compõem a partição, segundo a listagem do FTP: o canônico
- * `PA{UF}{AA}{MM}.dbc` quando existe; senão as variantes `a`–`e`
- * presentes, em ordem. Lista vazia quando o mês não foi publicado.
+ * `PA{UF}{AA}{MM}.dbc` quando existe; senão as variantes presentes
+ * (`VARIANT_SUFFIXES`, `a`–`z`), em ordem. Lista vazia quando o mês não foi
+ * publicado.
  *
  * Usar a listagem em vez de sondar 550 evita os arquivos de 0 byte que
  * as tentativas frustradas deixavam no cache.

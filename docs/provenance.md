@@ -35,12 +35,30 @@ Para cada `<dataset>/ano=YYYY/uf=XX/mes=MM/part.parquet`, existe
   "pipeline": {
     "archiveScript": "scripts/archive-sia-pa.ts@<gitSha>",
     "decoder": "@precisa-saude/datasus-dbc@X.Y.Z",
-    "datasusSdk": "@precisa-saude/datasus@X.Y.Z",
+    "datasusSdk": "@precisa-saude/datasus-sdk@X.Y.Z",
     "notes": "Conversão 1:1 DBC→Parquet, sem filtro, sem enriquecimento."
   },
   "generatedAt": "2026-04-24T12:00:00Z"
 }
 ```
+
+`pipeline.decoder` e `pipeline.datasusSdk` são o nome e a versão dos
+pacotes instalados no momento da emissão, lidos de
+`node_modules/<pacote>/package.json` (`scripts/lib/package-version.ts`).
+Se um dos dois não estiver instalado, ou o `package.json` for ilegível ou
+não tiver versão, o `emit-provenance` falha antes de escrever qualquer
+provenance — não grava versão desconhecida.
+
+> **`datasusSdk` em provenance emitido antes de 19/11/2026.** O SDK mudou
+> de nome de `@precisa-saude/datasus` para `@precisa-saude/datasus-sdk`
+> em 24/04/2026 (commit `3d1867f`), mas o `emit-provenance` continuou
+> procurando o nome antigo até 19/11/2026. O provenance emitido nesse
+> intervalo saiu com `"datasusSdk": "@precisa-saude/datasus@unknown"`, que
+> não diz qual versão do SDK baixou os DBCs. O restante do
+> provenance não é afetado: os hashes dos DBCs e do Parquet continuam
+> conferíveis. Para saber a versão do SDK usada, abra o `pnpm-lock.yaml` no
+> commit de `pipeline.archiveScript` (`…@<gitSha>`). O campo só é corrigido
+> quando o provenance da partição é emitido de novo.
 
 ### Partição publicada em mais de um DBC
 
@@ -87,7 +105,8 @@ Regras:
 - Os arquivos listados são os que o `archive-sia-pa` decodificou, na ordem
   em que decodificou. O archive escolhe pela listagem do FTP
   (`resolvePartitionFiles` em `scripts/lib/dbc-source.ts`: o canônico se
-  existir, senão as variantes `a`–`e` presentes, em ordem) e, quando a
+  existir, senão as variantes presentes, em ordem — qualquer letra
+  minúscula de `a` a `z`; SP 2026-08 já vai até `e`) e, quando a
   partição é gravada, registra essa lista em `part.sources.json`, ao lado
   do `part.parquet`.
 
@@ -184,7 +203,7 @@ têm de bater com `source`/`sources`:
 
 ```bash
 curl -s 'ftp://ftp.datasus.gov.br/dissemin/publicos/SIASUS/200801_/Dados/' \
-  | grep -E ' PAMG2508[a-e]?\.dbc'
+  | grep -E ' PAMG2508[a-z]?\.dbc'
 # 09-17-26  05:27PM            166934835 PAMG2508a.dbc
 # 09-17-26  05:27PM            213060888 PAMG2508b.dbc
 # 09-17-26  05:27PM             15204829 PAMG2508c.dbc
