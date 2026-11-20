@@ -25,15 +25,12 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } fr
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { Client } from 'basic-ftp';
-
-import { parseDosMtime, UNKNOWN_MTIME } from './lib/ftp-mtime.js';
+import { FTP_HOST, listFtpDir } from './ftp-listing.js';
+import { groupListing, type ListedFile } from './lib/ftp-groups.js';
 import { newestCompetencia, type PendingReason, selectPending } from './lib/pending-selection.js';
 import { partitionArtifactPaths } from './lib/refresh-targets.js';
 import { parseSiaPaFileName, SIA_PA_REGEX } from './lib/sia-pa-parser.js';
 import { partitionKey, verifiedKeys } from './lib/verification.js';
-
-const FTP_HOST = 'ftp.datasus.gov.br';
 
 interface DatasetConfig {
   dir: string;
@@ -169,74 +166,17 @@ function saveState(path: string, state: State): void {
   writeFileSync(path, `${JSON.stringify(state, null, 2)}\n`);
 }
 
-async function listRemote(
-  dir: string,
-): Promise<Array<{ mtime: Date; name: string; size: number }>> {
-  const client = new Client();
-  client.ftp.verbose = false;
-  try {
-    await client.access({ host: FTP_HOST, port: 21, secure: false });
-    const entries = await client.list(dir);
-    // O servidor não anuncia MLSD: `modifiedAt` vem vazio e o mtime está só
-    // em `rawModifiedAt`, no formato DOS (`lib/ftp-mtime.ts`).
-    return entries
-      .filter((e) => e.type === 1)
-      .map((e) => ({
-        mtime: e.modifiedAt ?? parseDosMtime(e.rawModifiedAt) ?? UNKNOWN_MTIME,
-        name: e.name,
-        size: e.size,
-      }));
-  } finally {
-    client.close();
-  }
-}
-
 function computeDelta(
   datasetId: string,
   cfg: DatasetConfig,
-  remote: Array<{ mtime: Date; name: string; size: number }>,
+  remote: readonly ListedFile[],
   state: State,
   windowSize: number,
   legacySince: null | string,
 ): { latest: null | string; pending: PendingEntry[]; windowStart: null | string } {
-  // Agrupa variantes por (uf, year, month) antes de comparar com state.
-  const groups = new Map<
-    string,
-    { month: number; uf: string; variants: Array<Variant & { mtime: Date }>; year: number }
-  >();
-  for (const entry of remote) {
-    if (!cfg.fileRegex.test(entry.name)) continue;
-    const parsed = cfg.parseName(entry.name);
-    if (!parsed) continue;
-    const key = `${parsed.uf}|${parsed.year}|${parsed.month}`;
-    const bucket = groups.get(key) ?? {
-      month: parsed.month,
-      uf: parsed.uf,
-      variants: [],
-      year: parsed.year,
-    };
-    bucket.variants.push({
-      ftpMtime: entry.mtime.toISOString(),
-      ftpPath: `${cfg.dir}/${entry.name}`,
-      ftpSize: entry.size,
-      mtime: entry.mtime,
-      suffix: parsed.variant,
-    });
-    groups.set(key, bucket);
-  }
-
-  const prepared = [...groups.values()].map((group) => {
-    group.variants.sort((a, b) => a.suffix.localeCompare(b.suffix));
-    const latestMtime = group.variants.reduce(
-      (latest, v) => (v.mtime.getTime() > latest.getTime() ? v.mtime : latest),
-      new Date(0),
-    );
-    return {
-      ...group,
-      mtime: latestMtime.toISOString(),
-      size: group.variants.reduce((sum, v) => sum + v.ftpSize, 0),
-    };
-  });
+  // Agrupa variantes por (uf, year, month) antes de comparar com state
+  // (`lib/ftp-groups.ts`, o mesmo agrupamento da proveniência retroativa).
+  const prepared = groupListing(remote, cfg);
   const { latest, selected, windowStart } = selectPending(
     prepared,
     (uf, competencia) => state.processed[uf]?.[competencia],
@@ -378,7 +318,7 @@ async function main(): Promise<void> {
     process.stderr.write(
       `Sondando ${FTP_HOST}${cfg.dir} (${datasetId})… state conhece ${Object.keys(state.processed).length} UFs\n`,
     );
-    const remote = await listRemote(cfg.dir);
+    const remote = await listFtpDir(cfg.dir);
     process.stderr.write(`  ${remote.length} arquivos no FTP\n`);
     const { latest, pending, windowStart } = computeDelta(
       datasetId,

@@ -71,12 +71,21 @@ export function assessKeptProvenance(
   if (outputSha !== parquetSha) {
     return { ok: false, reason: `output.sha256 ${outputSha}, Parquet ${parquetSha}` };
   }
-  const source = body?.source as null | undefined | { bytes?: unknown; sha256?: unknown };
-  if (source === null) return { legacy: false, ok: true };
-  const sha = source?.sha256;
-  const legacy =
-    source?.bytes === 0 || typeof sha !== 'string' || !SHA256.test(sha) || sha === EMPTY_SHA256;
-  return { legacy, ok: true };
+  return { legacy: isLegacyProvenanceSource(body?.source), ok: true };
+}
+
+/**
+ * `true` para o `source` do formato inválido de antes de 19/11/2026:
+ * presente mas com 0 byte, sem SHA-256 válido ou com o SHA-256 de arquivo
+ * vazio. `source: null`, o formato atual de partição dividida, não é
+ * legado. Usado também pela proveniência retroativa
+ * (`lib/provenance-catchup.ts`) para escolher o que regerar.
+ */
+export function isLegacyProvenanceSource(source: unknown): boolean {
+  if (source === null) return false;
+  const s = source as undefined | { bytes?: unknown; sha256?: unknown };
+  const sha = s?.sha256;
+  return s?.bytes === 0 || typeof sha !== 'string' || !SHA256.test(sha) || sha === EMPTY_SHA256;
 }
 
 function errorMessage(err: unknown): string {

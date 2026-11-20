@@ -17,6 +17,7 @@
     "format:check": "prettier --check .",
     "lint": "eslint scripts/ --max-warnings 0",
     "prepare": "husky",
+    "provenance-catchup": "tsx scripts/provenance-catchup.ts",
     "skip-unchanged": "tsx scripts/skip-unchanged.ts",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",

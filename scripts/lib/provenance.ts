@@ -99,7 +99,13 @@ export function siaPaCandidateNames(uf: string, year: number, month: number): st
   return [`${base}.dbc`, ...VARIANT_SUFFIXES.map((suffix) => `${base}${suffix}.dbc`)];
 }
 
-function describeSource(
+/**
+ * Descreve um DBC a partir do cache: tamanho igual ao listado, SHA-256
+ * plausível (64 hex, nunca o de arquivo vazio) e mtime presente. Lança
+ * `SourceProvenanceError` se algo não conferir. Também usado pela
+ * proveniência retroativa (`provenance-catchup`).
+ */
+export function describeSource(
   cache: SourceCache,
   ftpPath: string,
   name: string,
@@ -131,7 +137,8 @@ function describeSource(
   };
 }
 
-function toPartitionSources(described: SourceFile[]): PartitionSources {
+/** Um DBC → `source`; vários → `source: null` e `sources`, na ordem. */
+export function toPartitionSources(described: SourceFile[]): PartitionSources {
   const [only] = described;
   if (described.length === 1 && only !== undefined) return { source: only };
   return { source: null, sources: described };
