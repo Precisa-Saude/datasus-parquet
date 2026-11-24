@@ -82,3 +82,26 @@ explícita com `--system` confirma sua existência, enquanto a configuração
 efetiva do repositório não pode conter essa chave. A checagem não depende
 da representação relativa ou absoluta dos caminhos em `--show-origin`.
 Os hooks reais do projeto permanecem ativos.
+
+## Encerramento
+
+A PR #69 foi mesclada em `af5610f`. A árvore da `main` ficou idêntica ao
+último commit da PR, e README e pending ficaram idênticos à base `3a73a38`.
+
+- Release [`dataset-2026-09`](https://github.com/Precisa-Saude/datasus-parquet/releases/tag/dataset-2026-09)
+  criada à mão a partir de `af5610f`, com o corpo do workflow e o
+  `manifest.json` publicado pelo run 45231634914 (`generatedAt`
+  `2026-11-24T00:27:24.609Z`, 6.075 partições). O run tinha calculado
+  `releaseCompetencia` 2026-09, com o state indo até 2026-08.
+- O webhook do Zenodo emitiu o DOI
+  [10.5281/zenodo.24507473](https://doi.org/10.5281/zenodo.24507473).
+- `refresh.yml` do datasus-viz disparado à mão:
+  [run 45439370228](https://github.com/Precisa-Saude/datasus-viz/actions/runs/45439370228).
+- `refresh.yml` deste repositório disparado depois do merge
+  ([run 45439376998](https://github.com/Precisa-Saude/datasus-parquet/actions/runs/45439376998)):
+  o `detect` encontrou 0 pendentes, com o state indo até 2026-09, e o
+  `archive` foi pulado. O passo de commit corrigido só será exercido na
+  próxima publicação do DATASUS.
+
+Pendente: apagar o snapshot do desktop depois que um refresh com
+publicação nova commitar o state sem falha.
