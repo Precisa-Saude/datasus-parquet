@@ -42,6 +42,14 @@ dependências nem alterar o cache do SDK.
 Cache e pending preservados fora do checkout. State recuperado localmente.
 Mensagens dos dois commits aprovadas; publicação do PR em andamento.
 
+O primeiro pre-commit revelou que as fixtures herdavam `GIT_DIR` e
+`GIT_INDEX_FILE` do hook. Cinco commits de fixture foram enviados
+indevidamente à main, terminando em `a340df0`. O PR corretivo restaura
+README e pending da base `3a73a38`, além de recuperar o state completo.
+Não há reescrita do histórico remoto. Os subprocessos de teste agora
+removem as variáveis Git herdadas e permitem somente transporte local
+(`file`), com checagem do gitdir e do origin antes de qualquer commit.
+
 ### Evidências
 
 - O teste novo falhou antes da correção com o mesmo erro de alterações

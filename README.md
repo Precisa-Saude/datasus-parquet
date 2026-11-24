@@ -1,1 +1,205 @@
-Alteração independente.
+# datasus-parquet
+
+[![CI](https://github.com/Precisa-Saude/datasus-parquet/actions/workflows/ci.yml/badge.svg)](https://github.com/Precisa-Saude/datasus-parquet/actions/workflows/ci.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Data License: CC-BY-4.0](https://img.shields.io/badge/Data_License-CC--BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+
+**Arquivo público de microdados do DATASUS em formato Parquet.** Conversão 1:1 a partir dos DBC/DBF originais do `ftp.datasus.gov.br`, com zero transformação semântica — todas as colunas preservadas, schema por partição, provenance com SHA256 dos arquivos-fonte.
+
+Mantido pela [Precisa Saúde](https://precisa-saude.com.br) como recurso para pesquisa epidemiológica. Dados sob regime de dados abertos (Lei 12.527/2011, Decreto 8.777/2016); nossa compilação e derivações sob CC-BY 4.0.
+
+---
+
+## Datasets publicados
+
+| Dataset                               | Status       | Cobertura     | Schema                                             |
+| ------------------------------------- | ------------ | ------------- | -------------------------------------------------- |
+| **SIA-PA** (Produção Ambulatorial)    | ✅ ativo     | 2008–presente | [`docs/schema/sia-pa.md`](docs/schema/sia-pa.md)   |
+| **SIH-RD** (Internações Hospitalares) | 🟡 planejado | —             | [`docs/schema/sih-rd.md`](docs/schema/sih-rd.md)   |
+| **SIM** (Mortalidade)                 | 🟡 planejado | —             | [`docs/schema/sim.md`](docs/schema/sim.md)         |
+| **SINASC** (Nascidos Vivos)           | 🟡 planejado | —             | [`docs/schema/sinasc.md`](docs/schema/sinasc.md)   |
+| **SINAN** (Agravos Notificáveis)      | 🟡 planejado | —             | [`docs/schema/sinan.md`](docs/schema/sinan.md)     |
+| **CNES-ST** (Estabelecimentos)        | 🟡 planejado | —             | [`docs/schema/cnes-st.md`](docs/schema/cnes-st.md) |
+
+Datasets marcados como planejados têm schema documentado e decoder
+pronto (`@precisa-saude/datasus-dbc`); falta apenas o script
+`scripts/archive-<dataset>.ts`. Contribuições de pesquisadores que
+trabalham com esses subdatasets são bem-vindas — veja
+[`docs/contributing.md`](docs/contributing.md) e use
+`scripts/archive-sia-pa.ts` como template.
+
+---
+
+## Como consumir
+
+### DuckDB (recomendado — zero setup)
+
+```sql
+-- Todos os exames de jan/2024 em SP:
+SELECT *
+FROM read_parquet('https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano=2024/uf=SP/mes=01/part.parquet');
+
+-- Série histórica de uma UF (schema evolution automática). HTTP não
+-- lista diretório, então `ano=*` não funciona numa URL: a lista de
+-- arquivos sai das competências publicadas no manifest.json.
+SET VARIABLE arquivos = (
+  SELECT list(format('https://dfdu08vi8wsus.cloudfront.net/sia-pa/ano={}/uf=AC/mes={}/part.parquet',
+                     c[1:4], c[6:7]))
+  FROM (SELECT unnest(datasets."sia-pa".competencias) AS c
+        FROM read_json('https://dfdu08vi8wsus.cloudfront.net/manifest.json'))
+);
+SELECT ano, COUNT(*) AS linhas
+FROM read_parquet(getvariable('arquivos'), hive_partitioning = true, union_by_name = true)
+GROUP BY ano
+ORDER BY ano;
+```
+
+### Python e R
+
+O bucket S3 é privado; todo acesso público passa pelo CloudFront.
+Exemplos em Python (DuckDB e Polars) e R estão em
+[`docs/usage.md`](docs/usage.md).
+
+---
+
+## Layout dos dados
+
+```
+https://dfdu08vi8wsus.cloudfront.net/
+  sia-pa/
+    ano=YYYY/uf=XX/mes=MM/part.parquet
+    provenance/ano=YYYY/uf=XX/mes=MM/part.provenance.json
+  sih-rd/
+    …
+  manifest.json           — catálogo completo (datasets, cobertura, schema)
+```
+
+Partição por **mês** preserva o schema do DBF-fonte daquela competência.
+`union_by_name=true` no DuckDB ou `unified_schema=True` no Arrow lidam
+com evolução cross-year transparentemente.
+
+---
+
+## Validação byte-a-byte
+
+Cada partição tem um `part.provenance.json` com SHA256 do DBC-fonte
+original do FTP DATASUS. Para validar:
+
+1. Baixe o `PA{UF}{YYMM}.dbc` direto de
+   `ftp://ftp.datasus.gov.br/dissemin/publicos/SIASUS/200801_/Dados/`
+2. `sha256sum PA{UF}{YYMM}.dbc` → compare com `source.sha256` do
+   provenance. Partição que o DATASUS publica em vários DBCs
+   (`PA{UF}{YYMM}a.dbc`, `b.dbc`…) tem `source: null` e um item por
+   arquivo em `sources[]`: confira cada um
+3. Se bate, clone este repo no `gitSha` indicado no provenance, rode
+   `pnpm archive-sia-pa --ufs XX --years YYYY` e compare o Parquet
+   emitido byte-a-byte com o publicado
+
+Detalhes em [`docs/provenance.md`](docs/provenance.md).
+
+---
+
+## Automação
+
+GH Actions sonda o FTP DATASUS semanalmente, detecta novas competências
+publicadas, converte o delta em Parquet, faz upload para S3 e cria um
+GitHub Release com os assets daquela janela. Cada release vira um DOI
+Zenodo.
+
+Ciclo:
+
+```
+ftp.datasus.gov.br → detect-new → archive-<dataset> → provenance → S3 → Release + Zenodo DOI
+```
+
+Workflow em [`.github/workflows/refresh.yml`](.github/workflows/refresh.yml).
+
+Esse é o caminho do **delta semanal**. Recuperar meses ou anos atrasados é
+outro workflow, em outro runner, com outro teto de tempo — e escolher
+errado custa horas. Antes de disparar qualquer publicação, veja
+[`docs/operations.md`](docs/operations.md).
+
+O que o FTP oferece (e não oferece) para detectar mudanças, e o que
+pediríamos ao DATASUS, está em
+[`docs/recomendacoes-datasus.md`](docs/recomendacoes-datasus.md).
+
+> **Site `datasus-viz` e cadeia _end-to-end_:** este repo publica os
+> _Parquets brutos_ no S3 — o site `datasus-viz` consome via CloudFront,
+> agrega para LOINC e republica artefatos otimizados. A cadeia inteira
+> (com a _gotcha_ "novo ano no S3 não aparece sozinho no site") está
+> documentada em
+> [`datasus-viz/site/docs/data-pipeline.md`](https://github.com/Precisa-Saude/datasus-viz/blob/main/site/docs/data-pipeline.md#pipeline-end-to-end-datasus-parquet--datasus-viz).
+
+---
+
+## Como adicionar um novo dataset
+
+Veja [`docs/contributing.md`](docs/contributing.md). Em resumo:
+
+1. Decida o subpath FTP oficial (ex.: `/dissemin/publicos/SIHSUS/…` pro
+   SIH-RD).
+2. Implemente `scripts/archive-<dataset>.ts` seguindo o padrão de
+   `scripts/archive-sia-pa.ts`.
+3. Crie `docs/schema/<dataset>.md` documentando colunas e referências
+   ao dicionário oficial DATASUS.
+4. Adicione ao matrix do workflow `.github/workflows/refresh.yml`.
+5. Abra PR. Maintainers revisam, mergeiam, e a partir do próximo cron
+   semanal o dataset entra no ciclo.
+
+---
+
+## Licença
+
+- **Código** (scripts, workflows, docs): Apache-2.0
+  ([LICENSE](LICENSE))
+- **Dados publicados** (Parquet + provenance): CC-BY 4.0
+  — compilação/derivação nossa; dados brutos seguem regime de dados
+  abertos (Lei 12.527, Decreto 8.777)
+
+---
+
+## Citação
+
+Ver [`CITATION.cff`](CITATION.cff) + DOI emitido por release do Zenodo.
+
+---
+
+## Referências
+
+- DATASUS FTP: `ftp.datasus.gov.br/dissemin/publicos/`
+- TabNet (visualização oficial): http://tabnet.datasus.gov.br
+- Dicionários oficiais: veja `docs/schema/<dataset>.md` de cada dataset
+- [`@precisa-saude/datasus-dbc`](https://github.com/Precisa-Saude/datasus-dbc) —
+  decoder DBC em TypeScript usado pelo pipeline
+- [`@precisa-saude/datasus-sdk`](https://github.com/Precisa-Saude/datasus-sdk) —
+  SDK de alto nível (schemas tipados, FTP, terminologia)
+- [`datasus-viz`](https://github.com/Precisa-Saude/datasus-viz) —
+  site/CLI de visualização consumindo este arquivo
+
+## Tooling versionado
+
+A configuração deste repositório é mantida localmente. Atualizações de pacotes
+e workflows compartilhados chegam pela PR agrupada `precisa-tooling` do
+Renovate, com automerge desligado. Os workflows usam SHA com comentário de
+versão. Revise o changelog e aguarde o CI antes de adotar cada atualização.
+
+`precisa doctor` verifica requisitos estruturais; lint, build e testes rodam
+nos jobs de CI. Para adicionar um arquivo ausente, use
+`precisa scaffold --only <caminho> --dry-run`. Arquivos existentes são preservados.
+
+A migração adota o CLI `2.0.0`, publicado no npm, e os workflows compartilhados
+da [release v2.0.0](https://github.com/Precisa-Saude/tooling/releases/tag/v2.0.0),
+fixados ao SHA `7a61cab18cac4aa7e2163f92dab77209109480de`. A versão e a tag foram
+conferidas por `tooling/scripts/prepare-consumers.mjs`; atualizações futuras
+continuam sendo revisadas em PRs do Renovate.
+
+### Segurança dos workflows compartilhados
+
+Os workflows e o `precisa doctor` usam tooling v3.0.0. Antes de mesclar esta
+migração, a política `.github/review-policy.json` precisa estar em `main`. A
+revisão externa começa desativada; sua ativação exige um PR que autorize o
+provedor e os caminhos. O workflow lê a política do commit base, filtra o diff
+e bloqueia conteúdo sensível antes de qualquer envio. Não há fallback implícito.
+
+Checks têm acesso somente de leitura ao conteúdo. Release e publicação recebem
+permissões e segredos específicos para cada job.
