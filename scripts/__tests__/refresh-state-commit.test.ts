@@ -64,7 +64,7 @@ function configureSigning(cwd: string, key: string): void {
 }
 
 describe('commit do state no refresh', () => {
-  it('ignora configuração global e templates de hooks do usuário', () => {
+  it('ignora configurações globais, de sistema e templates de hooks', () => {
     const root = realpathSync(mkdtempSync(join(tmpdir(), 'refresh-config-')));
     directories.push(root);
     const template = join(root, 'templates');
@@ -74,7 +74,21 @@ describe('commit do state no refresh', () => {
       join(root, '.gitconfig'),
       `[core]\n\thooksPath = ${template}/hooks\n[init]\n\ttemplateDir = ${template}\n[url "https://example.invalid/"]\n\tinsteadOf = /fixture/\n`,
     );
-    const env = { ...fixtureEnv, HOME: root, XDG_CONFIG_HOME: root };
+    const systemConfig = join(root, 'system.gitconfig');
+    writeFileSync(systemConfig, '[fixture]\n\tsystemLeak = config-contaminada\n');
+    const env = {
+      ...fixtureEnv,
+      HOME: root,
+      XDG_CONFIG_HOME: root,
+      GIT_CONFIG_SYSTEM: systemConfig,
+    };
+    expect(
+      execFileSync('git', ['config', '--system', '--get', 'fixture.systemLeak'], {
+        cwd: root,
+        env,
+        encoding: 'utf8',
+      }).trim(),
+    ).toBe('config-contaminada');
     const repository = join(root, 'repository');
     execFileSync('git', ['init', '--initial-branch=main', repository], {
       cwd: root,
@@ -89,8 +103,7 @@ describe('commit do state no refresh', () => {
     expect(config).not.toContain('.gitconfig');
     expect(config).not.toContain('hookspath');
     expect(config).not.toContain('insteadof');
-    expect(config).not.toContain('file:/');
-    expect(env.GIT_CONFIG_NOSYSTEM).toBe('1');
+    expect(config).not.toContain('fixture.systemleak');
     expect(existsSync(join(repository, '.git/hooks/pre-commit'))).toBe(false);
   });
 

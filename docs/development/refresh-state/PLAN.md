@@ -37,10 +37,11 @@ Não executar archive, republicar Parquet, emitir DOI ou disparar refresh
 do viz nesta correção. A recuperação do state passa por PR. Não adicionar
 dependências nem alterar o cache do SDK.
 
-## Status atual
+## Correção e recuperação
 
-Cache e pending preservados fora do checkout. PR #69 publicada nos commits
-`577c701` e `b103223`, com todos os checks do GitHub aprovados.
+Cache e pending preservados fora do checkout. A PR #69 reúne a correção do
+refresh (`577c701`), a recuperação do state (`b103223`) e o isolamento da
+configuração Git das fixtures (`5b29d21`).
 
 O primeiro pre-commit revelou que as fixtures herdavam `GIT_DIR` e
 `GIT_INDEX_FILE` do hook. Cinco commits de fixture foram enviados
@@ -56,31 +57,28 @@ removem as variáveis Git herdadas e permitem somente transporte local
   não preparadas do runner. Depois da correção, passaram os cenários com
   main avançando e sem avanço, além da checagem do artefato de recuperação.
 - `pnpm lint` e `pnpm typecheck`: sucesso.
-- `pnpm test:coverage`: 244 testes em 18 arquivos, 100% linhas e 98,78%
+- `pnpm test:coverage`: 245 testes em 18 arquivos, 100% linhas e 98,78%
   branches. As fixtures Git usam chaves SSH temporárias para assinar os
   commits sem depender da identidade configurada na máquina.
 - O SHA-256 do pending do GitHub coincide com a cópia do desktop:
   `3dbf404d490976d43a777886cbbe8ebd7a13193ba81b68c73f315cd74a22ba6e`.
-- Comparação estrutural com `origin/main`: exatamente 325 entradas de
+- Comparação estrutural com a base `3a73a38`: exatamente 325 entradas de
   `processed` alteradas, todas com tamanho e mtime do pending. As demais
   entradas ficaram intactas. O `lastRun` foi atualizado para o horário
   desta recuperação, `2026-11-24T10:26:39.781Z`.
 - Listagem atual do S3 confirma os 325 pares de Parquet/provenance e
   todos os 260 uploads de Parquet identificados no log.
 
-## Próximos passos
+## Revisão
 
 Na revisão, o README foi confirmado idêntico à base `3a73a38`. A
-contradição de versões já existia; a discussão foi respondida e resolvida
-sem mudar a restauração.
+contradição de versões já existia e a restauração foi preservada.
 
-A sugestão de isolamento adicional do Git foi implementada localmente:
-configuração global e de sistema desativadas nas fixtures, template vazio
-e um teste com configuração global contaminada. O teste falhou antes da
-correção e passou depois. Lint, typecheck e 245 testes passaram, mantendo
-100% de linhas e 98,78% de branches. Os hooks reais do projeto permanecem
-ativos.
-
-Commit e push dessa correção de revisão aprovados. Depois do commit,
-responder com o hash e resolver a discussão antes do push. Não mesclar a
-PR nem iniciar outro refresh.
+O isolamento adicional desativa configuração global e de sistema nas
+fixtures e usa template vazio. O teste com configuração global contaminada
+falhou antes da correção e passou depois. A verificação de configuração de
+sistema usa um arquivo temporário com uma chave sentinela: a leitura
+explícita com `--system` confirma sua existência, enquanto a configuração
+efetiva do repositório não pode conter essa chave. A checagem não depende
+da representação relativa ou absoluta dos caminhos em `--show-origin`.
+Os hooks reais do projeto permanecem ativos.
