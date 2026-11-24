@@ -278,7 +278,9 @@ jobs:
           git config --local --unset-all http.https://github.com/.extraheader || true
           git remote set-url origin \
             "https://x-access-token:${{ steps.app-token-push.outputs.token }}@github.com/${{ github.repository }}.git"
-          git pull --rebase origin main
+          # O pending baixado é rastreado e não entra no commit do state.
+          # Preserva essa alteração local durante o rebase.
+          git pull --rebase --autostash origin main
           git push origin HEAD:main
 
       # Release e DOI só rodam com `releaseCompetencia` preenchida (PRE-607);
@@ -355,6 +357,21 @@ jobs:
         run: |
           echo "::error::${{ steps.verify.outputs.rejectedCount }} partições divergiram do FTP e não foram publicadas — veja o resumo da verificação. Elas seguem pendentes para o próximo refresh."
           exit 1
+
+      # O checkout do próximo job limpa o build e o commit local não enviado.
+      # Guarda os metadados pequenos para recuperar o state sem novo archive.
+      - name: Preserva metadados em caso de falha
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: refresh-recovery-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            state/sia-pa.json
+            state/pending.json
+            build-refresh/_verified.json
+            build-refresh/_unchanged.json
+            build/manifest.json
+          retention-days: 30
 
   # Proveniência retroativa (docs/operations.md): provenance para partições
   # publicadas sem um, ou com o do formato inválido de antes de 19/11/2026,

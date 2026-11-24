@@ -134,6 +134,39 @@ inteira (12 × 27 = 324 partições), 8–10 h, uma vez por mês.
 
 > O DOI é permanente. Não dispare "só pra testar".
 
+### Falha no commit depois do upload
+
+Confira no log quais etapas terminaram antes de repetir o workflow. Se
+upload, manifest e invalidação terminaram, os dados já estão publicados.
+O refresh começa apagando `build-refresh/`, e o checkout do job seguinte
+também pode limpar os arquivos locais. Repetir o run pode custar outro
+archive completo, mesmo com os DBCs no cache.
+
+O commit inclui somente `state/sia-pa.json`. Como o download do pending
+modifica um arquivo rastreado, o rebase usa `--autostash` para preservar
+essa alteração sem incluí-la no commit.
+
+Em caso de falha, procure o artefato
+`refresh-recovery-<run_id>-<run_attempt>`, retido por 30 dias. Ele contém
+os arquivos disponíveis entre state, pending, `_verified.json`,
+`_unchanged.json` e manifest. Se a falha ocorreu antes de uma etapa, seu
+relatório pode estar ausente; a presença do state não prova que o upload
+terminou. Confirme os logs e os objetos no S3 antes de recuperá-lo por PR.
+O artefato não contém Parquet nem os DBCs.
+
+No run 45231634914, anterior a essa proteção, o log registra 325
+verificadas, zero rejeitadas, 260 publicadas e 65 idênticas. O pending
+original foi preservado em
+`~/precisa-recovery/datasus-parquet/45231634914/pending.json` no desktop,
+junto a uma cópia independente por reflink do cache em `raw-cache/`.
+Seu SHA-256 é
+`3dbf404d490976d43a777886cbbe8ebd7a13193ba81b68c73f315cd74a22ba6e`,
+igual ao artefato `pending` do GitHub. A recuperação do state usa tamanho
+e mtime dessas 325 entradas, sem alterar as demais. O `lastRun` registra
+a data da recuperação. Foram conferidos no bucket os 325 pares de
+Parquet e provenance, incluindo os 260 uploads registrados no log.
+Release, DOI e disparo do viz exigem uma decisão operacional separada.
+
 ## Proveniência retroativa — provenance de partição já publicada
 
 Em 19/11/2026, 1.135 partições SIA-PA publicadas não tinham
