@@ -1,1 +1,5682 @@
-{"pending":[]}
+{
+  "detectedAt": "2026-08-17T07:05:46.851Z",
+  "latestCompetencia": "2026-06",
+  "pending": [
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 4618831,
+      "month": 7,
+      "uf": "AC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAC2507.dbc",
+          "ftpSize": 4618831,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 4647678,
+      "month": 8,
+      "uf": "AC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAC2508.dbc",
+          "ftpSize": 4647678,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 4436745,
+      "month": 9,
+      "uf": "AC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAC2509.dbc",
+          "ftpSize": 4436745,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 4757923,
+      "month": 10,
+      "uf": "AC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAC2510.dbc",
+          "ftpSize": 4757923,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 4406960,
+      "month": 11,
+      "uf": "AC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAC2511.dbc",
+          "ftpSize": 4406960,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 5016184,
+      "month": 12,
+      "uf": "AC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAC2512.dbc",
+          "ftpSize": 5016184,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 4308817,
+      "month": 1,
+      "uf": "AC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAC2601.dbc",
+          "ftpSize": 4308817,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 4562319,
+      "month": 2,
+      "uf": "AC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAC2602.dbc",
+          "ftpSize": 4562319,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 4695643,
+      "month": 3,
+      "uf": "AC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAC2603.dbc",
+          "ftpSize": 4695643,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 4943773,
+      "month": 4,
+      "uf": "AC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAC2604.dbc",
+          "ftpSize": 4943773,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 4882205,
+      "month": 5,
+      "uf": "AC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAC2605.dbc",
+          "ftpSize": 4882205,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 4879161,
+      "month": 6,
+      "uf": "AC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAC2606.dbc",
+          "ftpSize": 4879161,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 31574884,
+      "month": 7,
+      "uf": "AL",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAL2507.dbc",
+          "ftpSize": 31574884,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 32541495,
+      "month": 8,
+      "uf": "AL",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAL2508.dbc",
+          "ftpSize": 32541495,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 28506818,
+      "month": 9,
+      "uf": "AL",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAL2509.dbc",
+          "ftpSize": 28506818,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 31484632,
+      "month": 10,
+      "uf": "AL",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAL2510.dbc",
+          "ftpSize": 31484632,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 27317852,
+      "month": 11,
+      "uf": "AL",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAL2511.dbc",
+          "ftpSize": 27317852,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 28071803,
+      "month": 12,
+      "uf": "AL",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAL2512.dbc",
+          "ftpSize": 28071803,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 25549658,
+      "month": 1,
+      "uf": "AL",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAL2601.dbc",
+          "ftpSize": 25549658,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 30142968,
+      "month": 2,
+      "uf": "AL",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAL2602.dbc",
+          "ftpSize": 30142968,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 29983800,
+      "month": 3,
+      "uf": "AL",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAL2603.dbc",
+          "ftpSize": 29983800,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 29886092,
+      "month": 4,
+      "uf": "AL",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAL2604.dbc",
+          "ftpSize": 29886092,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 26418660,
+      "month": 5,
+      "uf": "AL",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAL2605.dbc",
+          "ftpSize": 26418660,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 26932006,
+      "month": 6,
+      "uf": "AL",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAL2606.dbc",
+          "ftpSize": 26932006,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 36114291,
+      "month": 7,
+      "uf": "AM",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAM2507.dbc",
+          "ftpSize": 36114291,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 38137852,
+      "month": 8,
+      "uf": "AM",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAM2508.dbc",
+          "ftpSize": 38137852,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 31363761,
+      "month": 9,
+      "uf": "AM",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAM2509.dbc",
+          "ftpSize": 31363761,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 34602804,
+      "month": 10,
+      "uf": "AM",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAM2510.dbc",
+          "ftpSize": 34602804,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 31617105,
+      "month": 11,
+      "uf": "AM",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAM2511.dbc",
+          "ftpSize": 31617105,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 35341254,
+      "month": 12,
+      "uf": "AM",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAM2512.dbc",
+          "ftpSize": 35341254,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 30081013,
+      "month": 1,
+      "uf": "AM",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAM2601.dbc",
+          "ftpSize": 30081013,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 35661953,
+      "month": 2,
+      "uf": "AM",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAM2602.dbc",
+          "ftpSize": 35661953,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 34217051,
+      "month": 3,
+      "uf": "AM",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAM2603.dbc",
+          "ftpSize": 34217051,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 32749122,
+      "month": 4,
+      "uf": "AM",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAM2604.dbc",
+          "ftpSize": 32749122,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 27874436,
+      "month": 5,
+      "uf": "AM",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAM2605.dbc",
+          "ftpSize": 27874436,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 27286999,
+      "month": 6,
+      "uf": "AM",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAM2606.dbc",
+          "ftpSize": 27286999,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 2514740,
+      "month": 7,
+      "uf": "AP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAP2507.dbc",
+          "ftpSize": 2514740,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 2875765,
+      "month": 8,
+      "uf": "AP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAP2508.dbc",
+          "ftpSize": 2875765,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 2509430,
+      "month": 9,
+      "uf": "AP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAP2509.dbc",
+          "ftpSize": 2509430,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 3222332,
+      "month": 10,
+      "uf": "AP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAP2510.dbc",
+          "ftpSize": 3222332,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 3450807,
+      "month": 11,
+      "uf": "AP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAP2511.dbc",
+          "ftpSize": 3450807,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 3204800,
+      "month": 12,
+      "uf": "AP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAP2512.dbc",
+          "ftpSize": 3204800,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 2978102,
+      "month": 1,
+      "uf": "AP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAP2601.dbc",
+          "ftpSize": 2978102,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 3228380,
+      "month": 2,
+      "uf": "AP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAP2602.dbc",
+          "ftpSize": 3228380,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 3356613,
+      "month": 3,
+      "uf": "AP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAP2603.dbc",
+          "ftpSize": 3356613,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 3142662,
+      "month": 4,
+      "uf": "AP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAP2604.dbc",
+          "ftpSize": 3142662,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 2934545,
+      "month": 5,
+      "uf": "AP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAP2605.dbc",
+          "ftpSize": 2934545,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 2696625,
+      "month": 6,
+      "uf": "AP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAAP2606.dbc",
+          "ftpSize": 2696625,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 100574282,
+      "month": 7,
+      "uf": "BA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PABA2507.dbc",
+          "ftpSize": 100574282,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 113584778,
+      "month": 8,
+      "uf": "BA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PABA2508.dbc",
+          "ftpSize": 113584778,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 105781133,
+      "month": 9,
+      "uf": "BA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PABA2509.dbc",
+          "ftpSize": 105781133,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 113044895,
+      "month": 10,
+      "uf": "BA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PABA2510.dbc",
+          "ftpSize": 113044895,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 104598008,
+      "month": 11,
+      "uf": "BA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PABA2511.dbc",
+          "ftpSize": 104598008,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 108203302,
+      "month": 12,
+      "uf": "BA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PABA2512.dbc",
+          "ftpSize": 108203302,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 91725296,
+      "month": 1,
+      "uf": "BA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PABA2601.dbc",
+          "ftpSize": 91725296,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 104934398,
+      "month": 2,
+      "uf": "BA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PABA2602.dbc",
+          "ftpSize": 104934398,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 110704169,
+      "month": 3,
+      "uf": "BA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PABA2603.dbc",
+          "ftpSize": 110704169,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 103967125,
+      "month": 4,
+      "uf": "BA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PABA2604.dbc",
+          "ftpSize": 103967125,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 100263761,
+      "month": 5,
+      "uf": "BA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PABA2605.dbc",
+          "ftpSize": 100263761,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 67444129,
+      "month": 6,
+      "uf": "BA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PABA2606.dbc",
+          "ftpSize": 67444129,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 73260142,
+      "month": 7,
+      "uf": "CE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PACE2507.dbc",
+          "ftpSize": 73260142,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 86259782,
+      "month": 8,
+      "uf": "CE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PACE2508.dbc",
+          "ftpSize": 86259782,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 80161518,
+      "month": 9,
+      "uf": "CE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PACE2509.dbc",
+          "ftpSize": 80161518,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 80768926,
+      "month": 10,
+      "uf": "CE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PACE2510.dbc",
+          "ftpSize": 80768926,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 78150712,
+      "month": 11,
+      "uf": "CE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PACE2511.dbc",
+          "ftpSize": 78150712,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 84175262,
+      "month": 12,
+      "uf": "CE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PACE2512.dbc",
+          "ftpSize": 84175262,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 73243865,
+      "month": 1,
+      "uf": "CE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PACE2601.dbc",
+          "ftpSize": 73243865,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 83671496,
+      "month": 2,
+      "uf": "CE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PACE2602.dbc",
+          "ftpSize": 83671496,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 88256210,
+      "month": 3,
+      "uf": "CE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PACE2603.dbc",
+          "ftpSize": 88256210,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 83827722,
+      "month": 4,
+      "uf": "CE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PACE2604.dbc",
+          "ftpSize": 83827722,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 89024320,
+      "month": 5,
+      "uf": "CE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PACE2605.dbc",
+          "ftpSize": 89024320,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 83569720,
+      "month": 6,
+      "uf": "CE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PACE2606.dbc",
+          "ftpSize": 83569720,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 16313218,
+      "month": 7,
+      "uf": "DF",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PADF2507.dbc",
+          "ftpSize": 16313218,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 16786664,
+      "month": 8,
+      "uf": "DF",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PADF2508.dbc",
+          "ftpSize": 16786664,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 16553391,
+      "month": 9,
+      "uf": "DF",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PADF2509.dbc",
+          "ftpSize": 16553391,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 17716796,
+      "month": 10,
+      "uf": "DF",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PADF2510.dbc",
+          "ftpSize": 17716796,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 15563779,
+      "month": 11,
+      "uf": "DF",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PADF2511.dbc",
+          "ftpSize": 15563779,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 15523884,
+      "month": 12,
+      "uf": "DF",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PADF2512.dbc",
+          "ftpSize": 15523884,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 13989862,
+      "month": 1,
+      "uf": "DF",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PADF2601.dbc",
+          "ftpSize": 13989862,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 15707574,
+      "month": 2,
+      "uf": "DF",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PADF2602.dbc",
+          "ftpSize": 15707574,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 17432135,
+      "month": 3,
+      "uf": "DF",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PADF2603.dbc",
+          "ftpSize": 17432135,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 15663496,
+      "month": 4,
+      "uf": "DF",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PADF2604.dbc",
+          "ftpSize": 15663496,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 16048181,
+      "month": 5,
+      "uf": "DF",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PADF2605.dbc",
+          "ftpSize": 16048181,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 14959397,
+      "month": 6,
+      "uf": "DF",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PADF2606.dbc",
+          "ftpSize": 14959397,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 39947881,
+      "month": 7,
+      "uf": "ES",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAES2507.dbc",
+          "ftpSize": 39947881,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 44639015,
+      "month": 8,
+      "uf": "ES",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAES2508.dbc",
+          "ftpSize": 44639015,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 38587813,
+      "month": 9,
+      "uf": "ES",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAES2509.dbc",
+          "ftpSize": 38587813,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 43850075,
+      "month": 10,
+      "uf": "ES",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAES2510.dbc",
+          "ftpSize": 43850075,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 37430822,
+      "month": 11,
+      "uf": "ES",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAES2511.dbc",
+          "ftpSize": 37430822,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 40480747,
+      "month": 12,
+      "uf": "ES",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAES2512.dbc",
+          "ftpSize": 40480747,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 32787929,
+      "month": 1,
+      "uf": "ES",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAES2601.dbc",
+          "ftpSize": 32787929,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 38665084,
+      "month": 2,
+      "uf": "ES",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAES2602.dbc",
+          "ftpSize": 38665084,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 41917452,
+      "month": 3,
+      "uf": "ES",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAES2603.dbc",
+          "ftpSize": 41917452,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 38392101,
+      "month": 4,
+      "uf": "ES",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAES2604.dbc",
+          "ftpSize": 38392101,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 36062889,
+      "month": 5,
+      "uf": "ES",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAES2605.dbc",
+          "ftpSize": 36062889,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 35536606,
+      "month": 6,
+      "uf": "ES",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAES2606.dbc",
+          "ftpSize": 35536606,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 54306168,
+      "month": 7,
+      "uf": "GO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAGO2507.dbc",
+          "ftpSize": 54306168,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 65234318,
+      "month": 8,
+      "uf": "GO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAGO2508.dbc",
+          "ftpSize": 65234318,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 62375669,
+      "month": 9,
+      "uf": "GO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAGO2509.dbc",
+          "ftpSize": 62375669,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 62596900,
+      "month": 10,
+      "uf": "GO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAGO2510.dbc",
+          "ftpSize": 62596900,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 56935742,
+      "month": 11,
+      "uf": "GO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAGO2511.dbc",
+          "ftpSize": 56935742,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 62894969,
+      "month": 12,
+      "uf": "GO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAGO2512.dbc",
+          "ftpSize": 62894969,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 59140735,
+      "month": 1,
+      "uf": "GO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAGO2601.dbc",
+          "ftpSize": 59140735,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 68250116,
+      "month": 2,
+      "uf": "GO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAGO2602.dbc",
+          "ftpSize": 68250116,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 69325208,
+      "month": 3,
+      "uf": "GO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAGO2603.dbc",
+          "ftpSize": 69325208,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 68569977,
+      "month": 4,
+      "uf": "GO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAGO2604.dbc",
+          "ftpSize": 68569977,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 70479104,
+      "month": 5,
+      "uf": "GO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAGO2605.dbc",
+          "ftpSize": 70479104,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 60316254,
+      "month": 6,
+      "uf": "GO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAGO2606.dbc",
+          "ftpSize": 60316254,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 40488017,
+      "month": 7,
+      "uf": "MA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMA2507.dbc",
+          "ftpSize": 40488017,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 44034297,
+      "month": 8,
+      "uf": "MA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMA2508.dbc",
+          "ftpSize": 44034297,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 41723530,
+      "month": 9,
+      "uf": "MA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMA2509.dbc",
+          "ftpSize": 41723530,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 43074233,
+      "month": 10,
+      "uf": "MA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMA2510.dbc",
+          "ftpSize": 43074233,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 39176204,
+      "month": 11,
+      "uf": "MA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMA2511.dbc",
+          "ftpSize": 39176204,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 37205421,
+      "month": 12,
+      "uf": "MA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMA2512.dbc",
+          "ftpSize": 37205421,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 39097081,
+      "month": 1,
+      "uf": "MA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMA2601.dbc",
+          "ftpSize": 39097081,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 41939712,
+      "month": 2,
+      "uf": "MA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMA2602.dbc",
+          "ftpSize": 41939712,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 44476684,
+      "month": 3,
+      "uf": "MA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMA2603.dbc",
+          "ftpSize": 44476684,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 43296433,
+      "month": 4,
+      "uf": "MA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMA2604.dbc",
+          "ftpSize": 43296433,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 41172744,
+      "month": 5,
+      "uf": "MA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMA2605.dbc",
+          "ftpSize": 41172744,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 34521624,
+      "month": 6,
+      "uf": "MA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMA2606.dbc",
+          "ftpSize": 34521624,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 338880952,
+      "month": 7,
+      "uf": "MG",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2507a.dbc",
+          "ftpSize": 140266458,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2507b.dbc",
+          "ftpSize": 167887428,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2507c.dbc",
+          "ftpSize": 30727066,
+          "suffix": "c"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 387313308,
+      "month": 8,
+      "uf": "MG",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2508a.dbc",
+          "ftpSize": 167867402,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2508b.dbc",
+          "ftpSize": 205490133,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2508c.dbc",
+          "ftpSize": 13955773,
+          "suffix": "c"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 346326987,
+      "month": 9,
+      "uf": "MG",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2509a.dbc",
+          "ftpSize": 139912221,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2509b.dbc",
+          "ftpSize": 168135806,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2509c.dbc",
+          "ftpSize": 38278960,
+          "suffix": "c"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 356296437,
+      "month": 10,
+      "uf": "MG",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2510a.dbc",
+          "ftpSize": 136358794,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2510b.dbc",
+          "ftpSize": 170021413,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2510c.dbc",
+          "ftpSize": 49916230,
+          "suffix": "c"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 327034869,
+      "month": 11,
+      "uf": "MG",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2511a.dbc",
+          "ftpSize": 141788258,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2511b.dbc",
+          "ftpSize": 178277444,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2511c.dbc",
+          "ftpSize": 6969167,
+          "suffix": "c"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 350638507,
+      "month": 12,
+      "uf": "MG",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2512a.dbc",
+          "ftpSize": 164783417,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2512b.dbc",
+          "ftpSize": 185855090,
+          "suffix": "b"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 310071389,
+      "month": 1,
+      "uf": "MG",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2601a.dbc",
+          "ftpSize": 143231082,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2601b.dbc",
+          "ftpSize": 166840307,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 342138332,
+      "month": 2,
+      "uf": "MG",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2602a.dbc",
+          "ftpSize": 169235313,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2602b.dbc",
+          "ftpSize": 172903019,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 372590585,
+      "month": 3,
+      "uf": "MG",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2603a.dbc",
+          "ftpSize": 141924581,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2603b.dbc",
+          "ftpSize": 167998451,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2603c.dbc",
+          "ftpSize": 62667553,
+          "suffix": "c"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 352260742,
+      "month": 4,
+      "uf": "MG",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2604a.dbc",
+          "ftpSize": 140880904,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2604b.dbc",
+          "ftpSize": 171864143,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2604c.dbc",
+          "ftpSize": 39515695,
+          "suffix": "c"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 352600681,
+      "month": 5,
+      "uf": "MG",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2605a.dbc",
+          "ftpSize": 136405122,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2605b.dbc",
+          "ftpSize": 167373576,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2605c.dbc",
+          "ftpSize": 48821983,
+          "suffix": "c"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 314148120,
+      "month": 6,
+      "uf": "MG",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2606a.dbc",
+          "ftpSize": 143599441,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMG2606b.dbc",
+          "ftpSize": 170548679,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 27302790,
+      "month": 7,
+      "uf": "MS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMS2507.dbc",
+          "ftpSize": 27302790,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 30003510,
+      "month": 8,
+      "uf": "MS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMS2508.dbc",
+          "ftpSize": 30003510,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 30599145,
+      "month": 9,
+      "uf": "MS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMS2509.dbc",
+          "ftpSize": 30599145,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 35751511,
+      "month": 10,
+      "uf": "MS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMS2510.dbc",
+          "ftpSize": 35751511,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 33636239,
+      "month": 11,
+      "uf": "MS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMS2511.dbc",
+          "ftpSize": 33636239,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 35979598,
+      "month": 12,
+      "uf": "MS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMS2512.dbc",
+          "ftpSize": 35979598,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 34531742,
+      "month": 1,
+      "uf": "MS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMS2601.dbc",
+          "ftpSize": 34531742,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 36911957,
+      "month": 2,
+      "uf": "MS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMS2602.dbc",
+          "ftpSize": 36911957,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 41238539,
+      "month": 3,
+      "uf": "MS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMS2603.dbc",
+          "ftpSize": 41238539,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 41798808,
+      "month": 4,
+      "uf": "MS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMS2604.dbc",
+          "ftpSize": 41798808,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 41429959,
+      "month": 5,
+      "uf": "MS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMS2605.dbc",
+          "ftpSize": 41429959,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 40053019,
+      "month": 6,
+      "uf": "MS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMS2606.dbc",
+          "ftpSize": 40053019,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 64396729,
+      "month": 7,
+      "uf": "MT",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMT2507.dbc",
+          "ftpSize": 64396729,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 72654237,
+      "month": 8,
+      "uf": "MT",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMT2508.dbc",
+          "ftpSize": 72654237,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 70056571,
+      "month": 9,
+      "uf": "MT",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMT2509.dbc",
+          "ftpSize": 70056571,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 70035101,
+      "month": 10,
+      "uf": "MT",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMT2510.dbc",
+          "ftpSize": 70035101,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 60370701,
+      "month": 11,
+      "uf": "MT",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMT2511.dbc",
+          "ftpSize": 60370701,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 68293405,
+      "month": 12,
+      "uf": "MT",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMT2512.dbc",
+          "ftpSize": 68293405,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 61028827,
+      "month": 1,
+      "uf": "MT",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMT2601.dbc",
+          "ftpSize": 61028827,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 68842772,
+      "month": 2,
+      "uf": "MT",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMT2602.dbc",
+          "ftpSize": 68842772,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 74462064,
+      "month": 3,
+      "uf": "MT",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMT2603.dbc",
+          "ftpSize": 74462064,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 69427384,
+      "month": 4,
+      "uf": "MT",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMT2604.dbc",
+          "ftpSize": 69427384,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 59512609,
+      "month": 5,
+      "uf": "MT",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMT2605.dbc",
+          "ftpSize": 59512609,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 35212005,
+      "month": 6,
+      "uf": "MT",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAMT2606.dbc",
+          "ftpSize": 35212005,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 56462745,
+      "month": 7,
+      "uf": "PA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPA2507.dbc",
+          "ftpSize": 56462745,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 63988180,
+      "month": 8,
+      "uf": "PA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPA2508.dbc",
+          "ftpSize": 63988180,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 57165356,
+      "month": 9,
+      "uf": "PA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPA2509.dbc",
+          "ftpSize": 57165356,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 57914242,
+      "month": 10,
+      "uf": "PA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPA2510.dbc",
+          "ftpSize": 57914242,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 57879770,
+      "month": 11,
+      "uf": "PA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPA2511.dbc",
+          "ftpSize": 57879770,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 59807161,
+      "month": 12,
+      "uf": "PA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPA2512.dbc",
+          "ftpSize": 59807161,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 54417689,
+      "month": 1,
+      "uf": "PA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPA2601.dbc",
+          "ftpSize": 54417689,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 62761664,
+      "month": 2,
+      "uf": "PA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPA2602.dbc",
+          "ftpSize": 62761664,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 66227549,
+      "month": 3,
+      "uf": "PA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPA2603.dbc",
+          "ftpSize": 66227549,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 62565546,
+      "month": 4,
+      "uf": "PA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPA2604.dbc",
+          "ftpSize": 62565546,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 59214800,
+      "month": 5,
+      "uf": "PA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPA2605.dbc",
+          "ftpSize": 59214800,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 32266217,
+      "month": 6,
+      "uf": "PA",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPA2606.dbc",
+          "ftpSize": 32266217,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 49934957,
+      "month": 7,
+      "uf": "PB",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPB2507.dbc",
+          "ftpSize": 49934957,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 55283067,
+      "month": 8,
+      "uf": "PB",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPB2508.dbc",
+          "ftpSize": 55283067,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 50371322,
+      "month": 9,
+      "uf": "PB",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPB2509.dbc",
+          "ftpSize": 50371322,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 56205452,
+      "month": 10,
+      "uf": "PB",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPB2510.dbc",
+          "ftpSize": 56205452,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 55104423,
+      "month": 11,
+      "uf": "PB",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPB2511.dbc",
+          "ftpSize": 55104423,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 56375238,
+      "month": 12,
+      "uf": "PB",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPB2512.dbc",
+          "ftpSize": 56375238,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 51801505,
+      "month": 1,
+      "uf": "PB",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPB2601.dbc",
+          "ftpSize": 51801505,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 63044739,
+      "month": 2,
+      "uf": "PB",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPB2602.dbc",
+          "ftpSize": 63044739,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 70581133,
+      "month": 3,
+      "uf": "PB",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPB2603.dbc",
+          "ftpSize": 70581133,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 77235496,
+      "month": 4,
+      "uf": "PB",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPB2604.dbc",
+          "ftpSize": 77235496,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 74538064,
+      "month": 5,
+      "uf": "PB",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPB2605.dbc",
+          "ftpSize": 74538064,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 63403545,
+      "month": 6,
+      "uf": "PB",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPB2606.dbc",
+          "ftpSize": 63403545,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 69650954,
+      "month": 7,
+      "uf": "PE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPE2507.dbc",
+          "ftpSize": 69650954,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 77810947,
+      "month": 8,
+      "uf": "PE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPE2508.dbc",
+          "ftpSize": 77810947,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 72379614,
+      "month": 9,
+      "uf": "PE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPE2509.dbc",
+          "ftpSize": 72379614,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 79839203,
+      "month": 10,
+      "uf": "PE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPE2510.dbc",
+          "ftpSize": 79839203,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 70074706,
+      "month": 11,
+      "uf": "PE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPE2511.dbc",
+          "ftpSize": 70074706,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 76604487,
+      "month": 12,
+      "uf": "PE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPE2512.dbc",
+          "ftpSize": 76604487,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 65266768,
+      "month": 1,
+      "uf": "PE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPE2601.dbc",
+          "ftpSize": 65266768,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 70966464,
+      "month": 2,
+      "uf": "PE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPE2602.dbc",
+          "ftpSize": 70966464,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 78492452,
+      "month": 3,
+      "uf": "PE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPE2603.dbc",
+          "ftpSize": 78492452,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 75645626,
+      "month": 4,
+      "uf": "PE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPE2604.dbc",
+          "ftpSize": 75645626,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 72635646,
+      "month": 5,
+      "uf": "PE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPE2605.dbc",
+          "ftpSize": 72635646,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 70533381,
+      "month": 6,
+      "uf": "PE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPE2606.dbc",
+          "ftpSize": 70533381,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 10401750,
+      "month": 7,
+      "uf": "PI",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPI2507.dbc",
+          "ftpSize": 10401750,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 12659298,
+      "month": 8,
+      "uf": "PI",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPI2508.dbc",
+          "ftpSize": 12659298,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 11155344,
+      "month": 9,
+      "uf": "PI",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPI2509.dbc",
+          "ftpSize": 11155344,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 12593224,
+      "month": 10,
+      "uf": "PI",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPI2510.dbc",
+          "ftpSize": 12593224,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 11473641,
+      "month": 11,
+      "uf": "PI",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPI2511.dbc",
+          "ftpSize": 11473641,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 11918778,
+      "month": 12,
+      "uf": "PI",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPI2512.dbc",
+          "ftpSize": 11918778,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 10777715,
+      "month": 1,
+      "uf": "PI",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPI2601.dbc",
+          "ftpSize": 10777715,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 12766407,
+      "month": 2,
+      "uf": "PI",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPI2602.dbc",
+          "ftpSize": 12766407,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 14084983,
+      "month": 3,
+      "uf": "PI",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPI2603.dbc",
+          "ftpSize": 14084983,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 13629902,
+      "month": 4,
+      "uf": "PI",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPI2604.dbc",
+          "ftpSize": 13629902,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 14336114,
+      "month": 5,
+      "uf": "PI",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPI2605.dbc",
+          "ftpSize": 14336114,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 13025674,
+      "month": 6,
+      "uf": "PI",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPI2606.dbc",
+          "ftpSize": 13025674,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 142733283,
+      "month": 7,
+      "uf": "PR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2507.dbc",
+          "ftpSize": 142733283,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 156582886,
+      "month": 8,
+      "uf": "PR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2508.dbc",
+          "ftpSize": 156582886,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 152463028,
+      "month": 9,
+      "uf": "PR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2509.dbc",
+          "ftpSize": 152463028,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 160901379,
+      "month": 10,
+      "uf": "PR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2510.dbc",
+          "ftpSize": 160901379,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 145649578,
+      "month": 11,
+      "uf": "PR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2511.dbc",
+          "ftpSize": 145649578,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 147410662,
+      "month": 12,
+      "uf": "PR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2512.dbc",
+          "ftpSize": 147410662,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 127066787,
+      "month": 1,
+      "uf": "PR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2601.dbc",
+          "ftpSize": 127066787,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 155228127,
+      "month": 2,
+      "uf": "PR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2602.dbc",
+          "ftpSize": 155228127,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 162090428,
+      "month": 3,
+      "uf": "PR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2603a.dbc",
+          "ftpSize": 154494512,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2603b.dbc",
+          "ftpSize": 7595916,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 156331768,
+      "month": 4,
+      "uf": "PR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2604a.dbc",
+          "ftpSize": 156035461,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2604b.dbc",
+          "ftpSize": 296307,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 156687382,
+      "month": 5,
+      "uf": "PR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2605a.dbc",
+          "ftpSize": 156381460,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2605b.dbc",
+          "ftpSize": 305922,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 141968985,
+      "month": 6,
+      "uf": "PR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PAPR2606.dbc",
+          "ftpSize": 141968985,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 311258007,
+      "month": 7,
+      "uf": "RJ",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2507a.dbc",
+          "ftpSize": 155863968,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2507b.dbc",
+          "ftpSize": 18455071,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2507c.dbc",
+          "ftpSize": 136938968,
+          "suffix": "c"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 335165853,
+      "month": 8,
+      "uf": "RJ",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2508a.dbc",
+          "ftpSize": 183156680,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2508b.dbc",
+          "ftpSize": 6631349,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2508c.dbc",
+          "ftpSize": 145377824,
+          "suffix": "c"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 317158109,
+      "month": 9,
+      "uf": "RJ",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2509a.dbc",
+          "ftpSize": 159269267,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2509b.dbc",
+          "ftpSize": 18918914,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2509c.dbc",
+          "ftpSize": 138969928,
+          "suffix": "c"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 315223381,
+      "month": 10,
+      "uf": "RJ",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2510a.dbc",
+          "ftpSize": 165309854,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2510b.dbc",
+          "ftpSize": 11959439,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2510c.dbc",
+          "ftpSize": 137954088,
+          "suffix": "c"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 293562114,
+      "month": 11,
+      "uf": "RJ",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2511a.dbc",
+          "ftpSize": 165752754,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2511b.dbc",
+          "ftpSize": 127809360,
+          "suffix": "b"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 317078591,
+      "month": 12,
+      "uf": "RJ",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2512a.dbc",
+          "ftpSize": 174262544,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2512b.dbc",
+          "ftpSize": 142816047,
+          "suffix": "b"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 238901370,
+      "month": 1,
+      "uf": "RJ",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2601a.dbc",
+          "ftpSize": 130924116,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2601b.dbc",
+          "ftpSize": 107977254,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 273588991,
+      "month": 2,
+      "uf": "RJ",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2602a.dbc",
+          "ftpSize": 146110491,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2602b.dbc",
+          "ftpSize": 127478500,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 323236772,
+      "month": 3,
+      "uf": "RJ",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2603a.dbc",
+          "ftpSize": 161322576,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2603b.dbc",
+          "ftpSize": 18791893,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2603c.dbc",
+          "ftpSize": 143122303,
+          "suffix": "c"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 311592331,
+      "month": 4,
+      "uf": "RJ",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2604a.dbc",
+          "ftpSize": 164883700,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2604b.dbc",
+          "ftpSize": 9428365,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2604c.dbc",
+          "ftpSize": 137280266,
+          "suffix": "c"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 263642106,
+      "month": 5,
+      "uf": "RJ",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2605a.dbc",
+          "ftpSize": 136390151,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2605b.dbc",
+          "ftpSize": 127251955,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 260660047,
+      "month": 6,
+      "uf": "RJ",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2606a.dbc",
+          "ftpSize": 140316358,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARJ2606b.dbc",
+          "ftpSize": 120343689,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 23924186,
+      "month": 7,
+      "uf": "RN",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARN2507.dbc",
+          "ftpSize": 23924186,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 33618860,
+      "month": 8,
+      "uf": "RN",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARN2508.dbc",
+          "ftpSize": 33618860,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 26779047,
+      "month": 9,
+      "uf": "RN",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARN2509.dbc",
+          "ftpSize": 26779047,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 28558409,
+      "month": 10,
+      "uf": "RN",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARN2510.dbc",
+          "ftpSize": 28558409,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 27707159,
+      "month": 11,
+      "uf": "RN",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARN2511.dbc",
+          "ftpSize": 27707159,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 32834772,
+      "month": 12,
+      "uf": "RN",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARN2512.dbc",
+          "ftpSize": 32834772,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 23630865,
+      "month": 1,
+      "uf": "RN",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARN2601.dbc",
+          "ftpSize": 23630865,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 27591328,
+      "month": 2,
+      "uf": "RN",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARN2602.dbc",
+          "ftpSize": 27591328,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 30534751,
+      "month": 3,
+      "uf": "RN",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARN2603.dbc",
+          "ftpSize": 30534751,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 28694726,
+      "month": 4,
+      "uf": "RN",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARN2604.dbc",
+          "ftpSize": 28694726,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 28512974,
+      "month": 5,
+      "uf": "RN",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARN2605.dbc",
+          "ftpSize": 28512974,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 21627866,
+      "month": 6,
+      "uf": "RN",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARN2606.dbc",
+          "ftpSize": 21627866,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 19273469,
+      "month": 7,
+      "uf": "RO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARO2507.dbc",
+          "ftpSize": 19273469,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 21569754,
+      "month": 8,
+      "uf": "RO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARO2508.dbc",
+          "ftpSize": 21569754,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 19100976,
+      "month": 9,
+      "uf": "RO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARO2509.dbc",
+          "ftpSize": 19100976,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 22044981,
+      "month": 10,
+      "uf": "RO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARO2510.dbc",
+          "ftpSize": 22044981,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 19184941,
+      "month": 11,
+      "uf": "RO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARO2511.dbc",
+          "ftpSize": 19184941,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 19825255,
+      "month": 12,
+      "uf": "RO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARO2512.dbc",
+          "ftpSize": 19825255,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 18765716,
+      "month": 1,
+      "uf": "RO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARO2601.dbc",
+          "ftpSize": 18765716,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 21948978,
+      "month": 2,
+      "uf": "RO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARO2602.dbc",
+          "ftpSize": 21948978,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 23788243,
+      "month": 3,
+      "uf": "RO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARO2603.dbc",
+          "ftpSize": 23788243,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 22461618,
+      "month": 4,
+      "uf": "RO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARO2604.dbc",
+          "ftpSize": 22461618,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 20888668,
+      "month": 5,
+      "uf": "RO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARO2605.dbc",
+          "ftpSize": 20888668,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 13953503,
+      "month": 6,
+      "uf": "RO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARO2606.dbc",
+          "ftpSize": 13953503,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 738464,
+      "month": 7,
+      "uf": "RR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARR2507.dbc",
+          "ftpSize": 738464,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 903347,
+      "month": 8,
+      "uf": "RR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARR2508.dbc",
+          "ftpSize": 903347,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 758299,
+      "month": 9,
+      "uf": "RR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARR2509.dbc",
+          "ftpSize": 758299,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 812529,
+      "month": 10,
+      "uf": "RR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARR2510.dbc",
+          "ftpSize": 812529,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 836567,
+      "month": 11,
+      "uf": "RR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARR2511.dbc",
+          "ftpSize": 836567,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 893105,
+      "month": 12,
+      "uf": "RR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARR2512.dbc",
+          "ftpSize": 893105,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 697645,
+      "month": 1,
+      "uf": "RR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARR2601.dbc",
+          "ftpSize": 697645,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 906550,
+      "month": 2,
+      "uf": "RR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARR2602.dbc",
+          "ftpSize": 906550,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 928805,
+      "month": 3,
+      "uf": "RR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARR2603.dbc",
+          "ftpSize": 928805,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 905074,
+      "month": 4,
+      "uf": "RR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARR2604.dbc",
+          "ftpSize": 905074,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 867195,
+      "month": 5,
+      "uf": "RR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARR2605.dbc",
+          "ftpSize": 867195,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 842254,
+      "month": 6,
+      "uf": "RR",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARR2606.dbc",
+          "ftpSize": 842254,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 153559334,
+      "month": 7,
+      "uf": "RS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2507.dbc",
+          "ftpSize": 153559334,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 191187173,
+      "month": 8,
+      "uf": "RS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2508.dbc",
+          "ftpSize": 191187173,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 169817332,
+      "month": 9,
+      "uf": "RS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2509a.dbc",
+          "ftpSize": 165403843,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2509b.dbc",
+          "ftpSize": 4413489,
+          "suffix": "b"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 175210216,
+      "month": 10,
+      "uf": "RS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2510a.dbc",
+          "ftpSize": 164421995,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2510b.dbc",
+          "ftpSize": 10788221,
+          "suffix": "b"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 164943935,
+      "month": 11,
+      "uf": "RS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2511.dbc",
+          "ftpSize": 164943935,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 196175544,
+      "month": 12,
+      "uf": "RS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2512.dbc",
+          "ftpSize": 196175544,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 160414389,
+      "month": 1,
+      "uf": "RS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2601.dbc",
+          "ftpSize": 160414389,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 181251114,
+      "month": 2,
+      "uf": "RS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2602.dbc",
+          "ftpSize": 181251114,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 166791397,
+      "month": 3,
+      "uf": "RS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2603a.dbc",
+          "ftpSize": 157571982,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2603b.dbc",
+          "ftpSize": 9219415,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 173603467,
+      "month": 4,
+      "uf": "RS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2604a.dbc",
+          "ftpSize": 168351856,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2604b.dbc",
+          "ftpSize": 5251611,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 169601185,
+      "month": 5,
+      "uf": "RS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2605a.dbc",
+          "ftpSize": 167054466,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2605b.dbc",
+          "ftpSize": 2546719,
+          "suffix": "b"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 153881472,
+      "month": 6,
+      "uf": "RS",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PARS2606.dbc",
+          "ftpSize": 153881472,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 128915129,
+      "month": 7,
+      "uf": "SC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASC2507.dbc",
+          "ftpSize": 128915129,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 140903901,
+      "month": 8,
+      "uf": "SC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASC2508.dbc",
+          "ftpSize": 140903901,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 135377827,
+      "month": 9,
+      "uf": "SC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASC2509.dbc",
+          "ftpSize": 135377827,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 145225984,
+      "month": 10,
+      "uf": "SC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASC2510.dbc",
+          "ftpSize": 145225984,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 130891962,
+      "month": 11,
+      "uf": "SC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASC2511.dbc",
+          "ftpSize": 130891962,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 130142235,
+      "month": 12,
+      "uf": "SC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASC2512.dbc",
+          "ftpSize": 130142235,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 110670756,
+      "month": 1,
+      "uf": "SC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASC2601.dbc",
+          "ftpSize": 110670756,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 141052972,
+      "month": 2,
+      "uf": "SC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASC2602.dbc",
+          "ftpSize": 141052972,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 154391796,
+      "month": 3,
+      "uf": "SC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASC2603.dbc",
+          "ftpSize": 154391796,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 152084870,
+      "month": 4,
+      "uf": "SC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASC2604.dbc",
+          "ftpSize": 152084870,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 146125419,
+      "month": 5,
+      "uf": "SC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASC2605.dbc",
+          "ftpSize": 146125419,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 125143762,
+      "month": 6,
+      "uf": "SC",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASC2606.dbc",
+          "ftpSize": 125143762,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 25830478,
+      "month": 7,
+      "uf": "SE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASE2507.dbc",
+          "ftpSize": 25830478,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 40991256,
+      "month": 8,
+      "uf": "SE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASE2508.dbc",
+          "ftpSize": 40991256,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 31987548,
+      "month": 9,
+      "uf": "SE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASE2509.dbc",
+          "ftpSize": 31987548,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 33223187,
+      "month": 10,
+      "uf": "SE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASE2510.dbc",
+          "ftpSize": 33223187,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 29659088,
+      "month": 11,
+      "uf": "SE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASE2511.dbc",
+          "ftpSize": 29659088,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 35259765,
+      "month": 12,
+      "uf": "SE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASE2512.dbc",
+          "ftpSize": 35259765,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 29860792,
+      "month": 1,
+      "uf": "SE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASE2601.dbc",
+          "ftpSize": 29860792,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 34492379,
+      "month": 2,
+      "uf": "SE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASE2602.dbc",
+          "ftpSize": 34492379,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 34850114,
+      "month": 3,
+      "uf": "SE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASE2603.dbc",
+          "ftpSize": 34850114,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 35477538,
+      "month": 4,
+      "uf": "SE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASE2604.dbc",
+          "ftpSize": 35477538,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 33832715,
+      "month": 5,
+      "uf": "SE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASE2605.dbc",
+          "ftpSize": 33832715,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 29148260,
+      "month": 6,
+      "uf": "SE",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASE2606.dbc",
+          "ftpSize": 29148260,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 473751237,
+      "month": 7,
+      "uf": "SP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2507a.dbc",
+          "ftpSize": 130787315,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2507b.dbc",
+          "ftpSize": 138488394,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2507c.dbc",
+          "ftpSize": 158558784,
+          "suffix": "c"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2507d.dbc",
+          "ftpSize": 45916744,
+          "suffix": "d"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 541384747,
+      "month": 8,
+      "uf": "SP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2508a.dbc",
+          "ftpSize": 125987123,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2508b.dbc",
+          "ftpSize": 148685010,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2508c.dbc",
+          "ftpSize": 172168004,
+          "suffix": "c"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2508d.dbc",
+          "ftpSize": 94544610,
+          "suffix": "d"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 536122473,
+      "month": 9,
+      "uf": "SP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2509a.dbc",
+          "ftpSize": 127231127,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2509b.dbc",
+          "ftpSize": 137819724,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2509c.dbc",
+          "ftpSize": 148895987,
+          "suffix": "c"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2509d.dbc",
+          "ftpSize": 122175635,
+          "suffix": "d"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 552930518,
+      "month": 10,
+      "uf": "SP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2510a.dbc",
+          "ftpSize": 125485013,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2510b.dbc",
+          "ftpSize": 138947313,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2510c.dbc",
+          "ftpSize": 149616672,
+          "suffix": "c"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2510d.dbc",
+          "ftpSize": 138881520,
+          "suffix": "d"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 499620100,
+      "month": 11,
+      "uf": "SP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2511a.dbc",
+          "ftpSize": 134583576,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2511b.dbc",
+          "ftpSize": 138980722,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2511c.dbc",
+          "ftpSize": 153828447,
+          "suffix": "c"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2511d.dbc",
+          "ftpSize": 72227355,
+          "suffix": "d"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 536077846,
+      "month": 12,
+      "uf": "SP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2512a.dbc",
+          "ftpSize": 134253066,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2512b.dbc",
+          "ftpSize": 153582119,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2512c.dbc",
+          "ftpSize": 184589258,
+          "suffix": "c"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2512d.dbc",
+          "ftpSize": 63653403,
+          "suffix": "d"
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 475478438,
+      "month": 1,
+      "uf": "SP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2601a.dbc",
+          "ftpSize": 129582500,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2601b.dbc",
+          "ftpSize": 139219127,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2601c.dbc",
+          "ftpSize": 152730933,
+          "suffix": "c"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2601d.dbc",
+          "ftpSize": 53945878,
+          "suffix": "d"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 543267317,
+      "month": 2,
+      "uf": "SP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2602a.dbc",
+          "ftpSize": 142319343,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2602b.dbc",
+          "ftpSize": 150491896,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2602c.dbc",
+          "ftpSize": 181585698,
+          "suffix": "c"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2602d.dbc",
+          "ftpSize": 68870380,
+          "suffix": "d"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 577050651,
+      "month": 3,
+      "uf": "SP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2603a.dbc",
+          "ftpSize": 133993368,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2603b.dbc",
+          "ftpSize": 138425502,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2603c.dbc",
+          "ftpSize": 147271533,
+          "suffix": "c"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2603d.dbc",
+          "ftpSize": 157360248,
+          "suffix": "d"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 549934077,
+      "month": 4,
+      "uf": "SP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2604a.dbc",
+          "ftpSize": 131133565,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2604b.dbc",
+          "ftpSize": 137978234,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2604c.dbc",
+          "ftpSize": 147733730,
+          "suffix": "c"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2604d.dbc",
+          "ftpSize": 133088548,
+          "suffix": "d"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 562711008,
+      "month": 5,
+      "uf": "SP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2605a.dbc",
+          "ftpSize": 132230323,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2605b.dbc",
+          "ftpSize": 139635195,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2605c.dbc",
+          "ftpSize": 147647313,
+          "suffix": "c"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2605d.dbc",
+          "ftpSize": 143198177,
+          "suffix": "d"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 536056737,
+      "month": 6,
+      "uf": "SP",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2606a.dbc",
+          "ftpSize": 127327409,
+          "suffix": "a"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2606b.dbc",
+          "ftpSize": 140270251,
+          "suffix": "b"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2606c.dbc",
+          "ftpSize": 151444619,
+          "suffix": "c"
+        },
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PASP2606d.dbc",
+          "ftpSize": 117014458,
+          "suffix": "d"
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 9674433,
+      "month": 7,
+      "uf": "TO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PATO2507.dbc",
+          "ftpSize": 9674433,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 14171943,
+      "month": 8,
+      "uf": "TO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PATO2508.dbc",
+          "ftpSize": 14171943,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 11874969,
+      "month": 9,
+      "uf": "TO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PATO2509.dbc",
+          "ftpSize": 11874969,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 12307690,
+      "month": 10,
+      "uf": "TO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PATO2510.dbc",
+          "ftpSize": 12307690,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 11478809,
+      "month": 11,
+      "uf": "TO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PATO2511.dbc",
+          "ftpSize": 11478809,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 13973868,
+      "month": 12,
+      "uf": "TO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PATO2512.dbc",
+          "ftpSize": 13973868,
+          "suffix": ""
+        }
+      ],
+      "year": 2025
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 12076849,
+      "month": 1,
+      "uf": "TO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PATO2601.dbc",
+          "ftpSize": 12076849,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 14668874,
+      "month": 2,
+      "uf": "TO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PATO2602.dbc",
+          "ftpSize": 14668874,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 14100313,
+      "month": 3,
+      "uf": "TO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PATO2603.dbc",
+          "ftpSize": 14100313,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 13471827,
+      "month": 4,
+      "uf": "TO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PATO2604.dbc",
+          "ftpSize": 13471827,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 13991306,
+      "month": 5,
+      "uf": "TO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PATO2605.dbc",
+          "ftpSize": 13991306,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    },
+    {
+      "dataset": "sia-pa",
+      "ftpMtime": "1970-01-01T00:00:00.000Z",
+      "ftpSize": 12109547,
+      "month": 6,
+      "uf": "TO",
+      "variants": [
+        {
+          "ftpMtime": "1970-01-01T00:00:00.000Z",
+          "ftpPath": "/dissemin/publicos/SIASUS/200801_/Dados/PATO2606.dbc",
+          "ftpSize": 12109547,
+          "suffix": ""
+        }
+      ],
+      "year": 2026
+    }
+  ]
+}

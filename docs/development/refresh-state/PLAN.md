@@ -37,10 +37,19 @@ Não executar archive, republicar Parquet, emitir DOI ou disparar refresh
 do viz nesta correção. A recuperação do state passa por PR. Não adicionar
 dependências nem alterar o cache do SDK.
 
-## Status atual
+## Correção e recuperação
 
-Cache e pending preservados fora do checkout. State recuperado localmente.
-Mensagens dos dois commits aprovadas; publicação do PR em andamento.
+Cache e pending preservados fora do checkout. A PR #69 reúne a correção do
+refresh (`577c701`), a recuperação do state (`b103223`) e o isolamento da
+configuração Git das fixtures (`5b29d21`).
+
+O primeiro pre-commit revelou que as fixtures herdavam `GIT_DIR` e
+`GIT_INDEX_FILE` do hook. Cinco commits de fixture foram enviados
+indevidamente à main, terminando em `a340df0`. O PR corretivo restaura
+README e pending da base `3a73a38`, além de recuperar o state completo.
+Não há reescrita do histórico remoto. Os subprocessos de teste agora
+removem as variáveis Git herdadas e permitem somente transporte local
+(`file`), com checagem do gitdir e do origin antes de qualquer commit.
 
 ### Evidências
 
@@ -48,19 +57,28 @@ Mensagens dos dois commits aprovadas; publicação do PR em andamento.
   não preparadas do runner. Depois da correção, passaram os cenários com
   main avançando e sem avanço, além da checagem do artefato de recuperação.
 - `pnpm lint` e `pnpm typecheck`: sucesso.
-- `pnpm test:coverage`: 244 testes em 18 arquivos, 100% linhas e 98,78%
+- `pnpm test:coverage`: 245 testes em 18 arquivos, 100% linhas e 98,78%
   branches. As fixtures Git usam chaves SSH temporárias para assinar os
   commits sem depender da identidade configurada na máquina.
 - O SHA-256 do pending do GitHub coincide com a cópia do desktop:
   `3dbf404d490976d43a777886cbbe8ebd7a13193ba81b68c73f315cd74a22ba6e`.
-- Comparação estrutural com `origin/main`: exatamente 325 entradas de
+- Comparação estrutural com a base `3a73a38`: exatamente 325 entradas de
   `processed` alteradas, todas com tamanho e mtime do pending. As demais
   entradas ficaram intactas. O `lastRun` foi atualizado para o horário
   desta recuperação, `2026-11-24T10:26:39.781Z`.
 - Listagem atual do S3 confirma os 325 pares de Parquet/provenance e
   todos os 260 uploads de Parquet identificados no log.
 
-## Próximos passos
+## Revisão
 
-Após aprovação, commitar a correção e a recuperação em commits separados,
-abrir PR com estes critérios e evidências. Não iniciar outro refresh.
+Na revisão, o README foi confirmado idêntico à base `3a73a38`. A
+contradição de versões já existia e a restauração foi preservada.
+
+O isolamento adicional desativa configuração global e de sistema nas
+fixtures e usa template vazio. O teste com configuração global contaminada
+falhou antes da correção e passou depois. A verificação de configuração de
+sistema usa um arquivo temporário com uma chave sentinela: a leitura
+explícita com `--system` confirma sua existência, enquanto a configuração
+efetiva do repositório não pode conter essa chave. A checagem não depende
+da representação relativa ou absoluta dos caminhos em `--show-origin`.
+Os hooks reais do projeto permanecem ativos.
