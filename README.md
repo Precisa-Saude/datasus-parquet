@@ -187,18 +187,16 @@ versão. Revise o changelog e aguarde o CI antes de adotar cada atualização.
 nos jobs de CI. Para adicionar um arquivo ausente, use
 `precisa scaffold --only <caminho> --dry-run`. Arquivos existentes são preservados.
 
-A migração adota o CLI `2.0.0`, publicado no npm, e os workflows compartilhados
-da [release v2.0.0](https://github.com/Precisa-Saude/tooling/releases/tag/v2.0.0),
-fixados ao SHA `7a61cab18cac4aa7e2163f92dab77209109480de`. A versão e a tag foram
-conferidas por `tooling/scripts/prepare-consumers.mjs`; atualizações futuras
-continuam sendo revisadas em PRs do Renovate.
+As versões em uso ficam nos próprios arquivos, que o Renovate atualiza: a do
+CLI em `CLI_VERSION`, no `.github/workflows/doctor.yml`, e a dos workflows
+compartilhados no SHA e no comentário de versão de cada `uses:` que aponta
+para `Precisa-Saude/tooling`. Por isso este README não repete números de
+versão.
 
 ### Segurança dos workflows compartilhados
 
-Os workflows e o `precisa doctor` usam tooling v3.0.0. Antes de mesclar esta
-migração, a política `.github/review-policy.json` precisa estar em `main`. A
-revisão externa começa desativada; sua ativação exige um PR que autorize o
-provedor e os caminhos. O workflow lê a política do commit base, filtra o diff
+A política de revisão fica em `.github/review-policy.json`. A revisão
+externa só é ativada por um PR que autorize o provedor e os caminhos. O workflow lê a política do commit base, filtra o diff
 e bloqueia conteúdo sensível antes de qualquer envio. Não há fallback implícito.
 
 Checks têm acesso somente de leitura ao conteúdo. Release e publicação recebem

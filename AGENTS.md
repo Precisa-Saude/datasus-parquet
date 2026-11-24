@@ -49,19 +49,20 @@ Valid scopes: `data`, `schema`, `scripts`, `ci`, `deps`, `docs`, `lint`, `config
 
 ## Worktree — specific values
 
-Worktree flow and commands are in the shared base. The canonical config
-lives in `package.json` under `"worktree"`. For quick reference:
-
-| Field         | Value                                      |
-| ------------- | ------------------------------------------ |
-| Port registry | `/tmp/datasus-parquet-worktree-ports.json` |
-| Services      | (filled in when the repo adds dev servers) |
-
-Launch a dev server in a feature worktree:
+This repo has no dev server, so `package.json` has no `"worktree"` field.
+`precisa-worktree` requires at least one service, so `setup` and `teardown`
+fail here. Use plain git, as the shared base allows for repos without a dev
+server:
 
 ```bash
-pnpm exec precisa-worktree dev --detach
+git worktree add -b <branch> ../datasus-parquet-<slug> origin/main
+# after merge, from the main checkout:
+git pull --rebase origin main
+git worktree remove ../datasus-parquet-<slug>
+git branch -D <branch>   # squash merges need -D; check the PR is merged first
 ```
+
+Add a `"worktree"` config only when the repo gains a dev server.
 
 ## Shared tooling maintenance
 

@@ -165,7 +165,12 @@ igual ao artefato `pending` do GitHub. A recuperação do state usa tamanho
 e mtime dessas 325 entradas, sem alterar as demais. O `lastRun` registra
 a data da recuperação. Foram conferidos no bucket os 325 pares de
 Parquet e provenance, incluindo os 260 uploads registrados no log.
-Release, DOI e disparo do viz exigem uma decisão operacional separada.
+Em 24/11/2026, depois do merge da recuperação (#69), a release
+[`dataset-2026-09`](https://github.com/Precisa-Saude/datasus-parquet/releases/tag/dataset-2026-09)
+foi criada à mão com o corpo do workflow e o `manifest.json` publicado pelo
+run (6.075 partições). O webhook emitiu o DOI
+[10.5281/zenodo.24507473](https://doi.org/10.5281/zenodo.24507473). O
+`refresh.yml` do datasus-viz foi disparado à mão no mesmo dia.
 
 ## Proveniência retroativa — provenance de partição já publicada
 
