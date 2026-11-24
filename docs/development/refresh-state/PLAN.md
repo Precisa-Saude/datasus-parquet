@@ -39,8 +39,8 @@ dependências nem alterar o cache do SDK.
 
 ## Status atual
 
-Cache e pending preservados fora do checkout. State recuperado localmente.
-Mensagens dos dois commits aprovadas; publicação do PR em andamento.
+Cache e pending preservados fora do checkout. PR #69 publicada nos commits
+`577c701` e `b103223`, com todos os checks do GitHub aprovados.
 
 O primeiro pre-commit revelou que as fixtures herdavam `GIT_DIR` e
 `GIT_INDEX_FILE` do hook. Cinco commits de fixture foram enviados
@@ -70,5 +70,17 @@ removem as variáveis Git herdadas e permitem somente transporte local
 
 ## Próximos passos
 
-Após aprovação, commitar a correção e a recuperação em commits separados,
-abrir PR com estes critérios e evidências. Não iniciar outro refresh.
+Na revisão, o README foi confirmado idêntico à base `3a73a38`. A
+contradição de versões já existia; a discussão foi respondida e resolvida
+sem mudar a restauração.
+
+A sugestão de isolamento adicional do Git foi implementada localmente:
+configuração global e de sistema desativadas nas fixtures, template vazio
+e um teste com configuração global contaminada. O teste falhou antes da
+correção e passou depois. Lint, typecheck e 245 testes passaram, mantendo
+100% de linhas e 98,78% de branches. Os hooks reais do projeto permanecem
+ativos.
+
+Commit e push dessa correção de revisão aprovados. Depois do commit,
+responder com o hash e resolver a discussão antes do push. Não mesclar a
+PR nem iniciar outro refresh.

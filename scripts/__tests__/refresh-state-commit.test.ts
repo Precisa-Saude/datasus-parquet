@@ -1,5 +1,13 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -23,11 +31,15 @@ const directories: string[] = [];
 // As fixtures não podem herdar esses caminhos nem os remotes do projeto.
 const fixtureEnv = {
   ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_'))),
-  GIT_CONFIG_COUNT: '2',
+  GIT_CONFIG_NOSYSTEM: '1',
+  GIT_CONFIG_GLOBAL: '/dev/null',
+  GIT_CONFIG_COUNT: '3',
   GIT_CONFIG_KEY_0: 'protocol.allow',
   GIT_CONFIG_VALUE_0: 'never',
   GIT_CONFIG_KEY_1: 'protocol.file.allow',
   GIT_CONFIG_VALUE_1: 'always',
+  GIT_CONFIG_KEY_2: 'init.templateDir',
+  GIT_CONFIG_VALUE_2: '',
 };
 afterEach(() => {
   for (const directory of directories.splice(0))
@@ -52,6 +64,36 @@ function configureSigning(cwd: string, key: string): void {
 }
 
 describe('commit do state no refresh', () => {
+  it('ignora configuração global e templates de hooks do usuário', () => {
+    const root = realpathSync(mkdtempSync(join(tmpdir(), 'refresh-config-')));
+    directories.push(root);
+    const template = join(root, 'templates');
+    mkdirSync(join(template, 'hooks'), { recursive: true });
+    writeFileSync(join(template, 'hooks/pre-commit'), 'hook herdado\n');
+    writeFileSync(
+      join(root, '.gitconfig'),
+      `[core]\n\thooksPath = ${template}/hooks\n[init]\n\ttemplateDir = ${template}\n[url "https://example.invalid/"]\n\tinsteadOf = /fixture/\n`,
+    );
+    const env = { ...fixtureEnv, HOME: root, XDG_CONFIG_HOME: root };
+    const repository = join(root, 'repository');
+    execFileSync('git', ['init', '--initial-branch=main', repository], {
+      cwd: root,
+      env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    const config = execFileSync('git', ['config', '--list', '--show-origin'], {
+      cwd: repository,
+      env,
+      encoding: 'utf8',
+    });
+    expect(config).not.toContain('.gitconfig');
+    expect(config).not.toContain('hookspath');
+    expect(config).not.toContain('insteadof');
+    expect(config).not.toContain('file:/');
+    expect(env.GIT_CONFIG_NOSYSTEM).toBe('1');
+    expect(existsSync(join(repository, '.git/hooks/pre-commit'))).toBe(false);
+  });
+
   it.each([false, true])(
     'preserva pending e build locais durante o push (main avançou: %s)',
     (advanceRemote) => {
