@@ -205,7 +205,11 @@ entrada no state`.
    orçamento de propósito. O padrão é 20 GB de DBC por run (GB = 10⁹ bytes);
    o download do Parquet do S3 não conta.
 4. **DBCs e Parquet.** DBC do cache se tiver o tamanho da listagem; senão
-   `fetchVerified` (o download do archive, conferindo o tamanho). Parquet do
+   `fetchVerified` (o download do archive, conferindo o tamanho). Erro de
+   transporte do FTP (conexão recusada, resetada ou com timeout, tamanho
+   truncado) ganha até 10 tentativas com espera de 2 s dobrando até 60 s
+   (~5 min), a mesma classificação do archive (`lib/transport-retry.ts`);
+   outro erro, 3 tentativas. Parquet do
    `build/` local se tamanho e ETag conferirem com o S3 (ETag de upload
    multipart recalculado com partes de 8 MiB, o padrão do aws CLI; ver
    `lib/s3-objects.ts`); senão baixado do S3 e conferido do mesmo jeito.

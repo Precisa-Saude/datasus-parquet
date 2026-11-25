@@ -71,7 +71,6 @@ import {
   fetchVerified,
   type RemoteFile,
   resolvePartitionFiles,
-  SizeMismatchError,
   VARIANT_RANGE,
 } from './lib/dbc-source.js';
 import { parseDosMtime } from './lib/ftp-mtime.js';
@@ -86,6 +85,7 @@ import {
   serializeSourcesRecord,
   SOURCES_RECORD_FILE,
 } from './lib/sources-record.js';
+import { isTransportError, TRANSPORT_ATTEMPTS, transportBackoffMs } from './lib/transport-retry.js';
 
 const FTP_HOST = 'ftp.datasus.gov.br';
 const SIA_PA_DIR = '/dissemin/publicos/SIASUS/200801_/Dados';
@@ -116,36 +116,6 @@ async function listRemote(dir: string): Promise<FtpListing> {
   } finally {
     client.close();
   }
-}
-
-/**
- * Erros de transporte FTP (ECONNRESET, ETIMEDOUT, etc.) são rotineiros
- * em `ftp.datasus.gov.br` — o servidor reseta a data connection com
- * frequência, especialmente em arquivos grandes (UFs SP/MG/RJ). NÃO são
- * indicação de DBC corrompido: o mesmo arquivo decodifica perfeitamente
- * num retry. Verificado em 2026-05-21 nas 43 partições do issue #20:
- * zero corrupções reais, 16 ECONNRESETs transitórios.
- *
- * Sem essa distinção, o pipeline marca falsos positivos como `.failed`
- * / `.skipped` e perde partições reais. Erros de decode (DBF inválido,
- * registro truncado mid-stream, header errado) continuam falhando rápido
- * — só o transporte ganha retries generosos.
- */
-function isTransportError(err: unknown): boolean {
-  // Tamanho divergente da listagem = download truncado ou cópia antiga no
-  // cache; um download novo resolve, então entra no retry de transporte.
-  if (err instanceof SizeMismatchError) return true;
-  const code = (err as NodeJS.ErrnoException | undefined)?.code;
-  if (
-    code !== undefined &&
-    ['ECONNRESET', 'ETIMEDOUT', 'ECONNABORTED', 'ENETRESET', 'EPIPE', 'EAI_AGAIN'].includes(code)
-  ) {
-    return true;
-  }
-  const msg = err instanceof Error ? err.message : String(err);
-  return /ECONNRESET|ETIMEDOUT|ECONNABORTED|ENETRESET|EPIPE|EAI_AGAIN|data socket|control socket|\b421\b/i.test(
-    msg,
-  );
 }
 
 /**
@@ -355,7 +325,7 @@ async function writeMonthPartition(
   rmSync(sourcesRecordFile, { force: true });
   const files = resolvePartitionFiles(listing.sizes, uf, year, month);
 
-  // Retry inline com classificação transport-vs-decode (ver isTransportError).
+  // Retry inline com classificação transport-vs-decode (ver lib/transport-retry.ts).
   // Transporte (ECONNRESET, ETIMEDOUT, etc.) ganha retries generosos com
   // backoff exponencial — o FTP DATASUS reseta data sockets rotineiramente
   // em arquivos grandes e o mesmo arquivo decodifica fine no próximo tente.
@@ -363,7 +333,7 @@ async function writeMonthPartition(
   // não adianta re-baixar o mesmo arquivo se o conteúdo está mesmo quebrado.
   // `.failed` marker registra a falha pra inspeção sem bloquear re-runs
   // (idempotência só pula `part.parquet` ou `.skipped`).
-  const MAX_TRANSPORT_RETRIES = 10;
+  const MAX_TRANSPORT_RETRIES = TRANSPORT_ATTEMPTS;
   const MAX_DECODE_RETRIES = 3;
   let lastError: unknown;
   let rows = 0;
@@ -389,7 +359,7 @@ async function writeMonthPartition(
         transportAttempts += 1;
         if (transportAttempts >= MAX_TRANSPORT_RETRIES) break;
         // Exponencial com teto: 2s, 4s, 8s, 16s, 32s, 60s, 60s, ...
-        const backoffMs = Math.min(2000 * 2 ** (transportAttempts - 1), 60_000);
+        const backoffMs = transportBackoffMs(transportAttempts);
         process.stderr.write(
           `  ⚠ ${uf} ${year}-${month} transporte ${transportAttempts}/${MAX_TRANSPORT_RETRIES}: ` +
             `${(err as Error).message} — retry em ${backoffMs}ms\n`,
