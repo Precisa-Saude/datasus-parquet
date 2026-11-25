@@ -69,12 +69,12 @@ import {
 import { parsePendingTargets } from './lib/refresh-targets.js';
 import { matchesS3Etag, parquetKey, provenanceKey } from './lib/s3-objects.js';
 import { parseSiaPaFileName, SIA_PA_REGEX } from './lib/sia-pa-parser.js';
+import { fetchWithRetry } from './lib/transport-retry.js';
 import { parseRecordCount, partitionKey } from './lib/verification.js';
 import { parquetOutput } from './parquet-output.js';
 
 const DATASET = 'sia-pa';
 const FTP_DIR = '/dissemin/publicos/SIASUS/200801_/Dados';
-const FETCH_ATTEMPTS = 3;
 
 interface Cli {
   bucket: CatchupBucket;
@@ -206,17 +206,18 @@ async function main(): Promise<void> {
       },
     });
   };
+  // FTP do DATASUS reseta conexões e às vezes as recusa por minutos:
+  // transporte ganha backoff exponencial (lib/transport-retry.ts).
   const fetchDbc = async (f: CertifiedCandidate['files'][number]): Promise<Uint8Array> => {
     if (cachedSize(f.name) === f.size) return readFileSync(join(cacheRoot, f.name));
-    for (let attempt = 1; ; attempt += 1) {
-      try {
-        return await fetchVerified(f, FTP_DIR, sdkDownload);
-      } catch (err) {
-        if (attempt >= FETCH_ATTEMPTS) throw err;
-        log(`  ⚠ ${f.name}: ${(err as Error).message} — nova tentativa`);
-        await sleep(5000 * attempt);
-      }
-    }
+    return fetchWithRetry(() => fetchVerified(f, FTP_DIR, sdkDownload), {
+      onRetry: (err, attempt, max, waitMs) =>
+        log(
+          `  ⚠ ${f.name} (${attempt}/${max}): ${err instanceof Error ? err.message : String(err)}` +
+            ` — nova tentativa em ${waitMs / 1000} s`,
+        ),
+      sleep,
+    });
   };
 
   const fingerprintDb = new duckdb.Database(':memory:');
